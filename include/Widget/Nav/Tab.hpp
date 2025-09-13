@@ -1,0 +1,202 @@
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QFontDatabase>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QApplication>
+#include <QTimer>
+#include <QEvent>
+#include <QMouseEvent>
+
+#include "Widget/Widget.hpp"
+#include "Widget/Nav/Preview/Preview.hpp"
+#include "Widget/Image/ImageUrl.hpp"
+#include "Widget/Svg/SvgWidget.hpp"
+#include "Utils/Theme.hpp"
+
+class Tab : public Widget
+{
+    Q_OBJECT
+public:
+    Tab(std::string logoUrl, std::string name, std::string url) : Widget()
+    {
+        setupUi(logoUrl, name, url);
+        setupPreview(name);
+        setupLayout();
+
+        contentWidget->installEventFilter(this);
+        installEventFilter(this);
+    }
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override
+    {
+        if (obj == contentWidget || obj == this)
+        {
+            if (event->type() == QEvent::Enter)
+            {
+                QTimer::singleShot(0, this, &Tab::showPreview);
+            }
+            else if (event->type() == QEvent::Leave)
+            {
+                QTimer::singleShot(0, this, &Tab::hidePreview);
+            }
+        }
+        else if (obj == previewWidget)
+        {
+            if (event->type() == QEvent::Enter)
+            {
+                hidePreviewTimer.stop();
+            }
+            else if (event->type() == QEvent::Leave)
+            {
+                QTimer::singleShot(200, this, &Tab::hidePreview);
+            }
+        }
+
+        return Widget::eventFilter(obj, event);
+    }
+
+private:
+    Preview *previewWidget;
+    Widget *contentWidget;
+    QTimer hidePreviewTimer;
+
+    void setupUi(const std::string &logoUrl, const std::string &name, const std::string &url)
+    {
+        setAttribute(Qt::WA_StyledBackground, true);
+        setHoverCursor(Qt::PointingHandCursor);
+
+        contentWidget = new Widget(this);
+        contentWidget->setFixedSize(155, 35);
+        contentWidget->setStyleSheet(
+            "background-color: " + QString::fromStdString(Theme::style.surface) + ";"
+                                                                                  "border-radius: 10px;");
+        contentWidget->setAttribute(Qt::WA_StyledBackground, true);
+
+        contentWidget->setHoverCursor(Qt::PointingHandCursor);
+
+        QHBoxLayout *content = new QHBoxLayout(contentWidget);
+        content->setContentsMargins(8, 0, 8, 0);
+
+        ImageUrl *logo = new ImageUrl(QString::fromStdString(logoUrl), 20, 20, 8, contentWidget);
+        content->addWidget(logo);
+        logo->setHoverCursor(Qt::PointingHandCursor);
+
+        content->addLayout(createTextLayout(name, url));
+
+        SvgWidget *cancelIcon = new SvgWidget(":/icons/cancel.svg",
+                                              QString::fromStdString(Theme::style.textHover), 8, 8, contentWidget);
+        content->addWidget(cancelIcon, 0, Qt::AlignVCenter);
+        cancelIcon->setHoverColor(QString::fromStdString(Theme::style.text));
+    }
+
+    QVBoxLayout *createTextLayout(const std::string &name, const std::string &url)
+    {
+        static QString fontFamily = loadFontFamily();
+
+        QVBoxLayout *contentLayout = new QVBoxLayout();
+        contentLayout->setContentsMargins(4, 0, 0, 0);
+        contentLayout->setSpacing(0);
+
+        QLabel *label = new QLabel(QString::fromStdString(name));
+        label->setFont(QFont(fontFamily, 9));
+        label->setAlignment(Qt::AlignVCenter);
+        label->setFixedHeight(11);
+        label->setStyleSheet("color:" + QString::fromStdString(Theme::style.text) + "; font-weight: 600;");
+        contentLayout->addWidget(label);
+
+        QLabel *domain = new QLabel(QString::fromStdString(url));
+        domain->setAlignment(Qt::AlignVCenter);
+        domain->setFont(QFont(fontFamily, 7));
+        domain->setFixedHeight(9);
+        domain->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");
+        contentLayout->addWidget(domain);
+
+        return contentLayout;
+    }
+
+    void setupPreview(const std::string &name)
+    {
+        previewWidget = new Preview(nullptr);
+        previewWidget->setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
+        previewWidget->setAttribute(Qt::WA_TranslucentBackground);
+        previewWidget->setFixedSize(155, 120);
+        previewWidget->setContentsMargins(2, 2, 2, 2);
+        previewWidget->hide();
+
+        QVBoxLayout *previewLayout = new QVBoxLayout(previewWidget);
+        previewLayout->setContentsMargins(10, 2, 10, 10);
+        previewLayout->setAlignment(Qt::AlignTop);
+
+        static QString fontFamily = loadFontFamily();
+
+        QLabel *previewTitle = new QLabel("Apple | Dashboard Title");
+        previewTitle->setFont(QFont(fontFamily, 9));
+        previewTitle->setStyleSheet("color:" + QString::fromStdString(Theme::style.text) + ";");
+        previewLayout->addWidget(previewTitle);
+
+        previewWidget->installEventFilter(this);
+
+        hidePreviewTimer.setSingleShot(true);
+        connect(&hidePreviewTimer, &QTimer::timeout, this, &Tab::hidePreview);
+    }
+
+    void setupLayout()
+    {
+        QVBoxLayout *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->addWidget(contentWidget);
+    }
+
+    static QString loadFontFamily()
+    {
+        static QString family;
+        if (family.isEmpty())
+        {
+            int id = QFontDatabase::addApplicationFont(":/fonts/nunito.ttf");
+            family = QFontDatabase::applicationFontFamilies(id).at(0);
+        }
+        return family;
+    }
+
+    void showPreview()
+    {
+        if (!previewWidget || previewWidget->isVisible())
+            return;
+
+        QPoint globalPos = mapToGlobal(QPoint(0, height()));
+        QScreen *screen = QApplication::screenAt(globalPos);
+
+        if (screen)
+        {
+            QRect screenGeometry = screen->availableGeometry();
+
+            if (globalPos.y() + previewWidget->height() > screenGeometry.bottom())
+            {
+                globalPos = mapToGlobal(QPoint(0, -previewWidget->height()));
+            }
+
+            if (globalPos.x() + previewWidget->width() > screenGeometry.right())
+            {
+                globalPos.setX(screenGeometry.right() - previewWidget->width());
+            }
+
+            if (globalPos.x() < screenGeometry.left())
+            {
+                globalPos.setX(screenGeometry.left());
+            }
+        }
+
+        previewWidget->move(globalPos);
+        previewWidget->show();
+    }
+
+    void hidePreview()
+    {
+        if (previewWidget)
+        {
+            previewWidget->hide();
+        }
+    }
+};
