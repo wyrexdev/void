@@ -109,8 +109,7 @@ private:
         setAttribute(Qt::WA_StyledBackground, true);
         setStyleSheet(QString::fromStdString(
             "border-radius: 12px;"
-            "background-color: transparent;"
-            "transition: all 0.3s ease;"));
+            "background-color: transparent;"));
 
         auto icon = std::make_unique<SvgWidget>(
             QString::fromStdString(iconPath),

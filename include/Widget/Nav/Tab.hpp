@@ -7,6 +7,8 @@
 #include <QTimer>
 #include <QEvent>
 #include <QMouseEvent>
+#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
 
 #include "Widget/Widget.hpp"
 #include "Widget/Nav/Preview/Preview.hpp"
@@ -18,11 +20,18 @@ class Tab : public Widget
 {
     Q_OBJECT
 public:
+    ~Tab()
+    {
+        delete showAnimation;
+        delete hideAnimation;
+    }
+
     Tab(std::string logoUrl, std::string name, std::string url) : Widget()
     {
         setupUi(logoUrl, name, url);
         setupPreview(name);
         setupLayout();
+        setupAnimations();
 
         contentWidget->installEventFilter(this);
         installEventFilter(this);
@@ -35,11 +44,11 @@ protected:
         {
             if (event->type() == QEvent::Enter)
             {
-                QTimer::singleShot(0, this, &Tab::showPreview);
+                showPreview();
             }
             else if (event->type() == QEvent::Leave)
             {
-                QTimer::singleShot(0, this, &Tab::hidePreview);
+                hidePreview();
             }
         }
         else if (obj == previewWidget)
@@ -61,6 +70,9 @@ private:
     Preview *previewWidget;
     Widget *contentWidget;
     QTimer hidePreviewTimer;
+    QPropertyAnimation *showAnimation;
+    QPropertyAnimation *hideAnimation;
+    QGraphicsOpacityEffect *opacityEffect;
 
     void setupUi(const std::string &logoUrl, const std::string &name, const std::string &url)
     {
@@ -123,6 +135,11 @@ private:
         previewWidget->setAttribute(Qt::WA_TranslucentBackground);
         previewWidget->setFixedSize(155, 120);
         previewWidget->setContentsMargins(2, 2, 2, 2);
+
+        opacityEffect = new QGraphicsOpacityEffect(previewWidget);
+        opacityEffect->setOpacity(0.0);
+        previewWidget->setGraphicsEffect(opacityEffect);
+
         previewWidget->hide();
 
         QVBoxLayout *previewLayout = new QVBoxLayout(previewWidget);
@@ -140,6 +157,27 @@ private:
 
         hidePreviewTimer.setSingleShot(true);
         connect(&hidePreviewTimer, &QTimer::timeout, this, &Tab::hidePreview);
+    }
+
+    void setupAnimations()
+    {
+        showAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+        showAnimation->setDuration(200);
+        showAnimation->setStartValue(0.0);
+        showAnimation->setEndValue(1.0);
+        showAnimation->setEasingCurve(QEasingCurve::OutCubic);
+
+        hideAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+        hideAnimation->setDuration(150);
+        hideAnimation->setStartValue(1.0);
+        hideAnimation->setEndValue(0.0);
+        hideAnimation->setEasingCurve(QEasingCurve::InCubic);
+
+        connect(hideAnimation, &QPropertyAnimation::finished, [this]()
+                {
+            if (previewWidget && opacityEffect->opacity() == 0.0) {
+                previewWidget->hide();
+            } });
     }
 
     void setupLayout()
@@ -164,6 +202,11 @@ private:
     {
         if (!previewWidget || previewWidget->isVisible())
             return;
+
+        if (hideAnimation->state() == QAbstractAnimation::Running)
+        {
+            hideAnimation->stop();
+        }
 
         QPoint globalPos = mapToGlobal(QPoint(0, height()));
         QScreen *screen = QApplication::screenAt(globalPos);
@@ -190,13 +233,18 @@ private:
 
         previewWidget->move(globalPos);
         previewWidget->show();
+        showAnimation->start();
     }
 
     void hidePreview()
     {
-        if (previewWidget)
+        if (previewWidget && previewWidget->isVisible())
         {
-            previewWidget->hide();
+            if (showAnimation->state() == QAbstractAnimation::Running)
+            {
+                showAnimation->stop();
+            }
+            hideAnimation->start();
         }
     }
 };

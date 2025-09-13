@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <QMainWindow>  // QMainWindow için eklendi
+#include <QMainWindow>
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>

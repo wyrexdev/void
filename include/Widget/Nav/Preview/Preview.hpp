@@ -14,7 +14,7 @@ protected:
         painter.setRenderHint(QPainter::Antialiasing);
 
         QPainterPath path;
-        path.addRoundedRect(rect(), 18, 18);
+        path.addRoundedRect(rect(), 13, 13);
 
         painter.fillPath(path, QColor(QString::fromStdString(Theme::style.surface)));
     }
