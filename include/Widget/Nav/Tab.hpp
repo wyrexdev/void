@@ -16,6 +16,7 @@
 #include "Widget/Image/Image.hpp"
 #include "Widget/Svg/SvgWidget.hpp"
 #include "Utils/Theme.hpp"
+#include "Utils/Font.hpp"
 
 class Tab : public Widget
 {
@@ -109,7 +110,7 @@ private:
 
     QVBoxLayout *createTextLayout(const std::string &name, const std::string &url)
     {
-        static QString fontFamily = loadFontFamily();
+        static QString fontFamily = Font::getNunito();
 
         QVBoxLayout *contentLayout = new QVBoxLayout();
         contentLayout->setContentsMargins(4, 0, 0, 0);
@@ -151,7 +152,7 @@ private:
         previewLayout->setAlignment(Qt::AlignTop);
         previewLayout->setSpacing(0);
 
-        static QString fontFamily = loadFontFamily();
+        static QString fontFamily = Font::getNunito();
 
         QLabel *previewTitle = new QLabel("Apple");
         previewTitle->setContentsMargins(4, 4, 0, 0);
@@ -219,17 +220,6 @@ private:
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(contentWidget);
-    }
-
-    static QString loadFontFamily()
-    {
-        static QString family;
-        if (family.isEmpty())
-        {
-            int id = QFontDatabase::addApplicationFont(":/fonts/nunito.ttf");
-            family = QFontDatabase::applicationFontFamilies(id).at(0);
-        }
-        return family;
     }
 
     void showPreview()

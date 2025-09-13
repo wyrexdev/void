@@ -14,6 +14,7 @@
     <file>icons/category.svg</file>
 
     <file>fonts/nunito.ttf</file>
+    <file>fonts/nano.ttf</file>
 
     <file>images/apple.png</file>
   </qresource>
