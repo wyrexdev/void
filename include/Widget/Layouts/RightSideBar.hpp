@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Widget/Widget.hpp"
-#include "Widget/Image/ImageUrl.hpp"
+#include "Widget/Image/Image.hpp"
 #include "Widget/Svg/SvgWidget.hpp"
 
 class RightSideBar : public Widget
@@ -116,7 +116,7 @@ private:
             widget->setStyleSheet("background-color: " + QString::fromStdString(Theme::style.surface) + "; border-radius: 18px;");
             widget->setAttribute(Qt::WA_StyledBackground, true);
 
-            ImageUrl *app = new ImageUrl(QString::fromStdString(item.icon), 45, 45, 18, widget);
+            Image *app = new Image(QString::fromStdString(item.icon), 45, 45, 18, widget);
 
             QHBoxLayout *layout = new QHBoxLayout(widget);
             layout->setContentsMargins(2, 2, 2, 2);

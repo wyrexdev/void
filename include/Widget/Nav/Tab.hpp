@@ -9,10 +9,11 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
+#include <QSizePolicy>
 
 #include "Widget/Widget.hpp"
 #include "Widget/Nav/Preview/Preview.hpp"
-#include "Widget/Image/ImageUrl.hpp"
+#include "Widget/Image/Image.hpp"
 #include "Widget/Svg/SvgWidget.hpp"
 #include "Utils/Theme.hpp"
 
@@ -82,8 +83,8 @@ private:
         contentWidget = new Widget(this);
         contentWidget->setFixedSize(155, 35);
         contentWidget->setStyleSheet(
-            "background-color: " + QString::fromStdString(Theme::style.surface) + ";"
-                                                                                  "border-radius: 10px;");
+            "background-color: " + QString::fromStdString(Theme::style.surface) + ";" +
+            "border-radius: 10px;");
         contentWidget->setAttribute(Qt::WA_StyledBackground, true);
 
         contentWidget->setHoverCursor(Qt::PointingHandCursor);
@@ -91,7 +92,10 @@ private:
         QHBoxLayout *content = new QHBoxLayout(contentWidget);
         content->setContentsMargins(8, 0, 8, 0);
 
-        ImageUrl *logo = new ImageUrl(QString::fromStdString(logoUrl), 20, 20, 8, contentWidget);
+        Image *logo = new Image(QString::fromStdString(logoUrl));
+        logo->setFixedSize(20, 20);
+        logo->setBorderRadius(8);
+        
         content->addWidget(logo);
         logo->setHoverCursor(Qt::PointingHandCursor);
 
@@ -132,8 +136,8 @@ private:
     {
         previewWidget = new Preview(nullptr);
         previewWidget->setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
-        previewWidget->setAttribute(Qt::WA_TranslucentBackground);
-        previewWidget->setFixedSize(155, 120);
+        previewWidget->setAttribute(Qt::WA_StyledBackground, true);
+        previewWidget->setFixedSize(155, 135);
         previewWidget->setContentsMargins(2, 2, 2, 2);
 
         opacityEffect = new QGraphicsOpacityEffect(previewWidget);
@@ -143,15 +147,45 @@ private:
         previewWidget->hide();
 
         QVBoxLayout *previewLayout = new QVBoxLayout(previewWidget);
-        previewLayout->setContentsMargins(10, 2, 10, 10);
+        previewLayout->setContentsMargins(0, 0, 0, 0);
         previewLayout->setAlignment(Qt::AlignTop);
+        previewLayout->setSpacing(0);
 
         static QString fontFamily = loadFontFamily();
 
-        QLabel *previewTitle = new QLabel("Apple | Dashboard Title");
-        previewTitle->setFont(QFont(fontFamily, 9));
-        previewTitle->setStyleSheet("color:" + QString::fromStdString(Theme::style.text) + ";");
+        QLabel *previewTitle = new QLabel("Apple");
+        previewTitle->setContentsMargins(4, 4, 0, 0);
+        previewTitle->setFont(QFont(fontFamily, 10));
+        previewTitle->setStyleSheet("color:" + QString::fromStdString(Theme::style.text) + "; font-weight: 600;");
         previewLayout->addWidget(previewTitle);
+
+        QLabel *domain = new QLabel("apple.com");
+        domain->setContentsMargins(4, 0, 0, 0);
+        domain->setFont(QFont(fontFamily, 9));
+        domain->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + ";");
+        previewLayout->addWidget(domain);
+
+        Widget *sitePreviewWidget = new Widget();
+        sitePreviewWidget->setContentsMargins(0, 0, 0, 0);
+        sitePreviewWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sitePreviewWidget->setMinimumSize(0, 0);
+        sitePreviewWidget->setStyleSheet("background-color: " + QString::fromStdString(Theme::style.primary) + ";");
+        sitePreviewWidget->setAttribute(Qt::WA_TranslucentBackground);
+
+        QHBoxLayout *sitePreviewLayout = new QHBoxLayout(sitePreviewWidget);
+        sitePreviewLayout->setContentsMargins(0, 0, 0, 0);
+        sitePreviewLayout->setSpacing(0);
+
+        Image *previewImage = new Image(":/images/apple.png");
+        sitePreviewLayout->addWidget(previewImage);
+
+        previewLayout->addWidget(sitePreviewWidget);
+
+        QLabel *usage = new QLabel("Memory Usage: 259 MB");
+        usage->setContentsMargins(4, 4, 0, 4);
+        usage->setFont(QFont(fontFamily, 8));
+        usage->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");
+        previewLayout->addWidget(usage);
 
         previewWidget->installEventFilter(this);
 
@@ -222,7 +256,7 @@ private:
 
             if (globalPos.x() + previewWidget->width() > screenGeometry.right())
             {
-                globalPos.setX(screenGeometry.right() - previewWidget->width());
+                globalPos.setX((screenGeometry.right() - previewWidget->width()));
             }
 
             if (globalPos.x() < screenGeometry.left())
@@ -231,7 +265,7 @@ private:
             }
         }
 
-        previewWidget->move(globalPos);
+        previewWidget->move(globalPos.x(), globalPos.y());
         previewWidget->show();
         showAnimation->start();
     }

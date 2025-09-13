@@ -10,7 +10,7 @@
 #include "Utils/Theme.hpp"
 #include "Widget/Svg/SvgWidget.hpp"
 #include "Widget/Nav/Tab.hpp"
-#include "Widget/Image/ImageUrl.hpp"
+#include "Widget/Image/Image.hpp"
 
 #include "Widget/Widget.hpp"
 
@@ -86,7 +86,9 @@ private:
 
         layout->addSpacerItem(new QSpacerItem(5, 0, QSizePolicy::Fixed, QSizePolicy::Fixed));
 
-        ImageUrl *pp = new ImageUrl("https://avatars.mds.yandex.net/i?id=3dbb34e4d6325cd195e508b97c5837e09b1c8c68-17021924-images-thumbs&n=13", 40, 40, 15);
+        Image *pp = new Image("https://i.pinimg.com/originals/7b/4c/6d/7b4c6d9638dd629705791d4f9cbe597b.jpg");
+        pp->setFixedSize(40, 40);
+        pp->setBorderRadius(15);
         pp->setHoverCursor(Qt::PointingHandCursor);
         layout->addWidget(pp);
 

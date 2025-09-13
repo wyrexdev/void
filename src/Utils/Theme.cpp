@@ -6,7 +6,8 @@ Theme::Style Theme::style = {
     "#848484",
     "#1c1c1c",
     "#6581e6",
+    "#2f2f2f",
+    "#2b0099ff",
     "#ffffff",
-    "#c1c1c1",
-    15
+    "#c1c1c1"
 };

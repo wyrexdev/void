@@ -7,13 +7,18 @@ public:
 
     struct Style {
         std::string background;
+        
         std::string tab;
         std::string tabHover;
+
         std::string surface;
         std::string onSurface;
+        
+        std::string primary;
+        std::string onPrimary;
+
         std::string text;
         std::string textHover;
-        int borderRadius;
     };
 
     static Style style;
