@@ -1,6 +1,6 @@
 # Void Browser
 
-![Void Browser](readme/130925.png)
+![Void Browser](readme/130925-2.png)
 
 Void Browser is a modern, lightweight web browser built with Qt6 and C++20. It features a sleek dark theme interface with a focus on simplicity and user experience.
 
