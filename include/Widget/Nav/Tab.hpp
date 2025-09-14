@@ -25,7 +25,8 @@ class Tab : public Widget
     Q_OBJECT
 public:
     Preview *previewWidget;
-    
+    Widget *contentWidget;
+
     ~Tab()
     {
         delete showAnimation;
@@ -130,7 +131,6 @@ protected:
     }
 
 private:
-    Widget *contentWidget;
     QTimer hidePreviewTimer;
     QPropertyAnimation *showAnimation;
     QPropertyAnimation *hideAnimation;
@@ -149,7 +149,6 @@ private:
             "background-color: " + QString::fromStdString(Theme::style.surface) + ";" +
             "border-radius: 10px;");
         contentWidget->setAttribute(Qt::WA_StyledBackground, true);
-
         contentWidget->setHoverCursor(Qt::PointingHandCursor);
 
         QHBoxLayout *content = new QHBoxLayout(contentWidget);
@@ -173,6 +172,10 @@ private:
                                {
             hidePreview();
             History::remove(uuid); });
+
+        setOnClick([=] {
+            History::setCurrentTab(uuid);
+        });
     }
 
     QVBoxLayout *createTextLayout(const std::string &name, const std::string &url)

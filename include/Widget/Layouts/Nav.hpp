@@ -18,6 +18,8 @@
 class Nav : public Widget
 {
 public:
+    SvgWidget *plusIcon;
+
     struct NItem
     {
         std::string uuid;
@@ -33,9 +35,67 @@ public:
 
         connect(History::instance(), &History::historyChanged, this, [=](const std::string &uuid, bool added)
                 {
-        if (!added) {
-            removeItem(uuid);
-        } });
+            if (!added) {
+                removeItem(uuid);
+            } });
+
+        connect(History::instance(), &History::currentTabChanged, this, [=](const std::string &uuid)
+                {
+    static QHash<Tab*, QVariantAnimation*> activeAnimations;
+    
+    for (int i = 0; i < tabsLayout->count(); ++i) {
+        QLayoutItem *item = tabsLayout->itemAt(i);
+        if (item && item->widget()) {
+            Tab *tab = qobject_cast<Tab *>(item->widget());
+            if (!tab) continue;
+            
+            if (activeAnimations.contains(tab)) {
+                QVariantAnimation* oldAnimation = activeAnimations.value(tab);
+                if (oldAnimation && oldAnimation->state() == QVariantAnimation::Running) {
+                    oldAnimation->stop();
+                }
+                activeAnimations.remove(tab);
+                delete oldAnimation;
+            }
+            
+            QVariantAnimation *animation = new QVariantAnimation(this);
+            animation->setDuration(300);
+            animation->setEasingCurve(QEasingCurve::InOutQuad);
+            
+            QColor currentColor = tab->contentWidget->palette().color(QPalette::Window);
+            
+            QString targetColor;
+            if (tab->getUuid() == uuid) {
+                targetColor = QString::fromStdString(Theme::style.primary);
+            } else {
+                targetColor = QString::fromStdString(Theme::style.surface);
+            }
+            
+            animation->setStartValue(currentColor);
+            animation->setEndValue(QColor(targetColor));
+            
+            connect(animation, &QVariantAnimation::valueChanged, this, [tab](const QVariant &value) {
+                QColor color = value.value<QColor>();
+                QString radius = (color == QColor(QString::fromStdString(Theme::style.primary))) ? "12px" : "10px";
+                tab->contentWidget->setStyleSheet(QString("background-color: %1; border-radius: %2;")
+                    .arg(color.name())
+                    .arg(radius));
+            });
+            
+            connect(animation, &QVariantAnimation::finished, this, [tab, animation, targetColor]() {
+                QString radius = (targetColor == QString::fromStdString(Theme::style.primary)) ? "12px" : "10px";
+                tab->contentWidget->setStyleSheet(QString("background-color: %1; border-radius: %2;")
+                    .arg(targetColor)
+                    .arg(radius));
+                
+                activeAnimations.remove(tab);
+                animation->deleteLater();
+            });
+            
+            activeAnimations.insert(tab, animation);
+            animation->start();
+        }
+    } });
     }
 
     void addItem(NItem item)
@@ -112,7 +172,7 @@ private:
 
         layout->addSpacerItem(new QSpacerItem(2, 0, QSizePolicy::Fixed, QSizePolicy::Fixed));
 
-        SvgWidget *plusIcon = new SvgWidget(":/icons/plus.svg", QString::fromStdString(Theme::style.textHover), 15, 15);
+        plusIcon = new SvgWidget(":/icons/plus.svg", QString::fromStdString(Theme::style.textHover), 15, 15);
         layout->addWidget(plusIcon, 0, Qt::AlignVCenter);
 
         layout->addStretch(1);

@@ -11,6 +11,7 @@ class History : public QObject
 public:
     explicit History(QObject *parent = nullptr) : QObject(parent) {}
 
+    static std::string currenTab;
     static std::unordered_map<std::string, std::string> history;
 
     static void add(const std::string &uuid, const std::string &url)
@@ -27,6 +28,11 @@ public:
             emit instance()->historyChanged(uuid, false);
         }
     }
+
+    static void setCurrentTab(const std::string &uuid) {
+        currenTab = uuid;
+        emit instance()->currentTabChanged(uuid);
+    }
     
     static History* instance()
     {
@@ -36,4 +42,5 @@ public:
 
 signals:
     void historyChanged(const std::string &uuid, bool added);
+    void currentTabChanged(const std::string &uuid);
 };

@@ -105,28 +105,33 @@ int main(int argc, char *argv[])
     QString query = searchBar->text();
     QString url = "https://www.google.com/search?q=" + QString(QUrl::toPercentEncoding(query));
     
-    Nav::NItem item = {
+    Nav::NItem i = {
         UUID::Random(),
         ":/images/logo.png",
         "New Tab",
         "void"
     };
-    nav->addItem(item); 
+    nav->addItem(i); 
+    History::setCurrentTab(i.uuid);
 
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=] {
+
+    });
+
+    nav->plusIcon->setOnClick([=] {
         Nav::NItem item = {
             UUID::Random(),
-            url.toStdString(),
-            "Google",
-            url.toStdString()
+            ":/images/logo.png",
+            "New Tab",
+            "void"
         };
 
         Fetcher *fetcher = new Fetcher();
         const std::string st = fetcher->get("https://www.google.com");
 
-        std::cout << "Content: " << st << std::endl;
+        nav->addItem(item);
 
-        nav->addItem(item); 
+        History::setCurrentTab(item.uuid);
     });
 
     contentLayout->addWidget(browserWidget);
