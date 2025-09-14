@@ -7,18 +7,20 @@
 #include <QSpacerItem>
 #include <vector>
 
+#include "Widget/Widget.hpp"
+
+#include "Utils/History.hpp"
 #include "Utils/Theme.hpp"
 #include "Widget/Svg/SvgWidget.hpp"
 #include "Widget/Nav/Tab.hpp"
 #include "Widget/Image/Image.hpp"
-
-#include "Widget/Widget.hpp"
 
 class Nav : public Widget
 {
 public:
     struct NItem
     {
+        std::string uuid;
         std::string logo;
         std::string name;
         std::string url;
@@ -28,12 +30,46 @@ public:
     {
         setupUI();
         refreshUI();
+
+        connect(History::instance(), &History::historyChanged, this, [=](const std::string &uuid, bool added)
+                {
+        if (!added) {
+            removeItem(uuid);
+        } });
     }
 
     void addItem(NItem item)
     {
         NItems.push_back(item);
-        refreshUI();
+
+        Tab *tab = new Tab(item.uuid, item.logo, item.name, item.url);
+        tabsLayout->addWidget(tab);
+
+        History::add(item.uuid, item.url);
+    }
+
+    void removeItem(const std::string &uuid)
+    {
+        for (int i = 0; i < tabsLayout->count(); ++i)
+        {
+            QLayoutItem *item = tabsLayout->itemAt(i);
+            if (item && item->widget())
+            {
+                Tab *tab = qobject_cast<Tab *>(item->widget());
+                if (tab && tab->getUuid() == uuid)
+                {
+                    tabsLayout->removeWidget(tab);
+                    tab->previewWidget->deleteLater();
+                    tab->hidePreview();
+                    tab->deleteLater();
+                    break;
+                }
+            }
+        }
+
+        NItems.erase(std::remove_if(NItems.begin(), NItems.end(), [&](const NItem &item)
+                                    { return item.uuid == uuid; }),
+                     NItems.end());
     }
 
 private:
@@ -66,7 +102,7 @@ private:
         line->setFixedSize(2, 9);
         line->setStyleSheet(
             "background-color: " + QString::fromStdString(Theme::style.text) + ";"
-                                                                                   "border-radius: 15px;");
+                                                                               "border-radius: 15px;");
         layout->addWidget(line);
 
         layout->addSpacerItem(new QSpacerItem(10, 0, QSizePolicy::Fixed, QSizePolicy::Fixed));
@@ -98,6 +134,8 @@ private:
 
     void refreshUI()
     {
+        History::history.clear();
+
         for (int i = tabsLayout->count() - 1; i >= 0; --i)
         {
             QLayoutItem *item = tabsLayout->itemAt(i);
@@ -114,8 +152,10 @@ private:
 
         for (NItem item : NItems)
         {
-            Tab *tab = new Tab(item.logo, item.name, item.url);
+            Tab *tab = new Tab(item.uuid, item.logo, item.name, item.url);
             tabsLayout->addWidget(tab);
+
+            History::add(item.uuid, item.url);
         }
     }
 };

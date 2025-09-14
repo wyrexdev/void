@@ -15,6 +15,8 @@
 #include "Widget/Nav/Preview/Preview.hpp"
 #include "Widget/Image/Image.hpp"
 #include "Widget/Svg/SvgWidget.hpp"
+
+#include "Utils/History.hpp"
 #include "Utils/Theme.hpp"
 #include "Utils/Font.hpp"
 
@@ -22,21 +24,80 @@ class Tab : public Widget
 {
     Q_OBJECT
 public:
+    Preview *previewWidget;
+    
     ~Tab()
     {
         delete showAnimation;
         delete hideAnimation;
     }
 
-    Tab(std::string logoUrl, std::string name, std::string url) : Widget()
+    Tab(std::string uuid, std::string logoUrl, std::string name, std::string url) : Widget()
     {
         setupUi(logoUrl, name, url);
         setupPreview(name);
         setupLayout();
         setupAnimations();
 
+        this->uuid = uuid;
+
         contentWidget->installEventFilter(this);
         installEventFilter(this);
+    }
+
+    std::string getUuid()
+    {
+        return uuid;
+    }
+
+    void showPreview()
+    {
+        if (!previewWidget || previewWidget->isVisible())
+            return;
+
+        if (hideAnimation->state() == QAbstractAnimation::Running)
+        {
+            hideAnimation->stop();
+        }
+
+        QPoint globalPos = mapToGlobal(QPoint(0, height()));
+        QScreen *screen = QApplication::screenAt(globalPos);
+
+        if (screen)
+        {
+            QRect screenGeometry = screen->availableGeometry();
+
+            if (globalPos.y() + previewWidget->height() > screenGeometry.bottom())
+            {
+                globalPos = mapToGlobal(QPoint(0, -previewWidget->height()));
+            }
+
+            if (globalPos.x() + previewWidget->width() > screenGeometry.right())
+            {
+                globalPos.setX((screenGeometry.right() - previewWidget->width()));
+            }
+
+            if (globalPos.x() < screenGeometry.left())
+            {
+                globalPos.setX(screenGeometry.left());
+            }
+        }
+
+        previewWidget->move(globalPos.x(), globalPos.y());
+        previewWidget->show();
+        showAnimation->start();
+    }
+
+    void hidePreview()
+    {
+        if (previewWidget && previewWidget->isVisible())
+        {
+            if (showAnimation->state() == QAbstractAnimation::Running)
+            {
+                showAnimation->stop();
+            }
+            hideAnimation->start();
+        }
     }
 
 protected:
@@ -69,12 +130,13 @@ protected:
     }
 
 private:
-    Preview *previewWidget;
     Widget *contentWidget;
     QTimer hidePreviewTimer;
     QPropertyAnimation *showAnimation;
     QPropertyAnimation *hideAnimation;
     QGraphicsOpacityEffect *opacityEffect;
+
+    std::string uuid;
 
     void setupUi(const std::string &logoUrl, const std::string &name, const std::string &url)
     {
@@ -96,7 +158,7 @@ private:
         Image *logo = new Image(QString::fromStdString(logoUrl));
         logo->setFixedSize(20, 20);
         logo->setBorderRadius(8);
-        
+
         content->addWidget(logo);
         logo->setHoverCursor(Qt::PointingHandCursor);
 
@@ -106,6 +168,11 @@ private:
                                               QString::fromStdString(Theme::style.textHover), 8, 8, contentWidget);
         content->addWidget(cancelIcon, 0, Qt::AlignVCenter);
         cancelIcon->setHoverColor(QString::fromStdString(Theme::style.text));
+
+        cancelIcon->setOnClick([=]
+                               {
+            hidePreview();
+            History::remove(uuid); });
     }
 
     QVBoxLayout *createTextLayout(const std::string &name, const std::string &url)
@@ -220,55 +287,5 @@ private:
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(contentWidget);
-    }
-
-    void showPreview()
-    {
-        if (!previewWidget || previewWidget->isVisible())
-            return;
-
-        if (hideAnimation->state() == QAbstractAnimation::Running)
-        {
-            hideAnimation->stop();
-        }
-
-        QPoint globalPos = mapToGlobal(QPoint(0, height()));
-        QScreen *screen = QApplication::screenAt(globalPos);
-
-        if (screen)
-        {
-            QRect screenGeometry = screen->availableGeometry();
-
-            if (globalPos.y() + previewWidget->height() > screenGeometry.bottom())
-            {
-                globalPos = mapToGlobal(QPoint(0, -previewWidget->height()));
-            }
-
-            if (globalPos.x() + previewWidget->width() > screenGeometry.right())
-            {
-                globalPos.setX((screenGeometry.right() - previewWidget->width()));
-            }
-
-            if (globalPos.x() < screenGeometry.left())
-            {
-                globalPos.setX(screenGeometry.left());
-            }
-        }
-
-        previewWidget->move(globalPos.x(), globalPos.y());
-        previewWidget->show();
-        showAnimation->start();
-    }
-
-    void hidePreview()
-    {
-        if (previewWidget && previewWidget->isVisible())
-        {
-            if (showAnimation->state() == QAbstractAnimation::Running)
-            {
-                showAnimation->stop();
-            }
-            hideAnimation->start();
-        }
     }
 };

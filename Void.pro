@@ -43,8 +43,7 @@ INCLUDEPATH += src
 # CONFIG += release
 # QMAKE_CXXFLAGS_RELEASE += -O3
 
-# Additional libraries if needed
-# LIBS += -lssl -lcrypto
+LIBS += -lssl -lcrypto -lcurl
 
 # Installation paths (optional)
 # target.path = /usr/local/bin

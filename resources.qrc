@@ -16,6 +16,8 @@
     <file>fonts/nunito.ttf</file>
     <file>fonts/nano.ttf</file>
 
+    <file>images/logo.png</file>
+
     <file>images/apple.png</file>
   </qresource>
 </RCC>
