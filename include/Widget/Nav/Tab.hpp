@@ -26,6 +26,10 @@ class Tab : public Widget
 public:
     Preview *previewWidget;
     Widget *contentWidget;
+    
+    Image *logo;
+    QLabel *label;
+    QLabel *tDomain;
 
     ~Tab()
     {
@@ -154,7 +158,7 @@ private:
         QHBoxLayout *content = new QHBoxLayout(contentWidget);
         content->setContentsMargins(8, 0, 8, 0);
 
-        Image *logo = new Image(QString::fromStdString(logoUrl));
+        logo = new Image(QString::fromStdString(logoUrl));
         logo->setFixedSize(20, 20);
         logo->setBorderRadius(8);
 
@@ -186,19 +190,19 @@ private:
         contentLayout->setContentsMargins(4, 0, 0, 0);
         contentLayout->setSpacing(0);
 
-        QLabel *label = new QLabel(QString::fromStdString(name));
+        label = new QLabel(QString::fromStdString(name));
         label->setFont(QFont(fontFamily, 9));
         label->setAlignment(Qt::AlignVCenter);
         label->setFixedHeight(11);
         label->setStyleSheet("color:" + QString::fromStdString(Theme::style.text) + "; font-weight: 600;");
         contentLayout->addWidget(label);
 
-        QLabel *domain = new QLabel(QString::fromStdString(url));
-        domain->setAlignment(Qt::AlignVCenter);
-        domain->setFont(QFont(fontFamily, 7));
-        domain->setFixedHeight(9);
-        domain->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");
-        contentLayout->addWidget(domain);
+        tDomain = new QLabel(QString::fromStdString(url));
+        tDomain->setAlignment(Qt::AlignVCenter);
+        tDomain->setFont(QFont(fontFamily, 7));
+        tDomain->setFixedHeight(9);
+        tDomain->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");
+        contentLayout->addWidget(tDomain);
 
         return contentLayout;
     }

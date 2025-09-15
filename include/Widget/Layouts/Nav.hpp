@@ -28,6 +28,8 @@ public:
         std::string url;
     };
 
+    std::vector<NItem> NItems;
+
     Nav(QWidget *parent = nullptr) : Widget(parent)
     {
         setupUI();
@@ -132,11 +134,28 @@ public:
                      NItems.end());
     }
 
+    void updateItem(const std::string &uuid, NItem &it)
+    {
+        for (int i = 0; i < tabsLayout->count(); ++i)
+        {
+            QLayoutItem *item = tabsLayout->itemAt(i);
+            if (item && item->widget())
+            {
+                Tab *tab = qobject_cast<Tab *>(item->widget());
+                if (tab && tab->getUuid() == uuid)
+                {
+                    tab->logo->setImage(QString::fromStdString(it.logo));
+                    tab->tDomain->setText(QString::fromStdString(it.url));
+                    tab->label->setText(QString::fromStdString(it.name));
+                    break;
+                }
+            }
+        }
+    }
+
 private:
     QHBoxLayout *layout;
     QHBoxLayout *tabsLayout;
-
-    std::vector<NItem> NItems;
 
     void setupUI()
     {

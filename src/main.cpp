@@ -15,8 +15,12 @@
 
 #include "Utils/UUID.hpp"
 
+#include "Engine/Parser/Html/Parser.hpp"
+
 int main(int argc, char *argv[])
 {
+    Parser *parser = new Parser();
+
     QApplication app(argc, argv);
 
     QMainWindow window;
@@ -75,6 +79,14 @@ int main(int argc, char *argv[])
     voLayout->addWidget(vLabel);
     voLayout->addWidget(oLabel);
 
+    Widget *siteContentWidget = new Widget();
+    siteContentWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QVBoxLayout *siteContentLayout = new QVBoxLayout(siteContentWidget);
+    siteContentWidget->hide();
+
+    QLabel *contentText = new QLabel();
+    siteContentLayout->addWidget(contentText);
+
     Widget *browserWidget = new Widget();
     browserWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -115,7 +127,28 @@ int main(int argc, char *argv[])
     History::setCurrentTab(i.uuid);
 
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=] {
+        Nav::NItem i;
+        i.name = "Google";
+        i.logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png";
+        i.url = searchBar->text().toStdString();
 
+        nav->updateItem(History::currenTab, i);
+
+        QString query = searchBar->text();
+        QString encoded = QUrl::toPercentEncoding(query);
+        std::string url = "https://www.google.com/search?q=" + encoded.toStdString();
+
+        Fetcher *fetcher = new Fetcher();
+        std::string content = fetcher->get(url);
+
+        parser->parse(content);
+
+        browserWidget->hide();
+        siteContentWidget->show();
+
+        contentText->setText(QString::fromStdString(content));
+
+        searchBar->setText("");
     });
 
     nav->plusIcon->setOnClick([=] {
@@ -126,15 +159,13 @@ int main(int argc, char *argv[])
             "void"
         };
 
-        Fetcher *fetcher = new Fetcher();
-        const std::string st = fetcher->get("https://www.google.com");
-
         nav->addItem(item);
 
         History::setCurrentTab(item.uuid);
     });
 
     contentLayout->addWidget(browserWidget);
+    contentLayout->addWidget(siteContentWidget);
 
     RightSideBar::RSItem netflix = {
         "https://images.ctfassets.net/4cd45et68cgf/Rx83JoRDMkYNlMC9MKzcB/2b14d5a59fc3937afd3f03191e19502d/Netflix-Symbol.png?w=700&h=456",
