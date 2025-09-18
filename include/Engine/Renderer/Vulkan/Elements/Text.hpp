@@ -1,0 +1,7 @@
+
+
+class Text {
+public:
+    Text() {}
+
+};

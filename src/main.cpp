@@ -16,6 +16,7 @@
 #include "Utils/UUID.hpp"
 
 #include "Engine/Parser/Html/Parser.hpp"
+#include "Engine/Renderer/Vulkan/Renderer.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -84,9 +85,6 @@ int main(int argc, char *argv[])
     QVBoxLayout *siteContentLayout = new QVBoxLayout(siteContentWidget);
     siteContentWidget->hide();
 
-    QLabel *contentText = new QLabel();
-    siteContentLayout->addWidget(contentText);
-
     Widget *browserWidget = new Widget();
     browserWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -146,7 +144,21 @@ int main(int argc, char *argv[])
         browserWidget->hide();
         siteContentWidget->show();
 
-        contentText->setText(QString::fromStdString(content));
+        QVulkanInstance *inst = new QVulkanInstance();
+        inst->create();
+
+        class CustomVulkanWindow : public QVulkanWindow {
+        public:
+            QVulkanWindowRenderer *createRenderer() override {
+                return new VulkanRenderer(this);
+            }
+        };
+
+        QVulkanWindow *vulkanWindow = new CustomVulkanWindow();
+        vulkanWindow->setVulkanInstance(inst);
+
+        QWidget *ct = QWidget::createWindowContainer(vulkanWindow);
+        siteContentLayout->addWidget(ct);
 
         searchBar->setText("");
     });
