@@ -3,6 +3,8 @@
 
 #include "Engine/Renderer/Vulkan/Element.hpp"
 
+#include "Stb/Truetype.h"
+
 #include <string>
 
 class Text : public Element {
@@ -22,7 +24,7 @@ public:
     }
 
     void setText(const std::string &test) {
-
+        update();
     }
 
     void setFontSize(float size) {

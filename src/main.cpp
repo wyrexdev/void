@@ -13,10 +13,10 @@
 #include "Widget/Layouts/LeftSideBar.hpp"
 #include "Widget/Layouts/RightSideBar.hpp"
 
+#include "Utils/Renderer.hpp"
 #include "Utils/UUID.hpp"
 
 #include "Engine/Parser/Html/Parser.hpp"
-#include "Engine/Renderer/Vulkan/Renderer.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -114,17 +114,34 @@ int main(int argc, char *argv[])
 
     QString query = searchBar->text();
     QString url = "https://www.google.com/search?q=" + QString(QUrl::toPercentEncoding(query));
-    
+
     Nav::NItem i = {
         UUID::Random(),
         ":/images/logo.png",
         "New Tab",
-        "void"
-    };
-    nav->addItem(i); 
+        "void"};
+    nav->addItem(i);
     History::setCurrentTab(i.uuid);
 
-    QObject::connect(searchBar, &QLineEdit::returnPressed, [=] {
+    class CustomVulkanWindow : public QVulkanWindow
+    {
+    public:
+        QVulkanWindowRenderer *createRenderer() override
+        {
+            VulkanRenderer *vr = new VulkanRenderer(this);
+            renderer = vr;
+            return vr;
+        }
+    };
+
+    QVulkanInstance *inst = new QVulkanInstance();
+    inst->create();
+
+    QVulkanWindow *vulkanWindow = new CustomVulkanWindow();
+    vulkanWindow->setVulkanInstance(inst);
+
+    QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
+                     {
         Nav::NItem i;
         i.name = "Google";
         i.logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png";
@@ -144,26 +161,13 @@ int main(int argc, char *argv[])
         browserWidget->hide();
         siteContentWidget->show();
 
-        QVulkanInstance *inst = new QVulkanInstance();
-        inst->create();
-
-        class CustomVulkanWindow : public QVulkanWindow {
-        public:
-            QVulkanWindowRenderer *createRenderer() override {
-                return new VulkanRenderer(this);
-            }
-        };
-
-        QVulkanWindow *vulkanWindow = new CustomVulkanWindow();
-        vulkanWindow->setVulkanInstance(inst);
-
         QWidget *ct = QWidget::createWindowContainer(vulkanWindow);
         siteContentLayout->addWidget(ct);
 
-        searchBar->setText("");
-    });
+        searchBar->setText(""); });
 
-    nav->plusIcon->setOnClick([=] {
+    nav->plusIcon->setOnClick([=]
+                              {
         Nav::NItem item = {
             UUID::Random(),
             ":/images/logo.png",
@@ -173,28 +177,24 @@ int main(int argc, char *argv[])
 
         nav->addItem(item);
 
-        History::setCurrentTab(item.uuid);
-    });
+        History::setCurrentTab(item.uuid); });
 
     contentLayout->addWidget(browserWidget);
     contentLayout->addWidget(siteContentWidget);
 
     RightSideBar::RSItem netflix = {
         "https://images.ctfassets.net/4cd45et68cgf/Rx83JoRDMkYNlMC9MKzcB/2b14d5a59fc3937afd3f03191e19502d/Netflix-Symbol.png?w=700&h=456",
-        "https://netflix.com"
-    };
+        "https://netflix.com"};
     rightSideBar->addItem(netflix);
 
     RightSideBar::RSItem apple = {
         "https://substackcdn.com/image/fetch/$s_!G1lk!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8ed3d547-94ff-48e1-9f20-8c14a7030a02_2000x2000.jpeg",
-        "https://apple.com"
-    };
+        "https://apple.com"};
     rightSideBar->addItem(apple);
 
     RightSideBar::RSItem x = {
         "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/X_logo.jpg/250px-X_logo.jpg",
-        "https://x.com"
-    };
+        "https://x.com"};
     rightSideBar->addItem(x);
 
     contentLayout->addWidget(rightSideBar);
