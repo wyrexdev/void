@@ -123,13 +123,13 @@ int main(int argc, char *argv[])
     nav->addItem(i);
     History::setCurrentTab(i.uuid);
 
-    class CustomVulkanWindow : public QVulkanWindow
+    /*class VulkanWindow : public QVulkanWindow
     {
     public:
         QVulkanWindowRenderer *createRenderer() override
         {
             VulkanRenderer *vr = new VulkanRenderer(this);
-            renderer = vr;
+            vulkanRenderer = vr;
             return vr;
         }
     };
@@ -137,8 +137,10 @@ int main(int argc, char *argv[])
     QVulkanInstance *inst = new QVulkanInstance();
     inst->create();
 
-    QVulkanWindow *vulkanWindow = new CustomVulkanWindow();
-    vulkanWindow->setVulkanInstance(inst);
+    QVulkanWindow *vulkanWindow = new VulkanWindow();
+    vulkanWindow->setVulkanInstance(inst);*/
+
+    OpenGLRenderer *openglWindow = new OpenGLRenderer();
 
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
                      {
@@ -161,8 +163,8 @@ int main(int argc, char *argv[])
         browserWidget->hide();
         siteContentWidget->show();
 
-        QWidget *ct = QWidget::createWindowContainer(vulkanWindow);
-        siteContentLayout->addWidget(ct);
+        //QWidget *ct = QWidget::createWindowContainer(vulkanWindow);
+        siteContentLayout->addWidget(openglWindow);
 
         searchBar->setText(""); });
 

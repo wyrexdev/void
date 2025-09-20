@@ -1,4 +1,4 @@
-QT += widgets svg network concurrent
+QT += widgets svg network concurrent opengl openglwidgets
 
 TARGET = Void
 TEMPLATE = app
