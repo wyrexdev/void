@@ -1,7 +1,9 @@
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions>
+#include <QOpenGLFunctions_4_5_Compatibility>
+#include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
 
-class OpenGLRenderer : public QOpenGLWidget, protected QOpenGLFunctions {
+class OpenGLRenderer : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Compatibility {
     Q_OBJECT
 
 public:

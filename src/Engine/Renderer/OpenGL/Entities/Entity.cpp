@@ -1,5 +1,7 @@
 #include "Engine/Renderer/OpenGL/Entities/Entity.hpp"
 
+Entity::~Entity() {}
+
 void Entity::setPosition(glm::vec3 pos)
 {
     this->pos = pos;
@@ -80,4 +82,32 @@ void Entity::setHeight(float h) {
 
 void Entity::setScaleZ(float z) {
     this->scale.z = z;
+}
+
+
+
+glm::vec3 Entity::getPosition() {
+    return this->pos;
+}
+
+glm::vec3 Entity::getRotation() {
+    return this->rotate;
+}
+
+glm::vec3 Entity::getScale() {
+    return this->scale;
+}
+
+
+
+void Entity::start() {
+
+}
+
+void Entity::draw() {
+
+}
+
+void Entity::update() {
+    
 }

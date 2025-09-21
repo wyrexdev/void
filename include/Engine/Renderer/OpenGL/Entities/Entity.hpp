@@ -1,7 +1,12 @@
 #include "glm/glm/glm.hpp"
+#include <GL/gl.h>
 
 class Entity {
 public:
+    virtual ~Entity();
+
+    GLuint VAO = 0, VBO = 0, EBO = 0;
+
     void setPosition(glm::vec3 pos);
     void setPosition(float x, float y, float z);
     void setPosition(float x, float y);
@@ -24,6 +29,10 @@ public:
     glm::vec3 getPosition();
     glm::vec3 getRotation();
     glm::vec3 getScale();
+
+    virtual void start() = 0;
+    virtual void draw() = 0;
+    virtual void update() = 0;
 private:
     glm::vec3 pos;
     glm::vec3 rotate;

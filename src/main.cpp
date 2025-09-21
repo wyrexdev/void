@@ -140,6 +140,14 @@ int main(int argc, char *argv[])
     QVulkanWindow *vulkanWindow = new VulkanWindow();
     vulkanWindow->setVulkanInstance(inst);*/
 
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setVersion(4, 5);
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setRenderableType(QSurfaceFormat::OpenGL); 
+    QSurfaceFormat::setDefaultFormat(format);
+
     OpenGLRenderer *openglWindow = new OpenGLRenderer();
 
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
