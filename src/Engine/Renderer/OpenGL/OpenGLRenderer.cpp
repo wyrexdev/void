@@ -12,7 +12,7 @@ OpenGLRenderer::~OpenGLRenderer()
 void OpenGLRenderer::initializeGL()
 {
     initializeOpenGLFunctions();
-    glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void OpenGLRenderer::resizeGL(int w, int h)
