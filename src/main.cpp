@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
     format.setRenderableType(QSurfaceFormat::OpenGL); 
     QSurfaceFormat::setDefaultFormat(format);
 
-    OpenGLRenderer *openglWindow = new OpenGLRenderer();
+    OpenGLRenderer *openglWindow = new OpenGLRenderer(siteContentWidget);
 
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
                      {
