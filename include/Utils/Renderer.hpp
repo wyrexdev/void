@@ -1,5 +1,5 @@
-#include "Engine/Renderer/Vulkan/Renderer.hpp"
-#include "Engine/Renderer/OpenGL/Renderer.hpp"
+#include "Engine/Renderer/Vulkan/VulkanRenderer.hpp"
+#include "Engine/Renderer/OpenGL/OpenGLRenderer.hpp"
 
 static VulkanRenderer *vulkanRenderer;
 static OpenGLRenderer *openglRenderer;

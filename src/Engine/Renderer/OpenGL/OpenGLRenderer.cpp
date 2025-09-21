@@ -1,4 +1,4 @@
-#include "Engine/Renderer/OpenGL/Renderer.hpp"
+#include "Engine/Renderer/OpenGL/OpenGLRenderer.hpp"
 
 OpenGLRenderer::OpenGLRenderer(QWidget *parent)
     : QOpenGLWidget(parent)

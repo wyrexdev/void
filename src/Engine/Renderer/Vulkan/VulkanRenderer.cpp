@@ -1,4 +1,4 @@
-#include "Engine/Renderer/Vulkan/Renderer.hpp"
+#include "Engine/Renderer/Vulkan/VulkanRenderer.hpp"
 
 void VulkanRenderer::initResources()
 {
