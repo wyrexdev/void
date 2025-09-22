@@ -48,7 +48,7 @@ void Text::draw()
 {
     if (text.empty() || !shaderProgram) return;
 
-    std::vector<Vertex> vertices;
+    std::vector<Vertex> vrtcs;
     float x = getPosition().x;
     float y = getPosition().y;
 
@@ -62,13 +62,13 @@ void Text::draw()
             stbtt_aligned_quad q;
             stbtt_GetBakedQuad(cdata, 512, 512, c - 32, &x, &y, &q, 1);
 
-            vertices.push_back({{q.x0 * scaleX, q.y0 * scaleY}, {q.s0, q.t0}, color});
-            vertices.push_back({{q.x1 * scaleX, q.y0 * scaleY}, {q.s1, q.t0}, color});
-            vertices.push_back({{q.x1 * scaleX, q.y1 * scaleY}, {q.s1, q.t1}, color});
+            vrtcs.push_back({{q.x0 * scaleX, q.y0 * scaleY}, {q.s0, q.t0}, color});
+            vrtcs.push_back({{q.x1 * scaleX, q.y0 * scaleY}, {q.s1, q.t0}, color});
+            vrtcs.push_back({{q.x1 * scaleX, q.y1 * scaleY}, {q.s1, q.t1}, color});
 
-            vertices.push_back({{q.x0 * scaleX, q.y0 * scaleY}, {q.s0, q.t0}, color});
-            vertices.push_back({{q.x1 * scaleX, q.y1 * scaleY}, {q.s1, q.t1}, color});
-            vertices.push_back({{q.x0 * scaleX, q.y1 * scaleY}, {q.s0, q.t1}, color});
+            vrtcs.push_back({{q.x0 * scaleX, q.y0 * scaleY}, {q.s0, q.t0}, color});
+            vrtcs.push_back({{q.x1 * scaleX, q.y1 * scaleY}, {q.s1, q.t1}, color});
+            vrtcs.push_back({{q.x0 * scaleX, q.y1 * scaleY}, {q.s0, q.t1}, color});
         }
     }
 
@@ -83,9 +83,9 @@ void Text::draw()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vrtcs.size() * sizeof(Vertex), vrtcs.data());
 
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+    glDrawArrays(GL_TRIANGLES, 0, vrtcs.size());
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

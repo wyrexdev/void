@@ -1,7 +1,8 @@
 #include "glm/glm/glm.hpp"
 #include <GL/gl.h>
 
-class Entity {
+class Entity
+{
 public:
     virtual ~Entity();
 
@@ -33,8 +34,21 @@ public:
     virtual void start() = 0;
     virtual void draw() = 0;
     virtual void update() = 0;
+
 private:
     glm::vec3 pos;
     glm::vec3 rotate;
     glm::vec3 scale;
+
+    std::vector<float> vertices = {
+        -1, -1, 0, // Left Bottom
+        -1, 1, 0, // Left Top
+        1, 1, 0, // Right Top
+        1, -1, 0 // Right Bottom
+    };
+
+    std::vector<unsigned int> drawOrder = {
+        0, 1, 2, // Left Triangle
+        3, 1, 2 // Right Triangle
+    };
 };
