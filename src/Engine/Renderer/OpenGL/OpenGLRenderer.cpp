@@ -1,8 +1,8 @@
 #include "Engine/Renderer/OpenGL/OpenGLRenderer.hpp"
 
-#include "Engine/Renderer/OpenGL/Entities/Elements/Text.hpp"
+#include "Engine/Renderer/OpenGL/Entities/Entity.hpp"
 
-Text *t;
+Entity *t;
 
 OpenGLRenderer::OpenGLRenderer(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -19,7 +19,10 @@ void OpenGLRenderer::initializeGL()
     initializeOpenGLFunctions();
     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
-    t = new Text();
+    t = new Entity();
+    t->setPosition(100, 100, 0);
+    t->setWidth(150);
+    t->setHeight(50);
     t->start();
 }
 

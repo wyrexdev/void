@@ -1,6 +1,0 @@
-
-
-class Camera {
-public:
-private:
-};
