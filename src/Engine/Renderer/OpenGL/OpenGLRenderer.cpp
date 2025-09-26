@@ -1,6 +1,6 @@
 #include "Engine/Renderer/OpenGL/OpenGLRenderer.hpp"
-
 #include "Engine/Renderer/OpenGL/Entities/Entity.hpp"
+#include "Engine/Renderer/OpenGL/Utils/Screen.hpp"
 
 Entity *t;
 
@@ -28,6 +28,8 @@ void OpenGLRenderer::initializeGL()
 
 void OpenGLRenderer::resizeGL(int w, int h)
 {
+    ScreenUtils::width = w; ScreenUtils::height = h;
+
     glViewport(0, 0, w, h);
 }
 
