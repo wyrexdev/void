@@ -7,12 +7,14 @@ Entity::Entity() : text("Hello World"),
                    fontSize(24.0f),
                    fontTexture(0),
                    shaderProgram(0),
-                   VAO(0), VBO(0)
+                   VAO(0), VBO(0),
+                   borderRadius(0.0f),
+                   enableBorderRadius(false)
 {
-    fontPath = ":/fonts/nano.ttf";
+    fontPath = ":/fonts/nunito.ttf";
     pos = glm::vec3(100.0f, 100.0f, 0.0f);
     rotate = glm::vec3(0.0f);
-    scale = glm::vec3(200.0f, 100.0f, 1.0f);
+    scale = glm::vec3(400.0f, 200.0f, 1.0f);
 }
 
 Entity::~Entity()
@@ -47,6 +49,9 @@ void Entity::setScaleZ(float z) { this->scale.z = z; }
 glm::vec3 Entity::getPosition() { return pos; }
 glm::vec3 Entity::getRotation() { return rotate; }
 glm::vec3 Entity::getScale() { return scale; }
+
+void Entity::setBorderRadius(float radius) { borderRadius = glm::max(0.0f, radius); }
+void Entity::enableRoundedCorners(bool enable) { enableBorderRadius = enable; }
 
 void Entity::setText(const std::string &newText) { text = newText; }
 void Entity::setColor(const glm::vec4 &newColor) { color = newColor; }
@@ -106,6 +111,10 @@ void Entity::draw()
     GLuint projLoc = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
+    GLuint borderRadiusLoc = glGetUniformLocation(shaderProgram, "borderRadius");
+    GLuint enableBorderRadiusLoc = glGetUniformLocation(shaderProgram, "enableBorderRadius");
+    GLuint rectBoundsLoc = glGetUniformLocation(shaderProgram, "rectBounds");
+
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
@@ -121,6 +130,10 @@ void Entity::draw()
         float y = pos.y;
         float w = scale.x;
         float h = scale.y;
+
+        glUniform4f(rectBoundsLoc, x, y, w, h);
+        glUniform1f(borderRadiusLoc, borderRadius);
+        glUniform1i(enableBorderRadiusLoc, enableBorderRadius);
 
         vertices.insert(vertices.end(), {{{x, y}, {0.0f, 0.0f}, color, backgroundColor},
                                          {{x + w, y}, {1.0f, 0.0f}, color, backgroundColor},
@@ -145,6 +158,8 @@ void Entity::draw()
 
     if (!text.empty() && fontTexture)
     {
+        glUniform1i(enableBorderRadiusLoc, 0);
+
         std::vector<Vertex> textVertices;
         float penX = pos.x + 10.0f;
         float penY = pos.y + (scale.y / 2) + (fontSize / 3);

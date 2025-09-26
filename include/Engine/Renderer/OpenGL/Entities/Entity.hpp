@@ -55,6 +55,9 @@ public:
     void setFontSize(float size);
     void setFont(const std::string &path);
 
+    void setBorderRadius(float radius);
+    void enableRoundedCorners(bool enable);
+
     void start();
     void draw();
     void update();
@@ -79,6 +82,9 @@ private:
     GLuint VAO, VBO;
     stbtt_bakedchar cdata[96];
 
+    float borderRadius;
+    bool enableBorderRadius;
+
     const char *vertexShaderSource = R"(
         #version 450 core
         layout (location = 0) in vec2 aPos;
@@ -89,12 +95,14 @@ private:
         out vec2 TexCoord;
         out vec4 FragColor;
         out vec4 BackgroundColor;
+        out vec2 FragPos;
 
         uniform mat4 projection;
 
         void main()
         {
             gl_Position = projection * vec4(aPos, 0.0, 1.0);
+            FragPos = aPos;
             TexCoord = aTexCoord;
             FragColor = aColor;
             BackgroundColor = aBackgroundColor;
@@ -106,28 +114,54 @@ private:
         in vec2 TexCoord;
         in vec4 FragColor;
         in vec4 BackgroundColor;
+        in vec2 FragPos;
         out vec4 FragColorOut;
 
         uniform sampler2D textTexture;
         uniform bool hasTexture;
+        uniform vec4 rectBounds;
+        uniform float borderRadius;
+        uniform bool enableBorderRadius;
+
+        float roundedBoxSDF(vec2 p, vec2 b, float r) {
+            vec2 d = abs(p) - b + vec2(r);
+            return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - r;
+        }
 
         void main()
         {
             if (hasTexture) {
                 float alpha = texture(textTexture, TexCoord).r;
                 vec4 textColor = vec4(FragColor.rgb, FragColor.a * alpha);
-                
+            
                 if (alpha < 0.01) discard;
-                
+            
                 float finalAlpha = textColor.a + BackgroundColor.a * (1.0 - textColor.a);
                 if (finalAlpha < 0.01) discard;
-                
+            
                 vec3 finalColor = (textColor.rgb * textColor.a + 
                                  BackgroundColor.rgb * BackgroundColor.a * (1.0 - textColor.a)) / finalAlpha;
-                
+            
                 FragColorOut = vec4(finalColor, finalAlpha);
             } else {
-                FragColorOut = BackgroundColor;
+                if (enableBorderRadius && borderRadius > 0.0) {
+                    vec2 center = rectBounds.xy + rectBounds.zw * 0.5;
+                    vec2 halfSize = rectBounds.zw * 0.5;
+                    vec2 pixelPos = FragPos;
+                
+                    vec2 normalizedPos = (pixelPos - center) / halfSize;
+                    vec2 boxSize = vec2(1.0);
+                    float radius = borderRadius / min(rectBounds.z, rectBounds.w);
+                
+                    float distance = roundedBoxSDF(normalizedPos, boxSize, radius);
+                
+                    float alpha = 1.0 - smoothstep(0.0, 0.01, distance);
+                
+                    if (alpha < 0.01) discard;
+                    FragColorOut = vec4(BackgroundColor.rgb, BackgroundColor.a * alpha);
+                } else {
+                    FragColorOut = BackgroundColor;
+                }
             }
         }
     )";

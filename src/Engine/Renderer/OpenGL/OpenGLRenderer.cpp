@@ -22,7 +22,9 @@ void OpenGLRenderer::initializeGL()
     t = new Entity();
     t->setPosition(100, 100, 0);
     t->setWidth(150);
-    t->setHeight(50);
+    t->setHeight(150);
+    t->setBorderRadius(40.0f);
+    t->enableRoundedCorners(true);
     t->start();
 }
 
