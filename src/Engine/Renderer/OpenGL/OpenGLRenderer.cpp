@@ -4,6 +4,7 @@
 #include "Engine/Renderer/OpenGL/Utils/Screen.hpp"
 
 Entity *t;
+Entity *t2;
 
 Html *html;
 
@@ -35,7 +36,16 @@ void OpenGLRenderer::initializeGL()
     t->enableRoundedCorners(true);
     t->start();
 
+    t2 = new Entity();
+    t2->setWidth(150);
+    t2->setHeight(150);
+    t2->setBorderRadius(10.0f);
+    t2->enableRoundedCorners(true);
+    t2->setTopMargin(10);
+    t2->start();
+
     html->addEntity(t);
+    html->addEntity(t2);
 }
 
 void OpenGLRenderer::resizeGL(int w, int h)
@@ -55,4 +65,5 @@ void OpenGLRenderer::paintGL()
     html->draw();
 
     t->draw();
+    t2->draw();
 }

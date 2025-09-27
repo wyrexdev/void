@@ -117,7 +117,7 @@ private:
 
     void updateTotalSize();
 
-    int type = ElementTypes::Block;
+    int type = ElementTypes::Inline;
 
     std::vector<Entity *> entities;
 
