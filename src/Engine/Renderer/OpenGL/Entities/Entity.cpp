@@ -36,6 +36,7 @@ void Entity::updateScaleWithPadding()
 {
     this->scale.x = originalScale.x + (padding.y + padding.w);
     this->scale.y = originalScale.y + (padding.x + padding.z);
+    updateTotalSize();
 }
 
 glm::vec2 Entity::calculateContentSize()
@@ -171,10 +172,72 @@ void Entity::setLeftPadding(float value)
     updateChildPositions();
 }
 
+
+glm::vec2 Entity::getPositionWithMargin()
+{
+    return glm::vec2(pos.x + margin.w, pos.y + margin.x);
+}
+
+void Entity::setMargin(glm::vec4 newMargin)
+{
+    this->margin = newMargin;
+    updateTotalSize();
+    updateChildPositions();
+}
+
+void Entity::setMargin(float top, float right, float bottom, float left)
+{
+    setMargin(glm::vec4(top, right, bottom, left));
+}
+
+void Entity::setTopMargin(float value)
+{
+    margin.x = value;
+    updateTotalSize();
+    updateChildPositions();
+}
+
+void Entity::setRightMargin(float value)
+{
+    margin.y = value;
+    updateTotalSize();
+}
+
+void Entity::setBottomMargin(float value)
+{
+    margin.z = value;
+    updateTotalSize();
+}
+
+void Entity::setLeftMargin(float value)
+{
+    margin.w = value;
+    updateTotalSize();
+    updateChildPositions();
+}
+
+glm::vec4 Entity::getMargin()
+{
+    return margin;
+}
+
+void Entity::updateTotalSize()
+{
+    this->totalSize.x = scale.x + (margin.y + margin.w);
+    this->totalSize.y = scale.y + (margin.x + margin.z);
+    this->totalSize.z = scale.z;
+}
+
+glm::vec3 Entity::getTotalSize()
+{
+    return totalSize;
+}
+
+
 void Entity::updateChildPositions()
 {
-    float startX = pos.x + padding.w;
-    float startY = pos.y + padding.x;
+    float startX = pos.x + margin.w + padding.w;
+    float startY = pos.y + margin.x + padding.x;
     float currentX = startX;
     float currentY = startY;
 
@@ -183,15 +246,16 @@ void Entity::updateChildPositions()
         if (entity->getType() == ElementTypes::Inline)
         {
             entity->setPosition(currentX, currentY);
-            currentX += entity->getScale().x;
+            currentX += entity->getTotalSize().x;
         }
         else
         {
             entity->setPosition(startX, currentY);
-            currentY += entity->getScale().y;
+            currentY += entity->getTotalSize().y;
         }
     }
 }
+
 
 glm::vec2 Entity::getEntitiesSize()
 {
@@ -209,7 +273,7 @@ glm::vec2 Entity::getEntitiesSize()
 
     for (Entity *entity : entities)
     {
-        glm::vec2 entitySize = entity->getScale();
+        glm::vec2 entitySize = entity->getTotalSize();
 
         if (entity->getType() == ElementTypes::Inline)
         {
@@ -318,8 +382,8 @@ void Entity::draw()
 
     if (backgroundColor.a > 0.0f)
     {
-        float x = pos.x;
-        float y = pos.y;
+        float x = pos.x + margin.w;
+        float y = pos.y + margin.x;
         float w = scale.x;
         float h = scale.y;
 
@@ -353,8 +417,8 @@ void Entity::draw()
         glUniform1i(enableBorderRadiusLoc, 0);
 
         std::vector<Vertex> textVertices;
-        float penX = pos.x + 10.0f;
-        float penY = pos.y + (scale.y / 2) + (fontSize / 3);
+        float penX = pos.x + margin.w + padding.w + 10.0f;
+        float penY = pos.y + margin.x + padding.x + (scale.y / 2) + (fontSize / 3);
 
         for (char c : text)
         {

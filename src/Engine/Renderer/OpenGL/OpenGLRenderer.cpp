@@ -25,6 +25,7 @@ void OpenGLRenderer::initializeGL()
     html = new Html();
     html->setText("");
     html->setPadding(10, 10, 100, 10);
+    html->setMargin(10, 10, 20, 50);
     html->start();
 
     t = new Entity();

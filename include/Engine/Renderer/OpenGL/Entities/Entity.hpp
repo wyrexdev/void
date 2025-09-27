@@ -66,11 +66,19 @@ public:
     void setBottomPadding(float value);
     void setLeftPadding(float value);
 
+    void setMargin(glm::vec4 margin);
+    void setMargin(float top, float right, float bottom, float left);
+    void setTopMargin(float value);
+    void setRightMargin(float value);
+    void setBottomMargin(float value);
+    void setLeftMargin(float value);
+
     glm::vec3 getPosition();
     glm::vec3 getRotation();
     glm::vec3 getScale();
 
     glm::vec4 getPadding();
+    glm::vec4 getMargin();
 
     void setText(const std::string &newText);
     void setColor(const glm::vec4 &newColor);
@@ -80,6 +88,14 @@ public:
 
     void setBorderRadius(float radius);
     void enableRoundedCorners(bool enable);
+
+    void updateScaleWithPadding();
+    void updateChildPositions();
+
+    glm::vec3 getTotalSize();
+    glm::vec2 getPositionWithMargin();
+
+    glm::vec2 calculateContentSize();
 
     void start();
     void draw();
@@ -97,9 +113,9 @@ private:
     glm::vec3 originalScale;
     glm::vec3 contentSize;
 
-    void updateScaleWithPadding();
-    void updateChildPositions();
-    glm::vec2 calculateContentSize();
+    glm::vec3 totalSize;
+
+    void updateTotalSize();
 
     int type = ElementTypes::Block;
 
@@ -109,6 +125,7 @@ private:
     glm::vec4 color;
     glm::vec4 backgroundColor;
     glm::vec4 padding;
+    glm::vec4 margin;
     float fontSize;
     std::string fontPath;
 
