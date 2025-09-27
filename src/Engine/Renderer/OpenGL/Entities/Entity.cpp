@@ -9,12 +9,15 @@ Entity::Entity() : text("Hello World"),
                    shaderProgram(0),
                    VAO(0), VBO(0),
                    borderRadius(0.0f),
-                   enableBorderRadius(false)
+                   enableBorderRadius(false),
+                   originalScale(0.0f, 0.0f, 0.0f),
+                   contentSize(0.0f, 0.0f, 0.0f)
 {
     fontPath = ":/fonts/nunito.ttf";
     pos = glm::vec3(0.0f, 0.0f, 0.0f);
     rotate = glm::vec3(0.0f);
     scale = glm::vec3(0.0f, 0.0f, 0.0f);
+    padding = glm::vec4(0.0f);
 }
 
 Entity::~Entity()
@@ -29,39 +32,78 @@ Entity::~Entity()
         glDeleteBuffers(1, &VBO);
 }
 
-void Entity::addEntity(Entity *entity) {
-    entities.push_back(entity);
+void Entity::updateScaleWithPadding()
+{
+    this->scale.x = originalScale.x + (padding.y + padding.w);
+    this->scale.y = originalScale.y + (padding.x + padding.z);
 }
 
-glm::vec2 Entity::getEntitiesSize() {
-    glm::vec2 size;
+glm::vec2 Entity::calculateContentSize()
+{
+    if (!text.empty())
+    {
+        float textWidth = 0.0f;
+        float textHeight = fontSize;
 
-    int width = 0;
-    int height = 0;
+        for (char c : text)
+        {
+            if (c >= 32 && c < 128)
+            {
+                stbtt_bakedchar *charData = &cdata[c - 32];
+                textWidth += charData->xadvance;
+            }
+        }
 
-    for(Entity *entity : entities) {
-        width += entity->getScale().x;
-        height += entity->getScale().y;
+        return glm::vec2(textWidth, textHeight);
+    }
+    else if (!entities.empty())
+    {
+        return getEntitiesSize();
     }
 
-    size.x = width;
-    size.y = height;
-
-    return size;
+    return glm::vec2(originalScale.x, originalScale.y);
 }
 
-void Entity::setType(int type) {
+void Entity::addEntity(Entity *entity)
+{
+    entities.push_back(entity);
+    updateChildPositions();
+}
+
+void Entity::setType(int type)
+{
     this->type = type;
 }
 
-int Entity::getType() {
+int Entity::getType()
+{
     return type;
 }
 
-void Entity::setPosition(glm::vec3 pos) { this->pos = pos; }
-void Entity::setPosition(float x, float y, float z) { this->pos = glm::vec3(x, y, z); }
-void Entity::setPosX(float x) { this->pos.x = x; }
-void Entity::setPosY(float y) { this->pos.y = y; }
+void Entity::setPosition(glm::vec3 pos)
+{
+    this->pos = pos;
+    updateChildPositions();
+}
+
+void Entity::setPosition(float x, float y, float z)
+{
+    this->pos = glm::vec3(x, y, z);
+    updateChildPositions();
+}
+
+void Entity::setPosX(float x)
+{
+    this->pos.x = x;
+    updateChildPositions();
+}
+
+void Entity::setPosY(float y)
+{
+    this->pos.y = y;
+    updateChildPositions();
+}
+
 void Entity::setZIndex(float z) { this->pos.z = z; }
 
 void Entity::setRotate(glm::vec3 rotate) { this->rotate = rotate; }
@@ -70,14 +112,131 @@ void Entity::setRotX(float x) { this->rotate.x = x; }
 void Entity::setRotY(float y) { this->rotate.y = y; }
 void Entity::setRotZ(float z) { this->rotate.z = z; }
 
-void Entity::setScale(glm::vec3 scale) { this->scale = scale; }
-void Entity::setWidth(float w) { this->scale.x = w; }
-void Entity::setHeight(float h) { this->scale.y = h; }
+void Entity::setScale(glm::vec3 newScale)
+{
+    this->originalScale = newScale;
+    updateScaleWithPadding();
+}
+
+void Entity::setWidth(float w)
+{
+    this->originalScale.x = w;
+    updateScaleWithPadding();
+}
+
+void Entity::setHeight(float h)
+{
+    this->originalScale.y = h;
+    updateScaleWithPadding();
+}
+
 void Entity::setScaleZ(float z) { this->scale.z = z; }
+
+void Entity::setPadding(glm::vec4 newPadding)
+{
+    this->padding = newPadding;
+    updateScaleWithPadding();
+
+    updateChildPositions();
+}
+
+void Entity::setPadding(float top, float right, float bottom, float left)
+{
+    setPadding(glm::vec4(top, right, bottom, left));
+}
+
+void Entity::setTopPadding(float value)
+{
+    padding.x = value;
+    updateScaleWithPadding();
+    updateChildPositions();
+}
+
+void Entity::setRightPadding(float value)
+{
+    padding.y = value;
+    updateScaleWithPadding();
+}
+
+void Entity::setBottomPadding(float value)
+{
+    padding.z = value;
+    updateScaleWithPadding();
+}
+
+void Entity::setLeftPadding(float value)
+{
+    padding.w = value;
+    updateScaleWithPadding();
+    updateChildPositions();
+}
+
+void Entity::updateChildPositions()
+{
+    float startX = pos.x + padding.w;
+    float startY = pos.y + padding.x;
+    float currentX = startX;
+    float currentY = startY;
+
+    for (Entity *entity : entities)
+    {
+        if (entity->getType() == ElementTypes::Inline)
+        {
+            entity->setPosition(currentX, currentY);
+            currentX += entity->getScale().x;
+        }
+        else
+        {
+            entity->setPosition(startX, currentY);
+            currentY += entity->getScale().y;
+        }
+    }
+}
+
+glm::vec2 Entity::getEntitiesSize()
+{
+    glm::vec2 size(0.0f);
+
+    if (entities.empty())
+    {
+        return size;
+    }
+
+    float maxWidth = 0.0f;
+    float totalHeight = 0.0f;
+    float currentLineWidth = 0.0f;
+    float currentLineHeight = 0.0f;
+
+    for (Entity *entity : entities)
+    {
+        glm::vec2 entitySize = entity->getScale();
+
+        if (entity->getType() == ElementTypes::Inline)
+        {
+            currentLineWidth += entitySize.x;
+            currentLineHeight = glm::max(currentLineHeight, entitySize.y);
+        }
+        else
+        {
+            maxWidth = glm::max(maxWidth, currentLineWidth);
+            totalHeight += currentLineHeight;
+
+            currentLineWidth = entitySize.x;
+            currentLineHeight = entitySize.y;
+        }
+    }
+
+    maxWidth = glm::max(maxWidth, currentLineWidth);
+    totalHeight += currentLineHeight;
+
+    return glm::vec2(maxWidth, totalHeight);
+}
 
 glm::vec3 Entity::getPosition() { return pos; }
 glm::vec3 Entity::getRotation() { return rotate; }
 glm::vec3 Entity::getScale() { return scale; }
+
+glm::vec4 Entity::getPadding() { return padding; }
 
 void Entity::setBorderRadius(float radius) { borderRadius = glm::max(0.0f, radius); }
 void Entity::enableRoundedCorners(bool enable) { enableBorderRadius = enable; }
@@ -101,7 +260,7 @@ void Entity::start()
     initializeOpenGLFunctions();
 
     onStart();
-    
+
     loadFont(fontPath, fontSize);
     compileShaders();
 

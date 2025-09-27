@@ -59,9 +59,18 @@ public:
     void setHeight(float h);
     void setScaleZ(float z);
 
+    void setPadding(glm::vec4 padding);
+    void setPadding(float top, float right, float bottom, float left);
+    void setTopPadding(float value);
+    void setRightPadding(float value);
+    void setBottomPadding(float value);
+    void setLeftPadding(float value);
+
     glm::vec3 getPosition();
     glm::vec3 getRotation();
     glm::vec3 getScale();
+
+    glm::vec4 getPadding();
 
     void setText(const std::string &newText);
     void setColor(const glm::vec4 &newColor);
@@ -85,6 +94,13 @@ private:
     void compileShaders();
     GLuint compileShader(GLenum type, const char *source);
 
+    glm::vec3 originalScale;
+    glm::vec3 contentSize;
+
+    void updateScaleWithPadding();
+    void updateChildPositions();
+    glm::vec2 calculateContentSize();
+
     int type = ElementTypes::Block;
 
     std::vector<Entity *> entities;
@@ -92,6 +108,7 @@ private:
     std::string text;
     glm::vec4 color;
     glm::vec4 backgroundColor;
+    glm::vec4 padding;
     float fontSize;
     std::string fontPath;
 
