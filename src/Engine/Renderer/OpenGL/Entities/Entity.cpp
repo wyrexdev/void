@@ -12,9 +12,9 @@ Entity::Entity() : text("Hello World"),
                    enableBorderRadius(false)
 {
     fontPath = ":/fonts/nunito.ttf";
-    pos = glm::vec3(100.0f, 100.0f, 0.0f);
+    pos = glm::vec3(0.0f, 0.0f, 0.0f);
     rotate = glm::vec3(0.0f);
-    scale = glm::vec3(400.0f, 200.0f, 1.0f);
+    scale = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Entity::~Entity()
@@ -27,6 +27,35 @@ Entity::~Entity()
         glDeleteVertexArrays(1, &VAO);
     if (VBO)
         glDeleteBuffers(1, &VBO);
+}
+
+void Entity::addEntity(Entity *entity) {
+    entities.push_back(entity);
+}
+
+glm::vec2 Entity::getEntitiesSize() {
+    glm::vec2 size;
+
+    int width = 0;
+    int height = 0;
+
+    for(Entity *entity : entities) {
+        width += entity->getScale().x;
+        height += entity->getScale().y;
+    }
+
+    size.x = width;
+    size.y = height;
+
+    return size;
+}
+
+void Entity::setType(int type) {
+    this->type = type;
+}
+
+int Entity::getType() {
+    return type;
 }
 
 void Entity::setPosition(glm::vec3 pos) { this->pos = pos; }
@@ -71,6 +100,8 @@ void Entity::start()
 {
     initializeOpenGLFunctions();
 
+    onStart();
+    
     loadFont(fontPath, fontSize);
     compileShaders();
 
@@ -102,6 +133,8 @@ void Entity::draw()
 {
     if (!shaderProgram)
         return;
+
+    onDraw();
 
     glUseProgram(shaderProgram);
 
@@ -203,6 +236,7 @@ void Entity::draw()
 
 void Entity::update()
 {
+    onUpdate();
 }
 
 void Entity::loadFont(const std::string &path, float size)

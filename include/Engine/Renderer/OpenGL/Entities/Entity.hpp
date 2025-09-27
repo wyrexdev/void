@@ -1,18 +1,20 @@
+#pragma once
+
 #include "glm/glm/glm.hpp"
+#include "Stb/Truetype.h"
 #include "Engine/Renderer/Utils/Color.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
+
+#include <GL/gl.h>
 
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLFunctions_4_5_Compatibility>
 #include <QFile>
-
-#include "Stb/Truetype.h"
-#include "glm/glm/gtc/matrix_transform.hpp"
-
 #include <vector>
 #include <string>
-#include <GL/gl.h>
+#include <unordered_map>
 
 struct Vertex
 {
@@ -22,11 +24,23 @@ struct Vertex
     glm::vec4 backgroundColor;
 };
 
+struct ElementTypes
+{
+    inline static int Block = 0;
+    inline static int Inline = 1;
+};
+
 class Entity : protected QOpenGLFunctions_4_5_Compatibility
 {
 public:
     Entity();
     ~Entity();
+
+    void addEntity(Entity *entity);
+    glm::vec2 getEntitiesSize();
+
+    void setType(int type);
+    int getType();
 
     void setPosition(glm::vec3 pos);
     void setPosition(float x, float y, float z = 0.0f);
@@ -62,10 +76,18 @@ public:
     void draw();
     void update();
 
+    virtual void onStart() {}
+    virtual void onDraw() {}
+    virtual void onUpdate() {}
+
 private:
     void loadFont(const std::string &path, float size);
     void compileShaders();
     GLuint compileShader(GLenum type, const char *source);
+
+    int type = ElementTypes::Block;
+
+    std::vector<Entity *> entities;
 
     std::string text;
     glm::vec4 color;
