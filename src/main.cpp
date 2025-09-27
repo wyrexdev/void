@@ -13,14 +13,17 @@
 #include "Widget/Layouts/LeftSideBar.hpp"
 #include "Widget/Layouts/RightSideBar.hpp"
 
-#include "Utils/Renderer.hpp"
 #include "Utils/UUID.hpp"
 
 #include "Engine/Parser/Html/Parser.hpp"
+#include "Engine/Engine.hpp"
 
 int main(int argc, char *argv[])
 {
     Parser *parser = new Parser();
+
+    Engine *engine = new Engine();
+    engine->setRenderEngine(EngineTypes::OpenGL);
 
     QApplication app(argc, argv);
 
@@ -145,11 +148,11 @@ int main(int argc, char *argv[])
     format.setStencilBufferSize(8);
     format.setVersion(4, 5);
     format.setProfile(QSurfaceFormat::CompatibilityProfile);
-    format.setRenderableType(QSurfaceFormat::OpenGL); 
+    format.setRenderableType(QSurfaceFormat::OpenGL);
     QSurfaceFormat::setDefaultFormat(format);
 
-    OpenGLRenderer *openglWindow = new OpenGLRenderer(siteContentWidget);
-
+    engine->init(siteContentWidget);
+    
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
                      {
         Nav::NItem i;
@@ -172,7 +175,7 @@ int main(int argc, char *argv[])
         siteContentWidget->show();
 
         //QWidget *ct = QWidget::createWindowContainer(vulkanWindow);
-        siteContentLayout->addWidget(openglWindow);
+        engine->addRenderLayout(siteContentLayout);
 
         searchBar->setText(""); });
 
