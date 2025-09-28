@@ -24,3 +24,14 @@ void Engine::addRenderLayout(QVBoxLayout *siteContentLayout)
     {
     }
 }
+
+void Engine::parse(const std::string &content)
+{
+    if (type == EngineTypes::OpenGL)
+    {
+        openglWindow->parse(content);
+    }
+    else if (type == EngineTypes::Vulkan)
+    {
+    }
+}

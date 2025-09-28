@@ -20,12 +20,10 @@
 
 int main(int argc, char *argv[])
 {
-    Parser *parser = new Parser();
-
+    QApplication app(argc, argv);
+    
     Engine *engine = new Engine();
     engine->setRenderEngine(EngineTypes::OpenGL);
-
-    QApplication app(argc, argv);
 
     QMainWindow window;
     window.setStyleSheet(
@@ -169,7 +167,7 @@ int main(int argc, char *argv[])
         Fetcher *fetcher = new Fetcher();
         std::string content = fetcher->get(url);
 
-        parser->parse(content);
+        engine->parse(content);
 
         browserWidget->hide();
         siteContentWidget->show();

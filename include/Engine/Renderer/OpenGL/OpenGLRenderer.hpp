@@ -2,6 +2,11 @@
 #include <QOpenGLFunctions_4_5_Compatibility>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
+#include <vector>
+
+#include "Engine/Parser/Html/Tokenizer/Tokenizer.hpp"
+
+class Entity;
 
 class OpenGLRenderer : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Compatibility {
     Q_OBJECT
@@ -9,6 +14,13 @@ class OpenGLRenderer : public QOpenGLWidget, protected QOpenGLFunctions_4_5_Comp
 public:
     OpenGLRenderer(QWidget *parent = nullptr);
     ~OpenGLRenderer();
+
+    void parse(const std::string &content);
+
+    Tokenizer tokenizer;
+
+private:
+    std::vector<Entity*> elements;
 
 protected:
     void initializeGL() override;

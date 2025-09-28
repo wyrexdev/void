@@ -17,6 +17,7 @@ public:
     void setRenderEngine(int type);
     void addRenderLayout(QVBoxLayout *siteContentLayout);
 
+    void parse(const std::string &content);
 private:
     int type = EngineTypes::OpenGL;
     OpenGLRenderer *openglWindow;

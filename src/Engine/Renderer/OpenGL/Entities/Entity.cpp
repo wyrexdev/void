@@ -10,14 +10,17 @@ Entity::Entity() : text("Hello World"),
                    VAO(0), VBO(0),
                    borderRadius(0.0f),
                    enableBorderRadius(false),
-                   originalScale(0.0f, 0.0f, 0.0f),
-                   contentSize(0.0f, 0.0f, 0.0f)
+                   originalScale(100.0f, 50.0f, 0.0f),
+                   contentSize(0.0f, 0.0f, 0.0f),
+                   fontLoaded(false)
 {
     fontPath = ":/fonts/nunito.ttf";
     pos = glm::vec3(0.0f, 0.0f, 0.0f);
     rotate = glm::vec3(0.0f);
-    scale = glm::vec3(0.0f, 0.0f, 0.0f);
+    scale = glm::vec3(100.0f, 50.0f, 0.0f);
     padding = glm::vec4(0.0f);
+    margin = glm::vec4(0.0f);
+    updateTotalSize();
 }
 
 Entity::~Entity()
@@ -34,14 +37,14 @@ Entity::~Entity()
 
 void Entity::updateScaleWithPadding()
 {
-    this->scale.x = originalScale.x + (padding.y + padding.w);
-    this->scale.y = originalScale.y + (padding.x + padding.z);
+    this->scale.x = originalScale.x + padding.y + padding.w;
+    this->scale.y = originalScale.y + padding.x + padding.z;
     updateTotalSize();
 }
 
 glm::vec2 Entity::calculateContentSize()
 {
-    if (!text.empty())
+    if (!text.empty() && fontLoaded)
     {
         float textWidth = 0.0f;
         float textHeight = fontSize;
@@ -137,7 +140,6 @@ void Entity::setPadding(glm::vec4 newPadding)
 {
     this->padding = newPadding;
     updateScaleWithPadding();
-
     updateChildPositions();
 }
 
@@ -171,7 +173,6 @@ void Entity::setLeftPadding(float value)
     updateScaleWithPadding();
     updateChildPositions();
 }
-
 
 glm::vec2 Entity::getPositionWithMargin()
 {
@@ -223,8 +224,8 @@ glm::vec4 Entity::getMargin()
 
 void Entity::updateTotalSize()
 {
-    this->totalSize.x = scale.x + (margin.y + margin.w);
-    this->totalSize.y = scale.y + (margin.x + margin.z);
+    this->totalSize.x = scale.x + margin.y + margin.w;
+    this->totalSize.y = scale.y + margin.x + margin.z;
     this->totalSize.z = scale.z;
 }
 
@@ -232,7 +233,6 @@ glm::vec3 Entity::getTotalSize()
 {
     return totalSize;
 }
-
 
 void Entity::updateChildPositions()
 {
@@ -255,7 +255,6 @@ void Entity::updateChildPositions()
         }
     }
 }
-
 
 glm::vec2 Entity::getEntitiesSize()
 {
@@ -311,7 +310,8 @@ void Entity::setBackgroundColor(const glm::vec4 &newColor) { backgroundColor = n
 void Entity::setFontSize(float size)
 {
     fontSize = size;
-    loadFont(fontPath, size);
+    if (!fontPath.empty())
+        loadFont(fontPath, size);
 }
 void Entity::setFont(const std::string &path)
 {
@@ -321,11 +321,15 @@ void Entity::setFont(const std::string &path)
 
 void Entity::start()
 {
+    isInitalized = true;
+
     initializeOpenGLFunctions();
 
     onStart();
 
-    loadFont(fontPath, fontSize);
+    if (!fontPath.empty())
+        loadFont(fontPath, fontSize);
+        
     compileShaders();
 
     glGenVertexArrays(1, &VAO);
@@ -367,10 +371,6 @@ void Entity::draw()
     GLuint projLoc = glGetUniformLocation(shaderProgram, "projection");
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
-    GLuint borderRadiusLoc = glGetUniformLocation(shaderProgram, "borderRadius");
-    GLuint enableBorderRadiusLoc = glGetUniformLocation(shaderProgram, "enableBorderRadius");
-    GLuint rectBoundsLoc = glGetUniformLocation(shaderProgram, "rectBounds");
-
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
@@ -378,83 +378,88 @@ void Entity::draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    std::vector<Vertex> vertices;
-
-    if (backgroundColor.a > 0.0f)
-    {
-        float x = pos.x + margin.w;
-        float y = pos.y + margin.x;
-        float w = scale.x;
-        float h = scale.y;
-
-        glUniform4f(rectBoundsLoc, x, y, w, h);
-        glUniform1f(borderRadiusLoc, borderRadius);
-        glUniform1i(enableBorderRadiusLoc, enableBorderRadius);
-
-        vertices.insert(vertices.end(), {{{x, y}, {0.0f, 0.0f}, color, backgroundColor},
-                                         {{x + w, y}, {1.0f, 0.0f}, color, backgroundColor},
-                                         {{x + w, y + h}, {1.0f, 1.0f}, color, backgroundColor},
-                                         {{x, y}, {0.0f, 0.0f}, color, backgroundColor},
-                                         {{x + w, y + h}, {1.0f, 1.0f}, color, backgroundColor},
-                                         {{x, y + h}, {0.0f, 1.0f}, color, backgroundColor}});
-    }
-
-    if (!vertices.empty())
-    {
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
-
-        GLuint hasTextureLoc = glGetUniformLocation(shaderProgram, "hasTexture");
-        glUniform1i(hasTextureLoc, 0);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-    }
-
-    if (!text.empty() && fontTexture)
-    {
-        glUniform1i(enableBorderRadiusLoc, 0);
-
-        std::vector<Vertex> textVertices;
-        float penX = pos.x + margin.w + padding.w + 10.0f;
-        float penY = pos.y + margin.x + padding.x + (scale.y / 2) + (fontSize / 3);
-
-        for (char c : text)
-        {
-            if (c >= 32 && c < 128)
-            {
-                stbtt_aligned_quad q;
-                stbtt_GetBakedQuad(cdata, 512, 512, c - 32, &penX, &penY, &q, 1);
-
-                textVertices.insert(textVertices.end(), {{{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
-                                                         {{q.x1, q.y0}, {q.s1, q.t0}, color, backgroundColor},
-                                                         {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
-                                                         {{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
-                                                         {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
-                                                         {{q.x0, q.y1}, {q.s0, q.t1}, color, backgroundColor}});
-            }
-        }
-
-        if (!textVertices.empty())
-        {
-            glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex),
-                            textVertices.size() * sizeof(Vertex), textVertices.data());
-
-            GLuint hasTextureLoc = glGetUniformLocation(shaderProgram, "hasTexture");
-            glUniform1i(hasTextureLoc, 1);
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, fontTexture);
-
-            glDrawArrays(GL_TRIANGLES, vertices.size(), textVertices.size());
-        }
-    }
+    renderBackground();
+    renderText();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glUseProgram(0);
     glDisable(GL_BLEND);
+}
+
+void Entity::renderBackground()
+{
+    if (backgroundColor.a <= 0.0f)
+        return;
+
+    std::vector<Vertex> vertices;
+
+    float x = pos.x + margin.w;
+    float y = pos.y + margin.x;
+    float w = scale.x;
+    float h = scale.y;
+
+    GLuint rectBoundsLoc = glGetUniformLocation(shaderProgram, "rectBounds");
+    GLuint borderRadiusLoc = glGetUniformLocation(shaderProgram, "borderRadius");
+    GLuint enableBorderRadiusLoc = glGetUniformLocation(shaderProgram, "enableBorderRadius");
+    GLuint hasTextureLoc = glGetUniformLocation(shaderProgram, "hasTexture");
+
+    glUniform4f(rectBoundsLoc, x, y, w, h);
+    glUniform1f(borderRadiusLoc, borderRadius);
+    glUniform1i(enableBorderRadiusLoc, enableBorderRadius);
+    glUniform1i(hasTextureLoc, 0);
+
+    vertices.insert(vertices.end(), {{{x, y}, {0.0f, 0.0f}, color, backgroundColor},
+                                     {{x + w, y}, {1.0f, 0.0f}, color, backgroundColor},
+                                     {{x + w, y + h}, {1.0f, 1.0f}, color, backgroundColor},
+                                     {{x, y}, {0.0f, 0.0f}, color, backgroundColor},
+                                     {{x + w, y + h}, {1.0f, 1.0f}, color, backgroundColor},
+                                     {{x, y + h}, {0.0f, 1.0f}, color, backgroundColor}});
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+}
+
+void Entity::renderText()
+{
+    if (text.empty() || !fontTexture || !fontLoaded)
+        return;
+
+    std::vector<Vertex> textVertices;
+    float penX = pos.x + margin.w + padding.w;
+    float penY = pos.y + margin.x + padding.x + fontSize;
+
+    GLuint hasTextureLoc = glGetUniformLocation(shaderProgram, "hasTexture");
+    GLuint enableBorderRadiusLoc = glGetUniformLocation(shaderProgram, "enableBorderRadius");
+
+    glUniform1i(hasTextureLoc, 1);
+    glUniform1i(enableBorderRadiusLoc, 0);
+
+    for (char c : text)
+    {
+        if (c >= 32 && c < 128)
+        {
+            stbtt_aligned_quad q;
+            stbtt_GetBakedQuad(cdata, 512, 512, c - 32, &penX, &penY, &q, 1);
+
+            textVertices.insert(textVertices.end(), {{{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
+                                                     {{q.x1, q.y0}, {q.s1, q.t0}, color, backgroundColor},
+                                                     {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
+                                                     {{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
+                                                     {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
+                                                     {{q.x0, q.y1}, {q.s0, q.t1}, color, backgroundColor}});
+        }
+    }
+
+    if (!textVertices.empty())
+    {
+        glBufferSubData(GL_ARRAY_BUFFER, 0, textVertices.size() * sizeof(Vertex), textVertices.data());
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, fontTexture);
+
+        glDrawArrays(GL_TRIANGLES, 0, textVertices.size());
+    }
 }
 
 void Entity::update()
@@ -470,6 +475,7 @@ void Entity::loadFont(const std::string &path, float size)
     if (!file.open(QIODevice::ReadOnly))
     {
         qWarning("Font cannot open: %s", path.c_str());
+        fontLoaded = false;
         return;
     }
 
@@ -479,31 +485,29 @@ void Entity::loadFont(const std::string &path, float size)
     const int bitmapWidth = 512, bitmapHeight = 512;
     std::vector<unsigned char> bitmap(bitmapWidth * bitmapHeight, 0);
 
-    stbtt_fontinfo font;
-    if (!stbtt_InitFont(&font, reinterpret_cast<const unsigned char *>(fontData.data()), 0))
-    {
-        qWarning("Failed to initialize font");
-        return;
-    }
-
-    float scale = stbtt_ScaleForPixelHeight(&font, size);
-
-    std::fill(bitmap.begin(), bitmap.end(), 0);
     int result = stbtt_BakeFontBitmap(reinterpret_cast<const unsigned char *>(fontData.data()), 0,
                                       size, bitmap.data(), bitmapWidth, bitmapHeight, 32, 96, cdata);
 
     if (result <= 0)
     {
         qWarning("Font baking failed: %d", result);
+        fontLoaded = false;
         return;
     }
 
+    createFontTexture(bitmap, bitmapWidth, bitmapHeight);
+    fontLoaded = true;
+}
+
+void Entity::createFontTexture(const std::vector<unsigned char> &bitmap, int width, int height)
+{
     if (fontTexture)
         glDeleteTextures(1, &fontTexture);
 
     glGenTextures(1, &fontTexture);
     glBindTexture(GL_TEXTURE_2D, fontTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, bitmapWidth, bitmapHeight, 0,
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0,
                  GL_RED, GL_UNSIGNED_BYTE, bitmap.data());
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

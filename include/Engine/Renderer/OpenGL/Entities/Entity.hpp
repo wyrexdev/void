@@ -105,14 +105,18 @@ public:
     virtual void onDraw() {}
     virtual void onUpdate() {}
 
+    bool isInitalized = false;
+
 private:
     void loadFont(const std::string &path, float size);
     void compileShaders();
     GLuint compileShader(GLenum type, const char *source);
-
+    void createFontTexture(const std::vector<unsigned char> &bitmap, int width, int height);
+    void renderBackground();
+    void renderText();
+    
     glm::vec3 originalScale;
     glm::vec3 contentSize;
-
     glm::vec3 totalSize;
 
     void updateTotalSize();
@@ -137,6 +141,7 @@ private:
     GLuint shaderProgram;
     GLuint VAO, VBO;
     stbtt_bakedchar cdata[96];
+    bool fontLoaded = false;
 
     float borderRadius;
     bool enableBorderRadius;
