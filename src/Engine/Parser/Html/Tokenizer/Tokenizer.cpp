@@ -2,42 +2,29 @@
 
 std::vector<Token> Tokenizer::tokenize(const std::string &html) {
     std::vector<Token> tokens;
-    std::string buffer;
+    
+    for(int i = 0; i < html.size(); ++i) {
+        if(html[i] == '<') {
+            const int startTag = i;
 
-    bool inTag = false;
-    bool isEndTag = false;
+            const int endTag = html.find('>', i);
+            if(endTag == -1) continue;
 
-    for(size_t i = 0; i < html.size(); ++i) {
-        char c = html[i];
+            const int nextTag = html.find('<', endTag + 1);
+            if(nextTag == -1) continue;
 
-        if(c == '<') {
-            if(!buffer.empty()) {
-                tokens.push_back({ TokenType::Content, "", {}, buffer });
-                buffer.clear();
+            const std::string tag = html.substr(startTag, endTag);
+            const std::string content = html.substr(endTag + 1, nextTag);
+
+            if(!(tag.starts_with("/"))) {
+                Token token;
+                token.type = TokenType::StartTag;
+                token.content = content;
+                token.name = tag;
+
+                tokens.push_back(token);
             }
-
-            inTag = true;
-            isEndTag = (html[i+1] == '/');
-            if(isEndTag) i++;
-        } else if (c == '>') {
-            if(inTag) {
-                std::string tagName = buffer;
-                buffer.clear();
-
-                Token t;
-                t.name = tagName;
-                t.type = isEndTag ? TokenType::EndTag : TokenType::StartTag;
-                tokens.push_back(t);
-
-                inTag = false;
-            }
-        } else {
-            buffer += c;
         }
-    }
-
-    if(!buffer.empty()) {
-        tokens.push_back({ TokenType::Content, "", {}, buffer });
     }
 
     return tokens;

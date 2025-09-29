@@ -17,7 +17,7 @@ Entity::Entity() : text("Hello World"),
     fontPath = ":/fonts/nunito.ttf";
     pos = glm::vec3(0.0f, 0.0f, 0.0f);
     rotate = glm::vec3(0.0f);
-    scale = glm::vec3(100.0f, 50.0f, 0.0f);
+    scale = glm::vec3(1300.0f, 250.0f, 0.0f);
     padding = glm::vec4(0.0f);
     margin = glm::vec4(0.0f);
     updateTotalSize();
