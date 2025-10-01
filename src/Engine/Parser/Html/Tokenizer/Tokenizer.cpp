@@ -2,29 +2,78 @@
 
 std::vector<Token> Tokenizer::tokenize(const std::string &html) {
     std::vector<Token> tokens;
-    
-    for(int i = 0; i < html.size(); ++i) {
-        if(html[i] == '<') {
-            const int startTag = i;
+    enum State { Outside, InsideTag, InsideScriptStyle } state = Outside;
 
-            const int endTag = html.find('>', i);
-            if(endTag == -1) continue;
+    std::string currentTag;
+    std::string currentText;
+    size_t i = 0;
 
-            const int nextTag = html.find('<', endTag + 1);
-            if(nextTag == -1) continue;
+    while (i < html.size()) {
+        char c = html[i];
 
-            const std::string tag = html.substr(startTag, endTag);
-            const std::string content = html.substr(endTag + 1, nextTag);
+        if (state == Outside) {
+            if (c == '<') {
+                if (!currentText.empty()) {
+                    Token t;
+                    t.type = TokenType::Content;
+                    t.content = currentText;
+                    tokens.push_back(t);
+                    currentText.clear();
+                }
+                state = InsideTag;
+                currentTag = "<";
+            } else {
+                currentText += c;
+            }
+            ++i;
+        } else if (state == InsideTag) {
+            currentTag += c;
+            if (c == '>') {
+                Token t;
+                if (currentTag[1] == '/') {
+                    t.type = TokenType::EndTag;
+                } else {
+                    t.type = TokenType::StartTag;
+                }
+                t.name = currentTag;
 
-            if(!(tag.starts_with("/"))) {
-                Token token;
-                token.type = TokenType::StartTag;
-                token.content = content;
-                token.name = tag;
+                if (t.type == TokenType::StartTag &&
+                    (currentTag.substr(0,7) == "<script" || currentTag.substr(0,6) == "<style")) {
+                    state = InsideScriptStyle;
+                } else {
+                    state = Outside;
+                }
 
-                tokens.push_back(token);
+                tokens.push_back(t);
+                currentTag.clear();
+                ++i;
+            } else {
+                ++i;
+            }
+        } else if (state == InsideScriptStyle) {
+            size_t endTagPos = std::string::npos;
+            if (html.substr(i, 9) == "</script>") endTagPos = i;
+            else if (html.substr(i, 8) == "</style>") endTagPos = i;
+
+            if (endTagPos != std::string::npos) {
+                Token t;
+                t.type = TokenType::Content;
+                t.content = html.substr(0, endTagPos - i + i);
+                tokens.push_back(t);
+
+                i = endTagPos;
+                state = InsideTag;
+            } else {
+                ++i;
             }
         }
+    }
+
+    if (!currentText.empty()) {
+        Token t;
+        t.type = TokenType::Content;
+        t.content = currentText;
+        tokens.push_back(t);
     }
 
     return tokens;
