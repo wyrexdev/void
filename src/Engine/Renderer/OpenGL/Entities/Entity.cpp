@@ -1,8 +1,8 @@
 #include "Engine/Renderer/OpenGL/Entities/Entity.hpp"
 #include "Engine/Renderer/OpenGL/Utils/Screen.hpp"
 
-Entity::Entity() : text("Hello World"),
-                   color(0.0f, 0.0f, 0.0f, 1.0f),
+Entity::Entity() : text(""),
+                   color(1.0f, 1.0f, 1.0f, 1.0f),
                    backgroundColor(0.8f, 0.8f, 0.8f, 1.0f),
                    fontSize(24.0f),
                    fontTexture(0),
@@ -301,7 +301,7 @@ glm::vec3 Entity::getScale() { return scale; }
 
 glm::vec4 Entity::getPadding() { return padding; }
 
-void Entity::setBorderRadius(float radius) { borderRadius = glm::max(0.0f, radius); }
+void Entity::setBorderRadius(float radius) { borderRadius = glm::max(0.0f, radius); enableRoundedCorners(true); }
 void Entity::enableRoundedCorners(bool enable) { enableBorderRadius = enable; }
 
 void Entity::setText(const std::string &newText) { text = newText; }
@@ -378,6 +378,8 @@ void Entity::draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
     renderBackground();
     renderText();
 
@@ -437,17 +439,74 @@ void Entity::renderText()
 
     for (char c : text)
     {
-        if (c >= 32 && c < 128)
+        int charIndex = -1;
+        
+        if (c >= 32 && c < 128) {
+            charIndex = c - 32;
+        }
+
+        // Turkish 
+        else if (c == -61) {
+            continue;
+        }
+        else if (c == -89) { // ç
+            charIndex = 128;
+        }
+        else if (c == -79) { // ğ
+            charIndex = 129;
+        }
+        else if (c == -87) { // ı
+            charIndex = 130;
+        }
+        else if (c == -74) { // ö
+            charIndex = 131;
+        }
+        else if (c == -68) { // ş
+            charIndex = 132;
+        }
+        else if (c == -71) { // ü
+            charIndex = 133;
+        }
+        
+        else if (c == -60) { // UTF-8
+            continue;
+        }
+        else if (c == -97) { // Ç
+            charIndex = 134;
+        }
+        else if (c == -79) { // Ğ
+            charIndex = 135;
+        }
+        else if (c == -73) { // İ
+            charIndex = 136;
+        }
+        else if (c == -78) { // Ö
+            charIndex = 137;
+        }
+        else if (c == -66) { // Ş
+            charIndex = 138;
+        }
+        else if (c == -69) { // Ü
+            charIndex = 139;
+        }
+
+        if (charIndex >= 0 && charIndex < 160)
         {
             stbtt_aligned_quad q;
-            stbtt_GetBakedQuad(cdata, 512, 512, c - 32, &penX, &penY, &q, 1);
+            stbtt_GetBakedQuad(cdata, 1024, 1024, charIndex, &penX, &penY, &q, 1);
 
-            textVertices.insert(textVertices.end(), {{{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
-                                                     {{q.x1, q.y0}, {q.s1, q.t0}, color, backgroundColor},
-                                                     {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
-                                                     {{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
-                                                     {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
-                                                     {{q.x0, q.y1}, {q.s0, q.t1}, color, backgroundColor}});
+            textVertices.insert(textVertices.end(), {
+                {{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
+                {{q.x1, q.y0}, {q.s1, q.t0}, color, backgroundColor},
+                {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
+                {{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
+                {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
+                {{q.x0, q.y1}, {q.s0, q.t1}, color, backgroundColor}
+            });
+        }
+        else
+        {
+            penX += fontSize * 0.5f;
         }
     }
 
@@ -482,11 +541,23 @@ void Entity::loadFont(const std::string &path, float size)
     QByteArray fontData = file.readAll();
     file.close();
 
-    const int bitmapWidth = 512, bitmapHeight = 512;
+    const int bitmapWidth = 1024, bitmapHeight = 1024;
     std::vector<unsigned char> bitmap(bitmapWidth * bitmapHeight, 0);
 
-    int result = stbtt_BakeFontBitmap(reinterpret_cast<const unsigned char *>(fontData.data()), 0,
-                                      size, bitmap.data(), bitmapWidth, bitmapHeight, 32, 96, cdata);
+    int firstChar = 32;
+    int numChars = 160;
+
+    int result = stbtt_BakeFontBitmap(
+        reinterpret_cast<const unsigned char *>(fontData.data()), 
+        0,
+        size,
+        bitmap.data(), 
+        bitmapWidth, 
+        bitmapHeight,
+        firstChar, 
+        numChars, 
+        cdata
+    );
 
     if (result <= 0)
     {

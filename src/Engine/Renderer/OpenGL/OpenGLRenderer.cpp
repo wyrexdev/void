@@ -20,6 +20,9 @@ void OpenGLRenderer::initializeGL()
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     html = new Html();
+    html->setText("");
+    html->setBackgroundColor(glm::vec4(0, 0, 0, 0));
+    html->start();
 }
 
 void OpenGLRenderer::resizeGL(int w, int h)
@@ -33,11 +36,6 @@ void OpenGLRenderer::resizeGL(int w, int h)
 void OpenGLRenderer::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE);
 
     html->draw();
 
@@ -78,9 +76,10 @@ std::string OpenGLRenderer::parse(const std::string &content)
             {
                 Entity *entity = new Entity();
                 entity->setText(t.content);
-                entity->setHeight(40);
-                entity->setColor(glm::vec4(0, 0, 1, 1));
-                entity->setType(ElementTypes::Inline);
+                entity->setBackgroundColor(glm::vec4(0, 0, 0, 0));
+                entity->setBorderRadius(20);
+                entity->setColor(glm::vec4(0.2f, 0.2f, 1, 1));
+                entity->setType(ElementTypes::Block);
                 elements.push_back(entity);
             }
 
@@ -89,7 +88,7 @@ std::string OpenGLRenderer::parse(const std::string &content)
             {
                 Entity *entity = new Entity();
                 entity->setText(t.content);
-                entity->setHeight(40);
+                entity->setBackgroundColor(glm::vec4(0, 0, 0, 0));
                 entity->setType(ElementTypes::Block);
                 elements.push_back(entity);
             }

@@ -140,7 +140,7 @@ private:
     GLuint fontTexture;
     GLuint shaderProgram;
     GLuint VAO, VBO;
-    stbtt_bakedchar cdata[96];
+    stbtt_bakedchar cdata[256]; 
     bool fontLoaded = false;
 
     float borderRadius;
@@ -194,16 +194,11 @@ private:
             if (hasTexture) {
                 float alpha = texture(textTexture, TexCoord).r;
                 vec4 textColor = vec4(FragColor.rgb, FragColor.a * alpha);
-            
-                if (alpha < 0.01) discard;
-            
-                float finalAlpha = textColor.a + BackgroundColor.a * (1.0 - textColor.a);
-                if (finalAlpha < 0.01) discard;
-            
-                vec3 finalColor = (textColor.rgb * textColor.a + 
-                                 BackgroundColor.rgb * BackgroundColor.a * (1.0 - textColor.a)) / finalAlpha;
-            
-                FragColorOut = vec4(finalColor, finalAlpha);
+
+                if (alpha < 0.01) 
+                    discard;
+
+                FragColorOut = textColor;
             } else {
                 if (enableBorderRadius && borderRadius > 0.0) {
                     vec2 center = rectBounds.xy + rectBounds.zw * 0.5;
