@@ -36,6 +36,12 @@ void OpenGLRenderer::resizeGL(int w, int h)
 void OpenGLRenderer::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
 
     html->draw();
 

@@ -20,7 +20,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    
+
     Engine *engine = new Engine();
     engine->setRenderEngine(EngineTypes::OpenGL);
 
@@ -144,12 +144,13 @@ int main(int argc, char *argv[])
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
     format.setVersion(4, 5);
+    format.setSamples(8);
     format.setProfile(QSurfaceFormat::CompatibilityProfile);
     format.setRenderableType(QSurfaceFormat::OpenGL);
     QSurfaceFormat::setDefaultFormat(format);
 
     engine->init(siteContentWidget);
-    
+
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
                      {
         Nav::NItem i;

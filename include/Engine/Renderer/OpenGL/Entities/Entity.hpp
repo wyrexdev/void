@@ -179,6 +179,7 @@ private:
         out vec4 FragColorOut;
 
         uniform sampler2D textTexture;
+        uniform float fontThickness;
         uniform bool hasTexture;
         uniform vec4 rectBounds;
         uniform float borderRadius;
@@ -193,9 +194,13 @@ private:
         {
             if (hasTexture) {
                 float alpha = texture(textTexture, TexCoord).r;
-                vec4 textColor = vec4(FragColor.rgb, FragColor.a * alpha);
+                
+                float threshold = 0.5 - (fontThickness * 0.15);
+                float smoothedAlpha = smoothstep(threshold - 0.1, threshold + 0.1, alpha);
+    
+                vec4 textColor = vec4(FragColor.rgb, FragColor.a * smoothedAlpha);
 
-                if (alpha < 0.01) 
+                if (smoothedAlpha < 0.01) 
                     discard;
 
                 FragColorOut = textColor;
