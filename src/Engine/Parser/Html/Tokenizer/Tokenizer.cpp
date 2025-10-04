@@ -1,79 +1,81 @@
 #include "Engine/Parser/Html/Tokenizer/Tokenizer.hpp"
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <string>
 
-std::vector<Token> Tokenizer::tokenize(const std::string &html) {
+std::vector<Token> Tokenizer::tokenize(const std::string &html)
+{
     std::vector<Token> tokens;
-    enum State { Outside, InsideTag, InsideScriptStyle } state = Outside;
 
-    std::string currentTag;
-    std::string currentText;
-    size_t i = 0;
+    size_t pos = 0;
+    while (pos < html.length())
+    {
+        size_t startTag = html.find('<', pos);
+        if (startTag == std::string::npos)
+            break;
 
-    while (i < html.size()) {
-        char c = html[i];
+        size_t endTag = html.find('>', startTag);
+        if (endTag == std::string::npos)
+            break;
 
-        if (state == Outside) {
-            if (c == '<') {
-                if (!currentText.empty()) {
-                    Token t;
-                    t.type = TokenType::Content;
-                    t.content = currentText;
-                    tokens.push_back(t);
-                    currentText.clear();
-                }
-                state = InsideTag;
-                currentTag = "<";
-            } else {
-                currentText += c;
-            }
-            ++i;
-        } else if (state == InsideTag) {
-            currentTag += c;
-            if (c == '>') {
-                Token t;
-                if (currentTag[1] == '/') {
-                    t.type = TokenType::EndTag;
-                } else {
-                    t.type = TokenType::StartTag;
-                }
-                t.name = currentTag;
+        std::string tag = html.substr(startTag, endTag - startTag);
 
-                if (t.type == TokenType::StartTag &&
-                    (currentTag.substr(0,7) == "<script" || currentTag.substr(0,6) == "<style")) {
-                    state = InsideScriptStyle;
-                } else {
-                    state = Outside;
-                }
+        if (tag.starts_with("<script") && !tag.starts_with("</script"))
+        {
+            size_t scriptEnd = html.find("</script>", endTag + 1);
+            if (scriptEnd == std::string::npos)
+                break;
 
-                tokens.push_back(t);
-                currentTag.clear();
-                ++i;
-            } else {
-                ++i;
-            }
-        } else if (state == InsideScriptStyle) {
-            size_t endTagPos = std::string::npos;
-            if (html.substr(i, 9) == "</script>") endTagPos = i;
-            else if (html.substr(i, 8) == "</style>") endTagPos = i;
+            std::string scriptContent = html.substr(endTag + 1, scriptEnd - endTag - 1);
+            
+            Token token;
+            token.type = TokenType::Tag;
+            token.name = (split(((split(tag, ' '))[0]), '<'))[1];
+            token.content = scriptContent;
 
-            if (endTagPos != std::string::npos) {
-                Token t;
-                t.type = TokenType::Content;
-                t.content = html.substr(0, endTagPos - i + i);
-                tokens.push_back(t);
+            tokens.push_back(token);
 
-                i = endTagPos;
-                state = InsideTag;
-            } else {
-                ++i;
-            }
+            pos = scriptEnd + 9;
+        }
+        else if (!tag.starts_with("</"))
+        {
+            size_t contentStart = endTag + 1;
+            size_t nextTag = html.find('<', contentStart);
+
+            std::string content;
+            if (nextTag != std::string::npos)
+                content = html.substr(contentStart, nextTag - contentStart);
+            else
+                content = html.substr(contentStart);
+
+            Token token;
+            token.type = TokenType::Tag;
+            token.name = (split(((split(tag, ' '))[0]), '<'))[1];
+            token.content = content;
+
+            tokens.push_back(token);
+
+            pos = nextTag;
+        }
+        else
+        {
+            pos = endTag + 1;
         }
     }
 
-    if (!currentText.empty()) {
-        Token t;
-        t.type = TokenType::Content;
-        t.content = currentText;
-        tokens.push_back(t);
+    return tokens;
+}
+
+std::vector<std::string> Tokenizer::split(const std::string &s, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::stringstream ss(s);
+    std::string token;
+
+    while (std::getline(ss, token, delimiter))
+    {
+        tokens.push_back(token);
     }
 
     return tokens;

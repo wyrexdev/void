@@ -2,10 +2,24 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
-#include "Engine/Parser/Html/Tokenizer/Token.hpp"
+struct TokenType {
+    inline static int Comment = 0;
+    inline static int Tag = 1;
+};
 
-class Tokenizer {
+struct Token
+{
+    int type;
+    std::string name;
+    std::unordered_map<std::string, std::string> attributes;
+    std::string content;
+};
+
+class Tokenizer
+{
 public:
-    std::vector<Token> tokenize(const std::string& html);
+    std::vector<Token> tokenize(const std::string &html);
+    std::vector<std::string> split(const std::string &s, char delimiter);
 };

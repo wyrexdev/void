@@ -15,7 +15,6 @@
 
 #include "Utils/UUID.hpp"
 
-#include "Engine/Parser/Html/Parser.hpp"
 #include "Engine/Engine.hpp"
 
 int main(int argc, char *argv[])

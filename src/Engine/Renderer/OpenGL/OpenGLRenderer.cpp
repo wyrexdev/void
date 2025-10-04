@@ -36,6 +36,9 @@ void OpenGLRenderer::paintGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE); 
+        
     html->draw();
 
     for (Entity *entity : elements)
@@ -62,20 +65,15 @@ void OpenGLRenderer::parse(const std::string &content)
 
     for (auto &t : tokens)
     {
-        Entity *entity = nullptr;
-        
-        switch (t.type)
+        if (t.name != "script" && t.name != "style")
         {
-        case TokenType::StartTag:
-            std::cout << t.name << std::endl;
-            entity = new Entity();
+            Entity *entity = new Entity();
+            entity->setText(t.content);
+            entity->setWidth(100);
+            entity->setHeight(40);
             entity->setType(ElementTypes::Block);
-            entity->setText(t.name);
-            break;
-        }
-
-        if (entity)
             elements.push_back(entity);
+        }
     }
 
     update();
