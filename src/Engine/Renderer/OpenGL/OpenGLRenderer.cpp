@@ -37,8 +37,8 @@ void OpenGLRenderer::paintGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glDisable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE); 
-        
+    glEnable(GL_MULTISAMPLE);
+
     html->draw();
 
     for (Entity *entity : elements)
@@ -53,7 +53,7 @@ void OpenGLRenderer::paintGL()
     }
 }
 
-void OpenGLRenderer::parse(const std::string &content)
+std::string OpenGLRenderer::parse(const std::string &content)
 {
     auto tokens = tokenizer.tokenize(content);
 
@@ -63,18 +63,40 @@ void OpenGLRenderer::parse(const std::string &content)
     }
     elements.clear();
 
+    std::string title = "Void";
+
     for (auto &t : tokens)
     {
-        if (t.name != "script" && t.name != "style")
+        if (t.name == "title")
         {
-            Entity *entity = new Entity();
-            entity->setText(t.content);
-            entity->setWidth(100);
-            entity->setHeight(40);
-            entity->setType(ElementTypes::Block);
-            elements.push_back(entity);
+            title = t.content;
+        }
+        else
+        {
+            // INLINE START
+            if (t.name == "a")
+            {
+                Entity *entity = new Entity();
+                entity->setText(t.content);
+                entity->setHeight(40);
+                entity->setColor(glm::vec4(0, 0, 1, 1));
+                entity->setType(ElementTypes::Inline);
+                elements.push_back(entity);
+            }
+
+            // BLOCK START
+            if (t.name == "div")
+            {
+                Entity *entity = new Entity();
+                entity->setText(t.content);
+                entity->setHeight(40);
+                entity->setType(ElementTypes::Block);
+                elements.push_back(entity);
+            }
         }
     }
 
     update();
+
+    return title;
 }

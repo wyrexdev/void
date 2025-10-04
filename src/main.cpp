@@ -166,7 +166,10 @@ int main(int argc, char *argv[])
         Fetcher *fetcher = new Fetcher();
         std::string content = fetcher->get(url);
 
-        engine->parse(content);
+        std::string title = engine->parse(content);
+
+        i.name = title;
+        nav->updateItem(History::currenTab, i);
 
         browserWidget->hide();
         siteContentWidget->show();

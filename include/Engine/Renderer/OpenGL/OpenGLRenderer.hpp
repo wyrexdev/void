@@ -15,7 +15,7 @@ public:
     OpenGLRenderer(QWidget *parent = nullptr);
     ~OpenGLRenderer();
 
-    void parse(const std::string &content);
+    std::string parse(const std::string &content);
 
     Tokenizer tokenizer;
 
