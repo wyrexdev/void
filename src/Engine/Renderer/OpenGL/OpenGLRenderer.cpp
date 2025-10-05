@@ -81,9 +81,11 @@ std::string OpenGLRenderer::parse(const std::string &content)
             if (t.name == "a")
             {
                 Entity *entity = new Entity();
-                entity->setText(t.content);
-                entity->setBackgroundColor(glm::vec4(0, 0, 0, 0));
+                entity->setText("t.content");
+                entity->setBackgroundColor(glm::vec4(1, 0, 0, 1));
                 entity->setBorderRadius(20);
+                entity->setWidth(100);
+                entity->setHeight(100);
                 entity->setColor(glm::vec4(0.2f, 0.2f, 1, 1));
                 entity->setType(ElementTypes::Block);
                 elements.push_back(entity);
@@ -94,6 +96,8 @@ std::string OpenGLRenderer::parse(const std::string &content)
             {
                 Entity *entity = new Entity();
                 entity->setText(t.content);
+                entity->setWidth(100);
+                entity->setHeight(100);
                 entity->setBackgroundColor(glm::vec4(0, 0, 0, 0));
                 entity->setType(ElementTypes::Block);
                 elements.push_back(entity);
