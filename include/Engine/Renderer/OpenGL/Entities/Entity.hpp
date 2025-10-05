@@ -7,6 +7,13 @@
 
 #include <GL/gl.h>
 
+#include <msdfgen.h>
+#include <msdfgen-ext.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#include <QTemporaryFile>
+#include <QDir>
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
@@ -28,6 +35,12 @@ struct ElementTypes
 {
     inline static int Block = 0;
     inline static int Inline = 1;
+};
+
+struct MSDFCharData {
+    float x0, y0, x1, y1;
+    float xadvance;
+    float xoff, yoff;
 };
 
 class Entity : protected QOpenGLFunctions_4_5_Compatibility
@@ -109,11 +122,14 @@ public:
 
 private:
     void loadFont(const std::string &path, float size);
+    void loadFontMSDF(const std::string &path, float size);
     void compileShaders();
     GLuint compileShader(GLenum type, const char *source);
     void createFontTexture(const std::vector<unsigned char> &bitmap, int width, int height);
+    void createMSDFTexture(const std::vector<float>& bitmap, int width, int height);
     void renderBackground();
     void renderText();
+    void renderTextMSDF();
     
     glm::vec3 originalScale;
     glm::vec3 contentSize;
@@ -141,7 +157,9 @@ private:
     GLuint shaderProgram;
     GLuint VAO, VBO;
     stbtt_bakedchar cdata[256]; 
+    std::vector<MSDFCharData> msdfCharData;
     bool fontLoaded = false;
+    bool useMSDF = true;
 
     float borderRadius;
     bool enableBorderRadius;
@@ -184,26 +202,43 @@ private:
         uniform vec4 rectBounds;
         uniform float borderRadius;
         uniform bool enableBorderRadius;
+        uniform bool useMSDF;
 
         float roundedBoxSDF(vec2 p, vec2 b, float r) {
             vec2 d = abs(p) - b + vec2(r);
             return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - r;
         }
 
+        float median(float r, float g, float b) {
+            return max(min(r, g), min(max(r, g), b));
+        }
+
         void main()
         {
             if (hasTexture) {
-                float alpha = texture(textTexture, TexCoord).r;
-                
-                float threshold = 0.5 - (fontThickness * 0.15);
-                float smoothedAlpha = smoothstep(threshold - 0.1, threshold + 0.1, alpha);
-    
-                vec4 textColor = vec4(FragColor.rgb, FragColor.a * smoothedAlpha);
+                if (useMSDF) {
+                    vec3 msd = texture(textTexture, TexCoord).rgb;
+                    float sd = median(msd.r, msd.g, msd.b);
+                    float screenPxDistance = fontThickness * (sd - 0.5);
+                    float alpha = clamp(screenPxDistance + 0.5, 0.0, 1.0);
+                    
+                    if (alpha < 0.01) 
+                        discard;
 
-                if (smoothedAlpha < 0.01) 
-                    discard;
+                    FragColorOut = vec4(FragColor.rgb, FragColor.a * alpha);
+                } else {
+                    float alpha = texture(textTexture, TexCoord).r;
+                    
+                    float threshold = 0.5 - (fontThickness * 0.15);
+                    float smoothedAlpha = smoothstep(threshold - 0.1, threshold + 0.1, alpha);
+        
+                    vec4 textColor = vec4(FragColor.rgb, FragColor.a * smoothedAlpha);
 
-                FragColorOut = textColor;
+                    if (smoothedAlpha < 0.01) 
+                        discard;
+
+                    FragColorOut = textColor;
+                }
             } else {
                 if (enableBorderRadius && borderRadius > 0.0) {
                     vec2 center = rectBounds.xy + rectBounds.zw * 0.5;
