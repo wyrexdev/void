@@ -35,6 +35,12 @@ QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
 INCLUDEPATH += include
 INCLUDEPATH += src
 
+INCLUDEPATH += /usr/include/freetype2
+LIBS += -lfreetype
+
+INCLUDEPATH += /usr/include
+LIBS += -L/usr/lib -lmsdfgen-core -lmsdfgen-ext -lfreetype
+
 # For better debugging (optional)
 # CONFIG += debug
 # QMAKE_CXXFLAGS_DEBUG += -g -O0

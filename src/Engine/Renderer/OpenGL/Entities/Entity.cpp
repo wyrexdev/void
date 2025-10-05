@@ -12,7 +12,8 @@ Entity::Entity() : text(""),
                    enableBorderRadius(false),
                    originalScale(100.0f, 50.0f, 0.0f),
                    contentSize(0.0f, 0.0f, 0.0f),
-                   fontLoaded(false)
+                   fontLoaded(false),
+                   useMSDF(true)
 {
     fontPath = ":/fonts/nunito.ttf";
     pos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -385,6 +386,7 @@ void Entity::draw()
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     renderBackground();
+    
     renderText();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -433,15 +435,138 @@ void Entity::renderText()
     if (text.empty() || !fontTexture || !fontLoaded)
         return;
 
+    if (useMSDF)
+    {
+        renderTextMSDF();
+    }
+    else
+    {
+        std::vector<Vertex> textVertices;
+        float penX = pos.x + margin.w + padding.w;
+        float penY = pos.y + margin.x + padding.x + fontSize;
+
+        GLuint hasTextureLoc = glGetUniformLocation(shaderProgram, "hasTexture");
+        GLuint enableBorderRadiusLoc = glGetUniformLocation(shaderProgram, "enableBorderRadius");
+        GLuint useMSDFLoc = glGetUniformLocation(shaderProgram, "useMSDF");
+        GLuint thicknessLoc = glGetUniformLocation(shaderProgram, "fontThickness");
+
+        glUniform1i(hasTextureLoc, 1);
+        glUniform1i(enableBorderRadiusLoc, 0);
+        glUniform1i(useMSDFLoc, 0);
+        glUniform1f(thicknessLoc, 1.8f);
+
+        for (char c : text)
+        {
+            int charIndex = -1;
+
+            if (c >= 32 && c < 128)
+            {
+                charIndex = c - 32;
+            }
+
+            // Turkish
+            else if (c == -61)
+            {
+                continue;
+            }
+            else if (c == -89)
+            { // ç
+                charIndex = 128;
+            }
+            else if (c == -79)
+            { // ğ
+                charIndex = 129;
+            }
+            else if (c == -87)
+            { // ı
+                charIndex = 130;
+            }
+            else if (c == -74)
+            { // ö
+                charIndex = 131;
+            }
+            else if (c == -68)
+            { // ş
+                charIndex = 132;
+            }
+            else if (c == -71)
+            { // ü
+                charIndex = 133;
+            }
+
+            else if (c == -60)
+            { // UTF-8
+                continue;
+            }
+            else if (c == -97)
+            { // Ç
+                charIndex = 134;
+            }
+            else if (c == -79)
+            { // Ğ
+                charIndex = 135;
+            }
+            else if (c == -73)
+            { // İ
+                charIndex = 136;
+            }
+            else if (c == -78)
+            { // Ö
+                charIndex = 137;
+            }
+            else if (c == -66)
+            { // Ş
+                charIndex = 138;
+            }
+            else if (c == -69)
+            { // Ü
+                charIndex = 139;
+            }
+
+            if (charIndex >= 0 && charIndex < 160)
+            {
+                stbtt_aligned_quad q;
+                stbtt_GetBakedQuad(cdata, 1024, 1024, charIndex, &penX, &penY, &q, 1);
+
+                textVertices.insert(textVertices.end(), {{{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
+                                                         {{q.x1, q.y0}, {q.s1, q.t0}, color, backgroundColor},
+                                                         {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
+                                                         {{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
+                                                         {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
+                                                         {{q.x0, q.y1}, {q.s0, q.t1}, color, backgroundColor}});
+            }
+            else
+            {
+                penX += fontSize * 0.5f;
+            }
+        }
+
+        if (!textVertices.empty())
+        {
+            glBufferSubData(GL_ARRAY_BUFFER, 0, textVertices.size() * sizeof(Vertex), textVertices.data());
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, fontTexture);
+            glDrawArrays(GL_TRIANGLES, 0, textVertices.size());
+        }
+    }
+}
+
+
+void Entity::renderTextMSDF()
+{
     std::vector<Vertex> textVertices;
     float penX = pos.x + margin.w + padding.w;
     float penY = pos.y + margin.x + padding.x + fontSize;
 
     GLuint hasTextureLoc = glGetUniformLocation(shaderProgram, "hasTexture");
     GLuint enableBorderRadiusLoc = glGetUniformLocation(shaderProgram, "enableBorderRadius");
+    GLuint useMSDFLoc = glGetUniformLocation(shaderProgram, "useMSDF");
+    GLuint thicknessLoc = glGetUniformLocation(shaderProgram, "fontThickness");
 
     glUniform1i(hasTextureLoc, 1);
     glUniform1i(enableBorderRadiusLoc, 0);
+    glUniform1i(useMSDFLoc, 1);
+    glUniform1f(thicknessLoc, 8.0f);
 
     for (char c : text)
     {
@@ -511,17 +636,28 @@ void Entity::renderText()
             charIndex = 139;
         }
 
-        if (charIndex >= 0 && charIndex < 160)
+        if (charIndex >= 0 && charIndex < msdfCharData.size())
         {
-            stbtt_aligned_quad q;
-            stbtt_GetBakedQuad(cdata, 1024, 1024, charIndex, &penX, &penY, &q, 1);
+            const MSDFCharData &charData = msdfCharData[charIndex];
 
-            textVertices.insert(textVertices.end(), {{{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
-                                                     {{q.x1, q.y0}, {q.s1, q.t0}, color, backgroundColor},
-                                                     {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
-                                                     {{q.x0, q.y0}, {q.s0, q.t0}, color, backgroundColor},
-                                                     {{q.x1, q.y1}, {q.s1, q.t1}, color, backgroundColor},
-                                                     {{q.x0, q.y1}, {q.s0, q.t1}, color, backgroundColor}});
+            float x0 = penX + charData.xoff;
+            float y0 = penY + charData.yoff;
+            float x1 = x0 + (charData.x1 - charData.x0);
+            float y1 = y0 + (charData.y1 - charData.y0);
+
+            float s0 = charData.x0 / 1024.0f;
+            float t0 = charData.y0 / 1024.0f;
+            float s1 = charData.x1 / 1024.0f;
+            float t1 = charData.y1 / 1024.0f;
+
+            textVertices.insert(textVertices.end(), {{{x0, y0}, {s0, t0}, color, backgroundColor},
+                                                     {{x1, y0}, {s1, t0}, color, backgroundColor},
+                                                     {{x1, y1}, {s1, t1}, color, backgroundColor},
+                                                     {{x0, y0}, {s0, t0}, color, backgroundColor},
+                                                     {{x1, y1}, {s1, t1}, color, backgroundColor},
+                                                     {{x0, y1}, {s0, t1}, color, backgroundColor}});
+
+            penX += charData.xadvance;
         }
         else
         {
@@ -532,10 +668,8 @@ void Entity::renderText()
     if (!textVertices.empty())
     {
         glBufferSubData(GL_ARRAY_BUFFER, 0, textVertices.size() * sizeof(Vertex), textVertices.data());
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, fontTexture);
-
         glDrawArrays(GL_TRIANGLES, 0, textVertices.size());
     }
 }
@@ -547,45 +681,226 @@ void Entity::update()
 
 void Entity::loadFont(const std::string &path, float size)
 {
+    if (useMSDF) {
+        loadFontMSDF(path, size);
+    } else {
+        fontSize = size;
+
+        QFile file(QString::fromStdString(path));
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            qWarning("Font cannot open: %s", path.c_str());
+            fontLoaded = false;
+            return;
+        }
+
+        QByteArray fontData = file.readAll();
+        file.close();
+
+        const int bitmapWidth = 1024, bitmapHeight = 1024;
+        std::vector<unsigned char> bitmap(bitmapWidth * bitmapHeight, 0);
+
+        int firstChar = 32;
+        int numChars = 160;
+
+        int result = stbtt_BakeFontBitmap(
+            reinterpret_cast<const unsigned char *>(fontData.data()),
+            0,
+            size,
+            bitmap.data(),
+            bitmapWidth,
+            bitmapHeight,
+            firstChar,
+            numChars,
+            cdata);
+
+        if (result <= 0)
+        {
+            qWarning("Font baking failed: %d", result);
+            fontLoaded = false;
+            return;
+        }
+
+        createFontTexture(bitmap, bitmapWidth, bitmapHeight);
+        fontLoaded = true;
+    }
+}
+
+void Entity::loadFontMSDF(const std::string &path, float size)
+{
     fontSize = size;
+    fontLoaded = false;
 
-    QFile file(QString::fromStdString(path));
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        qWarning("Font cannot open: %s", path.c_str());
+    try {
+        QString qPath = QString::fromStdString(path);
+        
+        QFile fontFile(qPath);
+        if (!fontFile.open(QIODevice::ReadOnly)) {
+            qWarning("Cannot open font resource: %s", path.c_str());
+            return;
+        }
+        
+        QByteArray fontData = fontFile.readAll();
+        fontFile.close();
+
+        QString tempPath = QDir::tempPath() + "/temp_font_" + QString::number(QDateTime::currentMSecsSinceEpoch()) + ".ttf";
+        QFile tempFile(tempPath);
+        if (!tempFile.open(QIODevice::WriteOnly)) {
+            qWarning("Cannot create temporary file for font");
+            return;
+        }
+        
+        tempFile.write(fontData);
+        tempFile.close();
+
+        msdfgen::FreetypeHandle *ft = msdfgen::initializeFreetype();
+        if (!ft) {
+            qWarning("Freetype initialization failed");
+            QFile::remove(tempPath);
+            return;
+        }
+
+        msdfgen::FontHandle *font = msdfgen::loadFont(ft, tempPath.toStdString().c_str());
+        if (!font) {
+            qWarning("MSDF font loading failed: %s", path.c_str());
+            msdfgen::deinitializeFreetype(ft);
+            QFile::remove(tempPath);
+            return;
+        }
+
+        const int firstChar = 32;
+        const int numChars = 160;
+        const int bitmapSize = 1024;
+        const int glyphsPerRow = 16;
+        const double pxRange = 2.0;
+        
+        std::vector<float> msdfBitmap(bitmapSize * bitmapSize * 3, 0.0f);
+        
+        msdfCharData.resize(numChars);
+        
+        const double cellSize = static_cast<double>(bitmapSize) / glyphsPerRow;
+
+        for (int i = 0; i < numChars; ++i) {
+            int charCode = firstChar + i;
+            
+            msdfgen::Shape shape;
+            if (msdfgen::loadGlyph(shape, font, charCode)) {
+                shape.normalize();
+                
+                msdfgen::edgeColoringSimple(shape, 3.0);
+                
+                msdfgen::Shape::Bounds bounds = shape.getBounds();
+                
+                double left = bounds.l;
+                double bottom = bounds.b;
+                double right = bounds.r;
+                double top = bounds.t;
+                
+                double glyphWidth = right - left;
+                double glyphHeight = top - bottom;
+                
+                if (glyphWidth <= 0 || glyphHeight <= 0) {
+                    int row = i / glyphsPerRow;
+                    int col = i % glyphsPerRow;
+                    
+                    msdfCharData[i].x0 = col * cellSize;
+                    msdfCharData[i].y0 = row * cellSize;
+                    msdfCharData[i].x1 = (col + 1) * cellSize;
+                    msdfCharData[i].y1 = (row + 1) * cellSize;
+                    msdfCharData[i].xadvance = cellSize * 0.3;
+                    msdfCharData[i].xoff = 0;
+                    msdfCharData[i].yoff = 0;
+                    continue;
+                }
+                
+                int row = i / glyphsPerRow;
+                int col = i % glyphsPerRow;
+                
+                double scale = cellSize * 0.6 / std::max(glyphWidth, glyphHeight);
+                double translateX = (col + 0.2) * cellSize - left * scale;
+                double translateY = (row + 0.8) * cellSize - top * scale;
+                
+                msdfgen::Bitmap<float, 3> msdf(cellSize, cellSize);
+                msdfgen::generateMSDF(msdf, shape, 
+                    msdfgen::Projection(scale, msdfgen::Vector2(translateX, translateY)),
+                    pxRange);
+                
+                for (int y = 0; y < cellSize; ++y) {
+                    for (int x = 0; x < cellSize; ++x) {
+                        int destX = col * cellSize + x;
+                        int destY = row * cellSize + y;
+                        
+                        if (destX < bitmapSize && destY < bitmapSize) {
+                            int destIndex = (destY * bitmapSize + destX) * 3;
+                            float r = std::min(std::max(msdf(x, y)[0], 0.0f), 1.0f);
+                            float g = std::min(std::max(msdf(x, y)[1], 0.0f), 1.0f);
+                            float b = std::min(std::max(msdf(x, y)[2], 0.0f), 1.0f);
+                            
+                            msdfBitmap[destIndex] = r;
+                            msdfBitmap[destIndex + 1] = g;
+                            msdfBitmap[destIndex + 2] = b;
+                        }
+                    }
+                }
+                
+                msdfCharData[i].x0 = col * cellSize;
+                msdfCharData[i].y0 = row * cellSize;
+                msdfCharData[i].x1 = (col + 1) * cellSize;
+                msdfCharData[i].y1 = (row + 1) * cellSize;
+                msdfCharData[i].xadvance = (right - left) * scale;
+                msdfCharData[i].xoff = left * scale;
+                msdfCharData[i].yoff = bottom * scale;
+            } else {
+                int row = i / glyphsPerRow;
+                int col = i % glyphsPerRow;
+                
+                msdfCharData[i].x0 = col * cellSize;
+                msdfCharData[i].y0 = row * cellSize;
+                msdfCharData[i].x1 = (col + 1) * cellSize;
+                msdfCharData[i].y1 = (row + 1) * cellSize;
+                msdfCharData[i].xadvance = cellSize * 0.3;
+                msdfCharData[i].xoff = 0;
+                msdfCharData[i].yoff = 0;
+                
+                qDebug("Glyph failed to load: %d", charCode);
+            }
+        }
+        
+        createMSDFTexture(msdfBitmap, bitmapSize, bitmapSize);
+        
+        msdfgen::destroyFont(font);
+        msdfgen::deinitializeFreetype(ft);
+        QFile::remove(tempPath);
+        
+        fontLoaded = true;
+        qDebug("MSDF font successfully loaded: %s, Size: %f", path.c_str(), size);
+        
+    } catch (const std::exception& e) {
+        qWarning("MSDF font loading failed: %s, Error: %s", path.c_str(), e.what());
         fontLoaded = false;
-        return;
+    }
+}
+
+void Entity::createMSDFTexture(const std::vector<float>& bitmap, int width, int height)
+{
+    if (fontTexture)
+        glDeleteTextures(1, &fontTexture);
+
+    std::vector<unsigned char> rgbBitmap(width * height * 3);
+    for (size_t i = 0; i < rgbBitmap.size(); ++i) {
+        rgbBitmap[i] = static_cast<unsigned char>(std::min(std::max(bitmap[i] * 255.0f, 0.0f), 255.0f));
     }
 
-    QByteArray fontData = file.readAll();
-    file.close();
+    glGenTextures(1, &fontTexture);
+    glBindTexture(GL_TEXTURE_2D, fontTexture);
 
-    const int bitmapWidth = 1024, bitmapHeight = 1024;
-    std::vector<unsigned char> bitmap(bitmapWidth * bitmapHeight, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
+                 GL_RGB, GL_UNSIGNED_BYTE, rgbBitmap.data());
 
-    int firstChar = 32;
-    int numChars = 160;
-
-    int result = stbtt_BakeFontBitmap(
-        reinterpret_cast<const unsigned char *>(fontData.data()),
-        0,
-        size,
-        bitmap.data(),
-        bitmapWidth,
-        bitmapHeight,
-        firstChar,
-        numChars,
-        cdata);
-
-    if (result <= 0)
-    {
-        qWarning("Font baking failed: %d", result);
-        fontLoaded = false;
-        return;
-    }
-
-    createFontTexture(bitmap, bitmapWidth, bitmapHeight);
-    fontLoaded = true;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
 void Entity::createFontTexture(const std::vector<unsigned char> &bitmap, int width, int height)
