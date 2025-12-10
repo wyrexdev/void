@@ -25,20 +25,40 @@ void SkiaRenderWidget::resizeGL(int w, int h)
     if (!grContext)
         return;
 
-    SkImageInfo info = SkImageInfo::Make(
-        w,
-        h,
-        kRGBA_8888_SkColorType,
-        kPremul_SkAlphaType);
+    makeCurrent();
 
-    surface = SkSurfaces::RenderTarget(
+    const int dpr = devicePixelRatioF();
+    const int fbW = w * dpr;
+    const int fbH = h * dpr;
+
+    surface.reset();
+
+    GLint fbo = 0;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
+
+    GrGLFramebufferInfo fbInfo;
+    fbInfo.fFBOID = fbo;
+    fbInfo.fFormat = GL_RGBA8;
+
+    GrBackendRenderTarget backendRT =
+        GrBackendRenderTargets::MakeGL(
+            fbW,
+            fbH,
+            /*sampleCnt*/ 0,
+            /*stencilBits*/ 0,
+            fbInfo);
+
+    SkSurfaceProps props(0, kUnknown_SkPixelGeometry);
+
+    surface = SkSurfaces::WrapBackendRenderTarget(
         grContext.get(),
-        skgpu::Budgeted::kNo,
-        info,
-        0,
+        backendRT,
         kBottomLeft_GrSurfaceOrigin,
+        kRGBA_8888_SkColorType,
         nullptr,
-        false);
+        &props,
+        nullptr,
+        nullptr);
 }
 
 void SkiaRenderWidget::paintGL()

@@ -18,6 +18,7 @@
 #include "include/gpu/ganesh/GrDirectContext.h"
 #include "include/gpu/ganesh/SkSurfaceGanesh.h"
 #include "include/gpu/ganesh/GrBackendSurface.h"
+#include "include/gpu/ganesh/gl/GrGLBackendSurface.h"
 
 #include "include/core/SkFont.h"
 #include "include/core/SkPaint.h"
