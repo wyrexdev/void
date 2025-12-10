@@ -1,13 +1,7 @@
 #include <QVBoxLayout>
 #include <QSurfaceFormat>
 
-#include "Engine/Renderer/OpenGL/OpenGLRenderer.hpp"
 #include "Widget/Widget.hpp"
-
-struct EngineTypes {
-    inline static int OpenGL = 0;
-    inline static int Vulkan = 1;
-};
 
 class Engine {
 public:
@@ -19,6 +13,4 @@ public:
 
     std::string parse(const std::string &content);
 private:
-    int type = EngineTypes::OpenGL;
-    OpenGLRenderer *openglWindow;
 };

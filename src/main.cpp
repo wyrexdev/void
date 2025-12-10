@@ -12,6 +12,7 @@
 #include "Widget/Layouts/Nav.hpp"
 #include "Widget/Layouts/LeftSideBar.hpp"
 #include "Widget/Layouts/RightSideBar.hpp"
+#include "Widget/Skia/SkiaRenderWidget.hpp"
 
 #include "Utils/UUID.hpp"
 
@@ -19,10 +20,18 @@
 
 int main(int argc, char *argv[])
 {
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setVersion(4, 5);
+    format.setSamples(8);
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setRenderableType(QSurfaceFormat::OpenGL);
+    QSurfaceFormat::setDefaultFormat(format);
+
     QApplication app(argc, argv);
 
     Engine *engine = new Engine();
-    engine->setRenderEngine(EngineTypes::OpenGL);
 
     QMainWindow window;
     window.setStyleSheet(
@@ -83,6 +92,7 @@ int main(int argc, char *argv[])
     Widget *siteContentWidget = new Widget();
     siteContentWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout *siteContentLayout = new QVBoxLayout(siteContentWidget);
+
     siteContentWidget->hide();
 
     Widget *browserWidget = new Widget();
@@ -140,16 +150,11 @@ int main(int argc, char *argv[])
     QVulkanWindow *vulkanWindow = new VulkanWindow();
     vulkanWindow->setVulkanInstance(inst);*/
 
-    QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setVersion(4, 5);
-    format.setSamples(8);
-    format.setProfile(QSurfaceFormat::CompatibilityProfile);
-    format.setRenderableType(QSurfaceFormat::OpenGL);
-    QSurfaceFormat::setDefaultFormat(format);
-
     engine->init(siteContentWidget);
+
+    SkiaRenderWidget *skiaView = new SkiaRenderWidget(siteContentWidget);
+    skiaView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    siteContentLayout->addWidget(skiaView);
 
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
                      {

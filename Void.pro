@@ -1,18 +1,13 @@
 QT += widgets svg network concurrent opengl openglwidgets
-
 TARGET = Void
 TEMPLATE = app
 
-CONFIG += c++20
-CONFIG += warn_on
-CONFIG += qt
+CONFIG += c++20 warn_on qt
 
-# Recursively find all .cpp files in src/ and its subdirectories
 SOURCES = $$files(src/*.cpp, true) \
           $$files(src/*/*.cpp, true) \
           $$files(src/*/*/*.cpp, true)
 
-# Recursively find all .h and .hpp files in include/ and its subdirectories
 HEADERS = $$files(include/*.h, true) \
           $$files(include/*.hpp, true) \
           $$files(include/*/*.h, true) \
@@ -22,39 +17,39 @@ HEADERS = $$files(include/*.h, true) \
 
 RESOURCES += resources.qrc
 
-# Build directory
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build
 UI_DIR = build
 
-# Compiler flags
 QMAKE_CXXFLAGS += -Wall -Wextra -Wpedantic
+QMAKE_LFLAGS += -lstdc++
 
-# Include paths
-INCLUDEPATH += include
-INCLUDEPATH += src
+INCLUDEPATH += \
+    include \
+    src \
+    /usr/include/freetype2 \
+    /home/wyrex/opt/skia \
+    /home/wyrex/opt/skia/include
 
-INCLUDEPATH += /usr/include/freetype2
-LIBS += -lfreetype
-
-INCLUDEPATH += /usr/include
-LIBS += -L/usr/lib -lmsdfgen-core -lmsdfgen-ext -lfreetype
-
-# For better debugging (optional)
-# CONFIG += debug
-# QMAKE_CXXFLAGS_DEBUG += -g -O0
-
-# For release builds (optional)
-# CONFIG += release
-# QMAKE_CXXFLAGS_RELEASE += -O3
-
-LIBS += -lssl -lcrypto -lcurl
-
-# Installation paths (optional)
-# target.path = /usr/local/bin
-# INSTALLS += target
-
-# Print found files for debugging
-message("Found source files: $$SOURCES")
-message("Found header files: $$HEADERS")
+LIBS += \
+    /home/wyrex/opt/skia/out/Release/libskia.a \
+    -lfontconfig \
+    -lfreetype \
+    -lexpat \
+    -lz \
+    -lpng \
+    -ljpeg \
+    -lwebp \
+    -lwebpdemux \
+    -lbrotlidec \
+    -lbrotlicommon \
+    -lbz2 \
+    -lssl \
+    -lcrypto \
+    -lcurl \
+    -lEGL \
+    -lGLESv2 \
+    -lpthread \
+    -ldl \
+    -lrt

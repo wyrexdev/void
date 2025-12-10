@@ -1,1 +1,1 @@
-qmake6 && make && ./Void
+qmake6 && make && QT_QPA_PLATFORM=xcb ./Void
