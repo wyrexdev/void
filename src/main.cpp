@@ -15,6 +15,7 @@
 #include "Widget/Skia/SkiaRenderWidget.hpp"
 
 #include "Utils/UUID.hpp"
+#include "Utils/History.hpp"
 
 #include "Engine/Engine.hpp"
 
@@ -185,18 +186,33 @@ int main(int argc, char *argv[])
 
         searchBar->setText(""); });
 
+    // Adding New Tab
     nav->plusIcon->setOnClick([=]
                               {
         Nav::NItem item = {
             UUID::Random(),
             ":/images/logo.png",
             "New Tab",
-            "void"
+            ""
         };
 
         nav->addItem(item);
 
-        History::setCurrentTab(item.uuid); });
+        History::setCurrentTab(item.uuid); 
+
+        browserWidget->show();
+        siteContentWidget->hide(); });
+
+    QObject::connect(History::instance(), &History::currentTabChanged, [=](const std::string &uuid)
+                     {
+        auto it = History::history.find(uuid);
+        if (it != History::history.end() && it->second == "") {
+            browserWidget->show();
+            siteContentWidget->hide(); 
+        } else {
+            browserWidget->hide();
+            siteContentWidget->show(); 
+        } });
 
     contentLayout->addWidget(browserWidget);
     contentLayout->addWidget(siteContentWidget);

@@ -153,10 +153,10 @@ public:
         }
     }
 
-private:
     QHBoxLayout *layout;
     QHBoxLayout *tabsLayout;
 
+private:
     void setupUI()
     {
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
