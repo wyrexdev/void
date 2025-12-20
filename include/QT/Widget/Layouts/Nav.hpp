@@ -144,6 +144,7 @@ public:
                     tab->logo->setImage(QString::fromStdString(it.logo));
                     tab->tDomain->setText(QString::fromStdString(it.url));
                     tab->label->setText(QString::fromStdString(it.name));
+                    tab->tMemoryUsage->setText(QString::fromStdString(it.memoryUsage));
                     break;
                 }
             }

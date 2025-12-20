@@ -21,6 +21,7 @@ public:
     Image *logo;
     QLabel *label;
     QLabel *tDomain;
+    QLabel *tMemoryUsage;
 
     std::string memoryUsage;
 
@@ -251,11 +252,11 @@ private:
 
         previewLayout->addWidget(sitePreviewWidget);
 
-        QLabel *usage = new QLabel(("Memory Usage: " + mu).c_str());
-        usage->setContentsMargins(4, 4, 0, 4);
-        usage->setFont(QFont(fontFamily, 8));
-        usage->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");
-        previewLayout->addWidget(usage);
+        tMemoryUsage = new QLabel(("Memory Usage: " + mu).c_str());
+        tMemoryUsage->setContentsMargins(4, 4, 0, 4);
+        tMemoryUsage->setFont(QFont(fontFamily, 8));
+        tMemoryUsage->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");
+        previewLayout->addWidget(tMemoryUsage);
 
         previewWidget->installEventFilter(this);
 
