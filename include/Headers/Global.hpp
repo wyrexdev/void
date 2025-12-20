@@ -65,6 +65,7 @@
 
 // ----- Global Headers ----- //
 #include <vector>
+#include <iostream>
 // ----- Global Headers End ----- //
 
 // ----- System Headers ----- //

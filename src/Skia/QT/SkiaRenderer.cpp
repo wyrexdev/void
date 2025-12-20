@@ -77,7 +77,7 @@ void SkiaRenderer::paintGL()
 
     SkPaint rectPaint;
     rectPaint.setAntiAlias(true);
-    rectPaint.setColor(SkColorSetRGB(96, 120, 255));
+    rectPaint.setColor(SkColorSetRGB(17, 17, 17));
 
     canvas->drawRoundRect(
         SkRect::MakeXYWH(0, 0, width, height),

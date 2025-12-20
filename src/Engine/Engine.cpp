@@ -7,7 +7,21 @@ Engine::Engine()
 std::string Engine::parse(const std::string &content)
 {
     this->content = content;
-    return "";
+
+    Tokenizer *t = new Tokenizer();
+
+    std::string title = "Unknown - Void";
+
+    for(Token token : t->tokenize(content)) {
+        std::cout << token.name << std::endl;
+
+        if(token.name == "title") {
+            title = token.content;
+            continue;
+        }
+    }
+
+    return title;
 }
 
 SkiaRenderer *Engine::getSkiaView()

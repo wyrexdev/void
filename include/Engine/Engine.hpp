@@ -4,6 +4,8 @@
 
 #include "Skia/QT/SkiaRenderer.hpp"
 
+#include "Engine/Parser/Html/Tokenizer/Tokenizer.hpp"
+
 class Engine : public SkiaRenderer
 {
 public:
