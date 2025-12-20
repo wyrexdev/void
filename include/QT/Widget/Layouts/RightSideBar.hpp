@@ -1,6 +1,6 @@
-#include <QWidget>
-#include <QVBoxLayout>
-#include <vector>
+#pragma once
+
+#include "Headers/Global.hpp"
 
 #include "QT/Widget/Widget.hpp"
 #include "QT/Widget/Image/Image.hpp"

@@ -1,10 +1,6 @@
 #pragma once
 
-#include <QHBoxLayout>
-#include <QVariantAnimation>
-#include <QPainter>
-#include <QGraphicsDropShadowEffect>
-#include <memory>
+#include "Headers/Global.hpp"
 
 #include "QT/Widget/Widget.hpp"
 #include "QT/Widget/Svg/SvgWidget.hpp"

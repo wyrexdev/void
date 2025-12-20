@@ -1,28 +1,6 @@
-#include <QApplication>
-#include <QMainWindow>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QSlider>
-#include <QLabel>
-
 #pragma once
 
-#include <QWidget>
-#include <QLabel>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QPixmap>
-#include <QVBoxLayout>
-#include <QPainter>
-#include <QPainterPath>
-#include <QPropertyAnimation>
-#include <QGraphicsDropShadowEffect>
-#include <QParallelAnimationGroup>
-#include <QTimer>
-#include <QSvgRenderer>
-#include <QResizeEvent>
+#include "Headers/Global.hpp"
 
 #include "QT/Widget/Widget.hpp"
 

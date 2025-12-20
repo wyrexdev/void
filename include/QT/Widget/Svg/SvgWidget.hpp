@@ -1,17 +1,6 @@
 #pragma once
 
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QSvgRenderer>
-#include <QPainter>
-#include <QFile>
-#include <QLabel>
-#include <QSpacerItem>
-#include <QEnterEvent>
-#include <QPropertyAnimation>
-#include <QGraphicsDropShadowEffect>
-#include <QParallelAnimationGroup>
-#include <functional>
+#include "Headers/Global.hpp"
 
 #include "QT/Widget/Widget.hpp"
 

@@ -1,5 +1,6 @@
-#include <QPainter>
-#include <QPainterPath>
+#pragma once
+
+#include "Headers/Global.hpp"
 
 #include "Utils/Theme.hpp"
 

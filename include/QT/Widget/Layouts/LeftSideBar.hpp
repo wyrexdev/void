@@ -1,8 +1,6 @@
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QPropertyAnimation>
-#include <QVariantAnimation>
-#include <QGraphicsEffect>
+#pragma once
+
+#include "Headers/Global.hpp"
 
 #include "QT/Widget/Widget.hpp"
 #include "QT/Widget/Svg/SvgWidget.hpp"

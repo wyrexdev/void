@@ -1,18 +1,12 @@
-#include <QApplication>
-#include <QMainWindow>
-#include <QWidget>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QScreen>
-#include <QLineEdit>
+#include "Headers/Global.hpp"
 
 #include "Engine/Request/Fetcher.hpp"
 
 #include "QT/Widget/Layouts/Nav.hpp"
 #include "QT/Widget/Layouts/LeftSideBar.hpp"
 #include "QT/Widget/Layouts/RightSideBar.hpp"
-#include "QT/Widget/Skia/SkiaRenderWidget.hpp"
+
+#include "Skia/QT/SkiaRenderWidget.hpp"
 
 #include "Utils/UUID.hpp"
 #include "Utils/History.hpp"

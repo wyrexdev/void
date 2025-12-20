@@ -1,9 +1,6 @@
 #pragma once
 
-#include <QWidget>
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <functional>
+#include "Headers/Global.hpp"
 
 class Widget : public QWidget {
     Q_OBJECT

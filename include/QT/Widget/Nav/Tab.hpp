@@ -1,15 +1,6 @@
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QFontDatabase>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QApplication>
-#include <QTimer>
-#include <QEvent>
-#include <QMouseEvent>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
-#include <QSizePolicy>
+#pragma once
+
+#include "Headers/Global.hpp"
 
 #include "QT/Widget/Widget.hpp"
 #include "QT/Widget/Nav/Preview/Preview.hpp"

@@ -1,11 +1,6 @@
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QSvgRenderer>
-#include <QPainter>
-#include <QFile>
-#include <QLabel>
-#include <QSpacerItem>
-#include <vector>
+#pragma once
+
+#include "Headers/Global.hpp"
 
 #include "QT/Widget/Widget.hpp"
 
