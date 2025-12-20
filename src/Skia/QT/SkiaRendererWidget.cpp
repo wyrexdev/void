@@ -1,5 +1,4 @@
 #include "Skia/QT/SkiaRenderWidget.hpp"
-#include <QDebug>
 
 SkiaRenderWidget::SkiaRenderWidget(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -18,6 +17,8 @@ void SkiaRenderWidget::initializeGL()
     {
         qFatal("Skia GrDirectContext Cannot Create");
     }
+
+    // init();
 }
 
 void SkiaRenderWidget::resizeGL(int w, int h)
@@ -59,6 +60,8 @@ void SkiaRenderWidget::resizeGL(int w, int h)
         &props,
         nullptr,
         nullptr);
+
+    resize(w, h);
 }
 
 void SkiaRenderWidget::paintGL()
@@ -66,7 +69,7 @@ void SkiaRenderWidget::paintGL()
     if (!surface || !grContext)
         return;
 
-    SkCanvas *canvas = surface->getCanvas();
+    canvas = surface->getCanvas();
     canvas->clear(SkColorSetRGB(0, 122, 255));
 
     SkPaint rectPaint;
@@ -77,6 +80,10 @@ void SkiaRenderWidget::paintGL()
         SkRect::MakeXYWH(50, 50, 400, 200),
         20, 20,
         rectPaint);
+
+    // render area
+    // render();
+    // end render area
 
     grContext->flush();
 }

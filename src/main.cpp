@@ -147,8 +147,6 @@ int main(int argc, char *argv[])
     QVulkanWindow *vulkanWindow = new VulkanWindow();
     vulkanWindow->setVulkanInstance(inst);*/
 
-    engine->init(siteContentWidget);
-
     SkiaRenderWidget *skiaView = new SkiaRenderWidget(siteContentWidget);
     skiaView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     siteContentLayout->addWidget(skiaView);
@@ -178,7 +176,6 @@ int main(int argc, char *argv[])
         siteContentWidget->show();
 
         //QWidget *ct = QWidget::createWindowContainer(vulkanWindow);
-        engine->addRenderLayout(siteContentLayout);
 
         searchBar->setText(""); });
 

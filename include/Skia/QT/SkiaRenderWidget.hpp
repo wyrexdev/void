@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Headers/Global.hpp"
+#include "Headers/SkiaWidgets.hpp"
 
 class SkiaRenderWidget : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
@@ -13,7 +14,16 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+    // virtual void init();
+    // virtual void render();
+    // virtual void resize(int w, int h);
+
 private:
+    bool isInit = true;
+
     sk_sp<GrDirectContext> grContext;
     sk_sp<SkSurface> surface;
+    SkCanvas *canvas;
+
+    Skia::TextRenderer *text;
 };
