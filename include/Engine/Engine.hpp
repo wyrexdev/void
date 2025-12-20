@@ -1,7 +1,7 @@
 #include <QVBoxLayout>
 #include <QSurfaceFormat>
 
-#include "Widget/Widget.hpp"
+#include "QT/Widget/Widget.hpp"
 
 class Engine {
 public:

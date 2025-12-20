@@ -2,9 +2,9 @@
 #include <QVBoxLayout>
 #include <vector>
 
-#include "Widget/Widget.hpp"
-#include "Widget/Image/Image.hpp"
-#include "Widget/Svg/SvgWidget.hpp"
+#include "QT/Widget/Widget.hpp"
+#include "QT/Widget/Image/Image.hpp"
+#include "QT/Widget/Svg/SvgWidget.hpp"
 
 class RightSideBar : public Widget
 {

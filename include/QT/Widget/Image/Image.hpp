@@ -24,7 +24,8 @@
 #include <QSvgRenderer>
 #include <QResizeEvent>
 
-#include "Widget/Widget.hpp"
+#include "QT/Widget/Widget.hpp"
+
 #include "Utils/Theme.hpp"
 
 class Image : public Widget

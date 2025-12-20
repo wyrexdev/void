@@ -1,4 +1,4 @@
-#include "Widget/Skia/SkiaRenderWidget.hpp"
+#include "Skia/QT/SkiaRenderWidget.hpp"
 #include <QDebug>
 
 SkiaRenderWidget::SkiaRenderWidget(QWidget *parent)

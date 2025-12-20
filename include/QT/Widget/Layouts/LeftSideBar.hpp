@@ -4,9 +4,9 @@
 #include <QVariantAnimation>
 #include <QGraphicsEffect>
 
-#include "Widget/Widget.hpp"
-#include "Widget/Svg/SvgWidget.hpp"
-#include "Widget/Layouts/LeftBar/LSItem.hpp"
+#include "QT/Widget/Widget.hpp"
+#include "QT/Widget/Svg/SvgWidget.hpp"
+#include "QT/Widget/Layouts/LeftBar/LSItem.hpp"
 
 class LeftSideBar : public Widget
 {

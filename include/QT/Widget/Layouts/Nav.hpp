@@ -7,13 +7,14 @@
 #include <QSpacerItem>
 #include <vector>
 
-#include "Widget/Widget.hpp"
+#include "QT/Widget/Widget.hpp"
 
 #include "Utils/History.hpp"
 #include "Utils/Theme.hpp"
-#include "Widget/Svg/SvgWidget.hpp"
-#include "Widget/Nav/Tab.hpp"
-#include "Widget/Image/Image.hpp"
+
+#include "QT/Widget/Svg/SvgWidget.hpp"
+#include "QT/Widget/Nav/Tab.hpp"
+#include "QT/Widget/Image/Image.hpp"
 
 class Nav : public Widget
 {

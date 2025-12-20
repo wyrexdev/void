@@ -13,7 +13,7 @@
 #include <QParallelAnimationGroup>
 #include <functional>
 
-#include "Widget/Widget.hpp"
+#include "QT/Widget/Widget.hpp"
 
 class SvgWidget : public Widget {
     Q_OBJECT

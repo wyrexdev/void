@@ -6,8 +6,9 @@
 #include <QGraphicsDropShadowEffect>
 #include <memory>
 
-#include "Widget/Widget.hpp"
-#include "Widget/Svg/SvgWidget.hpp"
+#include "QT/Widget/Widget.hpp"
+#include "QT/Widget/Svg/SvgWidget.hpp"
+
 #include "Utils/Theme.hpp"
 
 class LSItem : public Widget

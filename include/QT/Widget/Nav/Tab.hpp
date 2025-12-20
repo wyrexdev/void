@@ -11,10 +11,10 @@
 #include <QGraphicsOpacityEffect>
 #include <QSizePolicy>
 
-#include "Widget/Widget.hpp"
-#include "Widget/Nav/Preview/Preview.hpp"
-#include "Widget/Image/Image.hpp"
-#include "Widget/Svg/SvgWidget.hpp"
+#include "QT/Widget/Widget.hpp"
+#include "QT/Widget/Nav/Preview/Preview.hpp"
+#include "QT/Widget/Image/Image.hpp"
+#include "QT/Widget/Svg/SvgWidget.hpp"
 
 #include "Utils/History.hpp"
 #include "Utils/Theme.hpp"

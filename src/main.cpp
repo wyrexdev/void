@@ -9,10 +9,10 @@
 
 #include "Engine/Request/Fetcher.hpp"
 
-#include "Widget/Layouts/Nav.hpp"
-#include "Widget/Layouts/LeftSideBar.hpp"
-#include "Widget/Layouts/RightSideBar.hpp"
-#include "Widget/Skia/SkiaRenderWidget.hpp"
+#include "QT/Widget/Layouts/Nav.hpp"
+#include "QT/Widget/Layouts/LeftSideBar.hpp"
+#include "QT/Widget/Layouts/RightSideBar.hpp"
+#include "QT/Widget/Skia/SkiaRenderWidget.hpp"
 
 #include "Utils/UUID.hpp"
 #include "Utils/History.hpp"
@@ -206,6 +206,7 @@ int main(int argc, char *argv[])
     QObject::connect(History::instance(), &History::currentTabChanged, [=](const std::string &uuid)
                      {
         auto it = History::history.find(uuid);
+        std::cout << it->second << std::endl;
         if (it != History::history.end() && it->second == "") {
             browserWidget->show();
             siteContentWidget->hide(); 

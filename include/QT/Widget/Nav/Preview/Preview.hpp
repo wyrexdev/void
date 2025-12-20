@@ -2,7 +2,8 @@
 #include <QPainterPath>
 
 #include "Utils/Theme.hpp"
-#include "Widget/Widget.hpp"
+
+#include "QT/Widget/Widget.hpp"
 
 class Preview : public Widget {
 public:
