@@ -9,6 +9,7 @@
 
 #include "Utils/QT/History.hpp"
 #include "Utils/QT/Theme.hpp"
+#include "Utils/QT/Font.hpp"
 
 class Tab : public Widget
 {
