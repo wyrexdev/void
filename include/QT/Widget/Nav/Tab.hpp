@@ -22,16 +22,20 @@ public:
     QLabel *label;
     QLabel *tDomain;
 
+    std::string memoryUsage;
+
     ~Tab()
     {
         delete showAnimation;
         delete hideAnimation;
     }
 
-    Tab(std::string uuid, std::string logoUrl, std::string name, std::string url) : Widget()
+    Tab(std::string uuid, std::string logoUrl, std::string name, std::string url, std::string mu) : Widget()
     {
+        memoryUsage = mu;
+        
         setupUi(logoUrl, name, url);
-        setupPreview(name);
+        setupPreview(name, memoryUsage);
         setupLayout();
         setupAnimations();
 
@@ -198,7 +202,7 @@ private:
         return contentLayout;
     }
 
-    void setupPreview(const std::string &name)
+    void setupPreview(const std::string &name, std::string &mu)
     {
         previewWidget = new Preview(nullptr);
         previewWidget->setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
@@ -219,7 +223,7 @@ private:
 
         static QString fontFamily = Font::getNunito();
 
-        QLabel *previewTitle = new QLabel("Apple");
+        QLabel *previewTitle = new QLabel(name.c_str());
         previewTitle->setContentsMargins(4, 4, 0, 0);
         previewTitle->setFont(QFont(fontFamily, 10));
         previewTitle->setStyleSheet("color:" + QString::fromStdString(Theme::style.text) + "; font-weight: 600;");
@@ -247,7 +251,7 @@ private:
 
         previewLayout->addWidget(sitePreviewWidget);
 
-        QLabel *usage = new QLabel("Memory Usage: 259 MB");
+        QLabel *usage = new QLabel(("Memory Usage: " + mu).c_str());
         usage->setContentsMargins(4, 4, 0, 4);
         usage->setFont(QFont(fontFamily, 8));
         usage->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");

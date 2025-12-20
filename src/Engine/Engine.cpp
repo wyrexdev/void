@@ -13,8 +13,6 @@ std::string Engine::parse(const std::string &content)
     std::string title = "Unknown - Void";
 
     for(Token token : t->tokenize(content)) {
-        std::cout << token.name << std::endl;
-
         if(token.name == "title") {
             title = token.content;
             continue;

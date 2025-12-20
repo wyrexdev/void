@@ -66,6 +66,10 @@
 // ----- Global Headers ----- //
 #include <vector>
 #include <iostream>
+#include <malloc.h>
+#include <string>
+#include <sstream>
+#include <iomanip>
 // ----- Global Headers End ----- //
 
 // ----- System Headers ----- //

@@ -22,6 +22,7 @@ public:
         std::string logo;
         std::string name;
         std::string url;
+        std::string memoryUsage;
     };
 
     std::vector<NItem> NItems;
@@ -100,7 +101,7 @@ public:
     {
         NItems.push_back(item);
 
-        Tab *tab = new Tab(item.uuid, item.logo, item.name, item.url);
+        Tab *tab = new Tab(item.uuid, item.logo, item.name, item.url, item.memoryUsage);
         tabsLayout->addWidget(tab);
 
         History::add(item.uuid, item.url);
@@ -227,7 +228,7 @@ private:
 
         for (NItem item : NItems)
         {
-            Tab *tab = new Tab(item.uuid, item.logo, item.name, item.url);
+            Tab *tab = new Tab(item.uuid, item.logo, item.name, item.url, item.memoryUsage);
             tabsLayout->addWidget(tab);
 
             History::add(item.uuid, item.url);

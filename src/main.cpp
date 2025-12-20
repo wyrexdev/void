@@ -1,6 +1,7 @@
 #include "Headers/Global.hpp"
 
 #include "Engine/Request/Fetcher.hpp"
+#include "Engine/Engine.hpp"
 
 #include "QT/Widget/Layouts/Nav.hpp"
 #include "QT/Widget/Layouts/LeftSideBar.hpp"
@@ -8,10 +9,8 @@
 
 #include "Utils/QT/History.hpp"
 #include "Utils/QT/Font.hpp"
-
 #include "Utils/Math/UUID.hpp"
-
-#include "Engine/Engine.hpp"
+#include "Utils/Ram/Ram.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -124,7 +123,8 @@ int main(int argc, char *argv[])
         UUID::Random(),
         ":/images/logo.png",
         "New Tab",
-        "void"};
+        "void",
+        "0 MB"};
     nav->addItem(i);
     History::setCurrentTab(i.uuid);
 
@@ -163,6 +163,9 @@ int main(int argc, char *argv[])
         Fetcher *fetcher = new Fetcher();
         std::string content = fetcher->get(url);
 
+        size_t heap = malloc_usable_size((void*)content.data());
+        i.memoryUsage = heap;
+
         std::string title = engine->parse(content);
 
         i.name = title;
@@ -182,7 +185,8 @@ int main(int argc, char *argv[])
             UUID::Random(),
             ":/images/logo.png",
             "New Tab",
-            ""
+            "",
+            "0 MB"
         };
 
         nav->addItem(item);
