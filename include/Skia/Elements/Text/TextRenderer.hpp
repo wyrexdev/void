@@ -7,6 +7,8 @@ namespace Skia
     class TextRenderer : public SkiaWidget
     {
     public:
+        TextRenderer(SkCanvas *c);
+        
         void onInit() override;
         void onRender() override;
     };
