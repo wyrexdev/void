@@ -2,7 +2,7 @@
 
 #include "Headers/Global.hpp"
 
-#include "Utils/Theme.hpp"
+#include "Utils/QT/Theme.hpp"
 
 #include "QT/Widget/Widget.hpp"
 

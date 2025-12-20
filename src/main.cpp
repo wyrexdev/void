@@ -8,8 +8,10 @@
 
 #include "Skia/QT/SkiaRenderWidget.hpp"
 
-#include "Utils/UUID.hpp"
-#include "Utils/History.hpp"
+#include "Utils/QT/History.hpp"
+#include "Utils/QT/Font.hpp"
+
+#include "Utils/Math/UUID.hpp"
 
 #include "Engine/Engine.hpp"
 

@@ -4,8 +4,8 @@
 
 #include "QT/Widget/Widget.hpp"
 
-#include "Utils/History.hpp"
-#include "Utils/Theme.hpp"
+#include "Utils/QT/History.hpp"
+#include "Utils/QT/Theme.hpp"
 
 #include "QT/Widget/Svg/SvgWidget.hpp"
 #include "QT/Widget/Nav/Tab.hpp"

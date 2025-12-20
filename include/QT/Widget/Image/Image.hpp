@@ -4,7 +4,7 @@
 
 #include "QT/Widget/Widget.hpp"
 
-#include "Utils/Theme.hpp"
+#include "Utils/QT/Theme.hpp"
 
 class Image : public Widget
 {

@@ -5,7 +5,7 @@
 #include "QT/Widget/Widget.hpp"
 #include "QT/Widget/Svg/SvgWidget.hpp"
 
-#include "Utils/Theme.hpp"
+#include "Utils/QT/Theme.hpp"
 
 class LSItem : public Widget
 {

@@ -7,9 +7,8 @@
 #include "QT/Widget/Image/Image.hpp"
 #include "QT/Widget/Svg/SvgWidget.hpp"
 
-#include "Utils/History.hpp"
-#include "Utils/Theme.hpp"
-#include "Utils/Font.hpp"
+#include "Utils/QT/History.hpp"
+#include "Utils/QT/Theme.hpp"
 
 class Tab : public Widget
 {

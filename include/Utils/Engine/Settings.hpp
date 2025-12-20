@@ -1,8 +1,7 @@
 class Settings {
 public:
     enum class RenderEngine {
-        OpenGL = 0,
-        Vulkan = 1
+        Skia = 0
     };
 
     enum class WebEngine {
@@ -16,5 +15,5 @@ public:
     static WebEngine webEngine;
 };
 
-Settings::RenderEngine Settings::renderEngine = Settings::RenderEngine::OpenGL;
+Settings::RenderEngine Settings::renderEngine = Settings::RenderEngine::Skia;
 Settings::WebEngine Settings::webEngine = Settings::WebEngine::Google;
