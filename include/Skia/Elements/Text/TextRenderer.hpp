@@ -13,10 +13,12 @@ namespace Skia
         void onRender() override;
 
         void initFontFile();
-        
+
         void setText(std::string text);
         void setFont(std::string path);
         void setSize(float size);
+
+        std::vector<std::string> wrapText(float maxWidth);
 
     private:
         std::unique_ptr<SkFontScanner> scanner;

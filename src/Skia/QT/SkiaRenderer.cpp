@@ -28,6 +28,9 @@ void SkiaRenderer::resizeGL(int w, int h)
 
     makeCurrent();
 
+    width = w;
+    height = h;
+    
     const int dpr = devicePixelRatioF();
     const int fbW = w * dpr;
     const int fbH = h * dpr;
@@ -70,14 +73,14 @@ void SkiaRenderer::paintGL()
         return;
 
     canvas = surface->getCanvas();
-    canvas->clear(SkColorSetRGB(0, 122, 255));
+    canvas->clear(SkColorSetARGB(255, 17, 17, 17));
 
     SkPaint rectPaint;
     rectPaint.setAntiAlias(true);
     rectPaint.setColor(SkColorSetRGB(96, 120, 255));
 
     canvas->drawRoundRect(
-        SkRect::MakeXYWH(50, 50, 400, 200),
+        SkRect::MakeXYWH(0, 0, width, height),
         20, 20,
         rectPaint);
 

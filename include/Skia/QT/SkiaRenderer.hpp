@@ -20,6 +20,9 @@ protected:
 
     SkCanvas *canvas;
 private:
+    int width;
+    int height;
+    
     bool isInit = true;
 
     sk_sp<GrDirectContext> grContext;

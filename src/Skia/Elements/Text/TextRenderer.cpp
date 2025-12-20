@@ -39,12 +39,12 @@ namespace Skia
             return;
         }
 
-        canvas->drawString(
-            text.c_str(),
-            80,
-            140,
-            font,
-            textPaint);
+        float y = 30;
+        for (const auto &line : wrapText(400))
+        {
+            canvas->drawString(line.c_str(), 20, y, font, textPaint);
+            y += font.getSize() * 1.2f;
+        }
     }
 
     void TextRenderer::initFontFile()
@@ -70,5 +70,67 @@ namespace Skia
     {
         size = s;
         refresh();
+    }
+
+    std::vector<std::string> TextRenderer::wrapText(float maxWidth)
+    {
+        std::vector<std::string> lines;
+        std::string line;
+        std::string word;
+
+        for (char c : text)
+        {
+            if (c == ' ' || c == '\n')
+            {
+                std::string test = line + word + " ";
+                float w = font.measureText(
+                    test.c_str(),
+                    test.size(),
+                    SkTextEncoding::kUTF8);
+
+                if (w > maxWidth && !line.empty())
+                {
+                    lines.push_back(line);
+                    line.clear();
+                }
+
+                line += word + " ";
+                word.clear();
+
+                if (c == '\n')
+                {
+                    lines.push_back(line);
+                    line.clear();
+                }
+            }
+            else
+            {
+                word += c;
+            }
+        }
+
+        if (!word.empty())
+        {
+            std::string test = line + word;
+            float w = font.measureText(
+                test.c_str(),
+                test.size(),
+                SkTextEncoding::kUTF8);
+
+            if (w > maxWidth && !line.empty())
+            {
+                lines.push_back(line);
+                line = word;
+            }
+            else
+            {
+                line += word;
+            }
+        }
+
+        if (!line.empty())
+            lines.push_back(line);
+
+        return lines;
     }
 } // namespace Skia
