@@ -4,7 +4,7 @@
 
 #include "Skia/QT/SkiaRenderer.hpp"
 
-class Engine
+class Engine : public SkiaRenderer
 {
 public:
     Engine();
@@ -13,8 +13,14 @@ public:
 
     SkiaRenderer *getSkiaView();
 
+    void onInit() override;
+    void onRender() override;
+    void onResize(int w, int h) override;
+
 private:
     std::string content;
 
     SkiaRenderer *skiaView;
+
+    Skia::TextRenderer *t;
 };

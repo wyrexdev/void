@@ -57,15 +57,18 @@ namespace Skia
         fontFile = f;
 
         initFontFile();
+        refresh();
     }
 
     void TextRenderer::setText(std::string t)
     {
         text = t;
+        refresh();
     }
 
     void TextRenderer::setSize(float s)
     {
         size = s;
+        refresh();
     }
 } // namespace Skia

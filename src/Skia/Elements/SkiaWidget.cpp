@@ -15,4 +15,9 @@ namespace Skia
     {
         onRender();
     }
+
+    void SkiaWidget::refresh()
+    {
+        render();
+    }
 } // namespace Skia

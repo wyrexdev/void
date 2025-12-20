@@ -11,6 +11,7 @@ namespace Skia
 
         void init();
         void render();
+        void refresh();
 
         virtual void onInit() = 0;
         virtual void onRender() = 0;

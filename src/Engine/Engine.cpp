@@ -1,14 +1,32 @@
 #include "Engine/Engine.hpp"
 
-Engine::Engine() {
-
+Engine::Engine()
+{
 }
 
-std::string Engine::parse(const std::string &content) {
+std::string Engine::parse(const std::string &content)
+{
     this->content = content;
     return "";
 }
 
-SkiaRenderWidget *Engine::getSkiaView() {
-    return skiaView;
+SkiaRenderer *Engine::getSkiaView()
+{
+    return this;
+}
+
+void Engine::onInit()
+{
+}
+
+void Engine::onRender()
+{
+    t = new Skia::TextRenderer(canvas);
+    t->init();
+    t->render();
+    t->setText(content);
+}
+
+void Engine::onResize(int w, int h)
+{
 }

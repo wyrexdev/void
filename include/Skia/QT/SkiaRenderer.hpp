@@ -14,16 +14,14 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
-    // virtual void init();
-    // virtual void render();
-    // virtual void resize(int w, int h);
+    virtual void onInit() = 0;
+    virtual void onRender() = 0;
+    virtual void onResize(int w, int h) = 0;
 
+    SkCanvas *canvas;
 private:
     bool isInit = true;
 
     sk_sp<GrDirectContext> grContext;
     sk_sp<SkSurface> surface;
-    SkCanvas *canvas;
-
-    Skia::TextRenderer *text;
 };

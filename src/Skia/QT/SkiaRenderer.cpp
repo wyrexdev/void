@@ -18,7 +18,7 @@ void SkiaRenderer::initializeGL()
         qFatal("Skia GrDirectContext Cannot Create");
     }
 
-    // init();
+    onInit();
 }
 
 void SkiaRenderer::resizeGL(int w, int h)
@@ -61,7 +61,7 @@ void SkiaRenderer::resizeGL(int w, int h)
         nullptr,
         nullptr);
 
-    resize(w, h);
+    onResize(w, h);
 }
 
 void SkiaRenderer::paintGL()
@@ -82,7 +82,7 @@ void SkiaRenderer::paintGL()
         rectPaint);
 
     // render area
-    // render();
+    onRender();
     // end render area
 
     grContext->flush();
