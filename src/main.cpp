@@ -6,8 +6,6 @@
 #include "QT/Widget/Layouts/LeftSideBar.hpp"
 #include "QT/Widget/Layouts/RightSideBar.hpp"
 
-#include "Skia/QT/SkiaRenderWidget.hpp"
-
 #include "Utils/QT/History.hpp"
 #include "Utils/QT/Font.hpp"
 
@@ -147,9 +145,7 @@ int main(int argc, char *argv[])
     QVulkanWindow *vulkanWindow = new VulkanWindow();
     vulkanWindow->setVulkanInstance(inst);*/
 
-    SkiaRenderWidget *skiaView = new SkiaRenderWidget(siteContentWidget);
-    skiaView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    siteContentLayout->addWidget(skiaView);
+    siteContentLayout->addWidget(engine->getSkiaView());
 
     QObject::connect(searchBar, &QLineEdit::returnPressed, [=]
                      {

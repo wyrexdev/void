@@ -3,11 +3,11 @@
 #include "Headers/Global.hpp"
 #include "Headers/SkiaWidgets.hpp"
 
-class SkiaRenderWidget : public QOpenGLWidget, protected QOpenGLFunctions {
+class SkiaRenderer : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
  
 public:
-    explicit SkiaRenderWidget(QWidget* parent = nullptr);
+    explicit SkiaRenderer(QWidget* parent = nullptr);
 
 protected:
     void initializeGL() override;

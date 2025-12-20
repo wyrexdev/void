@@ -1,12 +1,12 @@
-#include "Skia/QT/SkiaRenderWidget.hpp"
+#include "Skia/QT/SkiaRenderer.hpp"
 
-SkiaRenderWidget::SkiaRenderWidget(QWidget *parent)
+SkiaRenderer::SkiaRenderer(QWidget *parent)
     : QOpenGLWidget(parent)
 {
     setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 }
 
-void SkiaRenderWidget::initializeGL()
+void SkiaRenderer::initializeGL()
 {
     initializeOpenGLFunctions();
 
@@ -21,7 +21,7 @@ void SkiaRenderWidget::initializeGL()
     // init();
 }
 
-void SkiaRenderWidget::resizeGL(int w, int h)
+void SkiaRenderer::resizeGL(int w, int h)
 {
     if (!grContext)
         return;
@@ -64,7 +64,7 @@ void SkiaRenderWidget::resizeGL(int w, int h)
     resize(w, h);
 }
 
-void SkiaRenderWidget::paintGL()
+void SkiaRenderer::paintGL()
 {
     if (!surface || !grContext)
         return;
