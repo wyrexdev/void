@@ -1,4 +1,4 @@
-#include "Utils/Theme.hpp"
+#include "Utils/QT/Theme.hpp"
 
 Theme::Style Theme::style = {
     "#111111",

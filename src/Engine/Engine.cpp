@@ -29,4 +29,6 @@ void Engine::onRender()
 
 void Engine::onResize(int w, int h)
 {
+    Screen::width = w;
+    Screen::height = h;
 }

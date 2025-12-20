@@ -40,7 +40,7 @@ namespace Skia
         }
 
         float y = 30;
-        for (const auto &line : wrapText(400))
+        for (const auto &line : wrapText(Screen::width))
         {
             canvas->drawString(line.c_str(), 20, y, font, textPaint);
             y += font.getSize() * 1.2f;

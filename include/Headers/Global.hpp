@@ -66,3 +66,7 @@
 // ----- Global Headers ----- //
 #include <vector>
 // ----- Global Headers End ----- //
+
+// ----- System Headers ----- //
+#include "System/Screen.hpp"
+// ----- System Headers End ----- //
