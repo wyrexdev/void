@@ -78,33 +78,5 @@ void SkiaRenderWidget::paintGL()
         20, 20,
         rectPaint);
 
-    auto scanner = SkFontScanner_Make_FreeType();
-
-    sk_sp<SkFontMgr> fontMgr =
-        SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
-
-    sk_sp<SkTypeface> typeface =
-        fontMgr->makeFromFile("./fonts/nunito.ttf");
-
-    if (!typeface)
-    {
-        qWarning() << "Font cannot load!";
-        return;
-    }
-
-    SkFont font(typeface, 32);
-    font.setEdging(SkFont::Edging::kSubpixelAntiAlias);
-
-    SkPaint textPaint;
-    textPaint.setAntiAlias(true);
-    textPaint.setColor(SK_ColorWHITE);
-
-    canvas->drawString(
-        "VOID Browser",
-        80,
-        140,
-        font,
-        textPaint);
-
     grContext->flush();
 }
