@@ -12,6 +12,12 @@ namespace Skia
         void onInit() override;
         void onRender() override;
 
+        void initFontFile();
+        
+        void setText(std::string text);
+        void setFont(std::string path);
+        void setSize(float size);
+
     private:
         std::unique_ptr<SkFontScanner> scanner;
         sk_sp<SkFontMgr> fontMgr;
@@ -20,6 +26,8 @@ namespace Skia
         SkPaint textPaint;
 
         std::string text;
-        
+        std::string fontFile;
+
+        float size;
     };
 } // namespace Skia

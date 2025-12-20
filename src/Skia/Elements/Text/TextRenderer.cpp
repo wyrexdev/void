@@ -5,6 +5,10 @@ namespace Skia
     TextRenderer::TextRenderer(SkCanvas *c)
     {
         canvas = c;
+
+        size = 16;
+        text = "";
+        fontFile = "./fonts/nunito.ttf";
     }
 
     void TextRenderer::onInit()
@@ -12,7 +16,7 @@ namespace Skia
         scanner = SkFontScanner_Make_FreeType();
         fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
 
-        typeface = fontMgr->makeFromFile("./fonts/nunito.ttf");
+        initFontFile();
 
         if (!typeface)
         {
@@ -20,7 +24,7 @@ namespace Skia
             return;
         }
 
-        font = SkFont(typeface, 32);
+        font = SkFont(typeface, size);
         font.setEdging(SkFont::Edging::kSubpixelAntiAlias);
 
         textPaint.setAntiAlias(true);
@@ -41,5 +45,27 @@ namespace Skia
             140,
             font,
             textPaint);
+    }
+
+    void TextRenderer::initFontFile()
+    {
+        typeface = fontMgr->makeFromFile(fontFile.c_str());
+    }
+
+    void TextRenderer::setFont(std::string f)
+    {
+        fontFile = f;
+
+        initFontFile();
+    }
+
+    void TextRenderer::setText(std::string t)
+    {
+        text = t;
+    }
+
+    void TextRenderer::setSize(float s)
+    {
+        size = s;
     }
 } // namespace Skia
