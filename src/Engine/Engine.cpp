@@ -12,7 +12,9 @@ std::string Engine::parse(const std::string &content)
 
     std::string title = "Unknown - Void";
 
-    for(Token token : t->tokenize(content)) {
+    tokens = t->tokenize(content);
+
+    for(Token token : tokens) {
         if(token.name == "title") {
             title = token.content;
             continue;
@@ -33,10 +35,18 @@ void Engine::onInit()
 
 void Engine::onRender()
 {
-    t = new Skia::TextRenderer(canvas);
-    t->init();
-    t->render();
-    t->setText(content);
+    for(Token t : tokens) {
+        std::cout << t.name << std::endl;
+        if(t.name == "a") {
+            
+        }
+    }
+
+    Skia::TextRenderer *text = new Skia::TextRenderer(canvas);
+            text->setText(content);
+
+            text->init();
+            text->render();
 }
 
 void Engine::onResize(int w, int h)

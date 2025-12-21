@@ -24,5 +24,5 @@ private:
 
     SkiaRenderer *skiaView;
 
-    Skia::TextRenderer *t;
+    std::vector<Token> tokens;
 };

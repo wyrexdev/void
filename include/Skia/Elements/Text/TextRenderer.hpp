@@ -18,12 +18,15 @@ namespace Skia
         void setFont(std::string path);
         void setSize(float size);
 
+        float getWidth();
+
         std::vector<std::string> wrapText(float maxWidth);
 
     private:
         std::unique_ptr<SkFontScanner> scanner;
         sk_sp<SkFontMgr> fontMgr;
         sk_sp<SkTypeface> typeface;
+        SkRect bounds;
         SkFont font;
         SkPaint textPaint;
 

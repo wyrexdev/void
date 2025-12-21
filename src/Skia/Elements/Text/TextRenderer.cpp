@@ -39,12 +39,20 @@ namespace Skia
             return;
         }
 
-        float y = 30;
-        for (const auto &line : wrapText(Screen::width))
-        {
-            canvas->drawString(line.c_str(), 20, y, font, textPaint);
-            y += font.getSize() * 1.2f;
-        }
+        // float y = position.y + 20;
+        // for (const auto &line : wrapText(Screen::width))
+        // {
+        //     canvas->drawString(line.c_str(), position.x, y, font, textPaint);
+        //     y += font.getSize() * 1.2f;
+        // }
+
+        canvas->drawString(text.c_str(), position.x, position.y + 20, font, textPaint);
+
+        SkScalar width = font.measureText(
+            text.c_str(),
+            text.size(),
+            SkTextEncoding::kUTF8,
+            &bounds);
     }
 
     void TextRenderer::initFontFile()
@@ -132,5 +140,10 @@ namespace Skia
             lines.push_back(line);
 
         return lines;
+    }
+
+    float TextRenderer::getWidth()
+    {
+        return bounds.width();
     }
 } // namespace Skia
