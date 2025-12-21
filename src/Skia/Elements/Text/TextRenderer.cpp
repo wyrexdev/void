@@ -2,7 +2,7 @@
 
 namespace Skia
 {
-    TextRenderer::TextRenderer(SkCanvas *c, Widget *pw)
+    TextRenderer::TextRenderer(SkCanvas *c, SkiaRenderer *pw)
     {
         parentWidget = pw;
         canvas = c;

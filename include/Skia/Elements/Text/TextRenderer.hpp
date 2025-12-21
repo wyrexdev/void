@@ -6,12 +6,14 @@
 
 #include "Skia/Math/Color/Color.hpp"
 
+class SkiaRenderer;
+
 namespace Skia
 {
     class TextRenderer : public SkiaWidget
     {
     public:
-        TextRenderer(SkCanvas *c, Widget *parentWidget);
+        TextRenderer(SkCanvas *c, SkiaRenderer *parentWidget);
 
         void onInit() override;
         void onRender() override;

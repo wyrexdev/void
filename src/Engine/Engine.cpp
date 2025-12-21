@@ -49,6 +49,8 @@ std::string Engine::parse(const std::string &content)
     String::replaceAll(content, "&#9829;", "♥"); // HEART
     String::replaceAll(content, "&#9830;", "♦"); // DIAMOND
 
+    // HTML Mathematical Entities
+
     tokens = t->tokenize(content);
 
     for (Token token : tokens)
@@ -87,7 +89,7 @@ std::string Engine::parse(const std::string &content)
                 element.isBlock = false;
             }
 
-            element.renderer = std::make_unique<Skia::TextRenderer>(canvas);
+            element.renderer = std::make_unique<Skia::TextRenderer>(canvas, this);
             element.renderer->setText(t.content);
 
             element.renderer->setTextColor(255, 255, 255, 255);

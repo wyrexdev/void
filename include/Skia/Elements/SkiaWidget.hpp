@@ -2,6 +2,8 @@
 
 #include "Headers/Global.hpp"
 
+class SkiaRenderer;
+
 namespace Skia
 {
     class SkiaWidget
@@ -20,7 +22,7 @@ namespace Skia
         Math::Vec3 rotation;
         Math::Vec3 scale;
 
-        Widget *parentWidget;
+        SkiaRenderer *parentWidget;
         SkCanvas *canvas;
     };
 } // namespace Skia
