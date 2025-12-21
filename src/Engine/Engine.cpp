@@ -12,6 +12,43 @@ std::string Engine::parse(const std::string &content)
 
     std::string title = "Unknown - Void";
 
+    // HTML Character Entities
+    String::replaceAll(content, "&nbsp;", " "); // non-breaking space
+    String::replaceAll(content, "&lt;", "<"); // less than
+    String::replaceAll(content, "&gt;", ">"); // greater than
+    String::replaceAll(content, "&quot;", "\""); // double quotation mark
+    String::replaceAll(content, "&apos;", "'"); // single quotation mark
+    String::replaceAll(content, "&cent;", "¢"); // cent
+    String::replaceAll(content, "&pound;", "£"); // pound
+    String::replaceAll(content, "&yen;", "¥"); // yen
+    String::replaceAll(content, "&euro;", "€"); // EURO SIGN
+    String::replaceAll(content, "&copy;", "©"); // COPYRIGHT
+    String::replaceAll(content, "&reg;", "®"); // REGISTERED TRADEMARK
+    String::replaceAll(content, "&trade;", "™"); // trademark
+
+    String::replaceAll(content, "&amp;", "&"); // ampersand
+
+    // Combining Diacritical Marks
+    String::replaceAll(content, "üa&#768;", "à"); // a
+    String::replaceAll(content, "a&#769;", "á"); // a
+    String::replaceAll(content, "a&#770;", "â"); // a
+    String::replaceAll(content, "a&#771;", "ã"); // a
+    String::replaceAll(content, "O&#768;", "Ò"); // O
+    String::replaceAll(content, "O&#769;", "Ó"); // O
+    String::replaceAll(content, "O&#770;", "Ô"); // O
+    String::replaceAll(content, "O&#771;", "Õ"); // O
+
+    // HTML Symbol Entities
+    String::replaceAll(content, "&#8592;", "←"); // LEFT ARROW
+    String::replaceAll(content, "&#8593;", "↑"); // UP ARROW
+    String::replaceAll(content, "&#8594;", "→"); // RIGHT ARROW
+    String::replaceAll(content, "&#8595;", "↓"); // DOWN ARROW
+
+    String::replaceAll(content, "&#9824;", "♠"); // SPADE
+    String::replaceAll(content, "&#9827;", "♣"); // CLUB
+    String::replaceAll(content, "&#9829;", "♥"); // HEART
+    String::replaceAll(content, "&#9830;", "♦"); // DIAMOND
+
     tokens = t->tokenize(content);
 
     for (Token token : tokens)
@@ -32,7 +69,7 @@ std::string Engine::parse(const std::string &content)
             element.name = t.name;
             element.content = t.content;
 
-            if (t.name == "div" || t.name == "p" || t.name == "h1" || t.name == "h2" || 
+            if (t.name == "div" || t.name == "p" || t.name == "h1" || t.name == "h2" ||
                 t.name == "h3" || t.name == "h4" || t.name == "h5" || t.name == "h6" ||
                 t.name == "ul" || t.name == "ol" || t.name == "li" || t.name == "section" ||
                 t.name == "article" || t.name == "header" || t.name == "footer" ||
@@ -54,7 +91,8 @@ std::string Engine::parse(const std::string &content)
             element.renderer->setText(t.content);
 
             element.renderer->setTextColor(255, 255, 255, 255);
-            if(t.name == "a") element.renderer->setTextColor(255, 0, 150, 255);
+            if (t.name == "a")
+                element.renderer->setTextColor(255, 0, 150, 255);
 
             element.renderer->setWeight(200);
 
@@ -125,13 +163,13 @@ void Engine::calculateLayout()
                 {
                     cursorY += maxLineHeight + 10;
                 }
-                
+
                 cursorX = 0;
                 maxLineHeight = 0;
-                
+
                 e.x = cursorX;
                 e.y = cursorY;
-                
+
                 cursorX = 0;
                 cursorY += e.renderer->getHeight() + 10;
             }
@@ -143,12 +181,12 @@ void Engine::calculateLayout()
                     cursorX = 0;
                     maxLineHeight = 0;
                 }
-                
+
                 e.x = cursorX;
                 e.y = cursorY;
-                
+
                 cursorX += e.renderer->getWidth() + 5;
-                
+
                 if (e.renderer->getHeight() > maxLineHeight)
                 {
                     maxLineHeight = e.renderer->getHeight();
