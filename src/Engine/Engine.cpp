@@ -4,51 +4,51 @@ Engine::Engine()
 {
 }
 
-std::string Engine::parse(const std::string &content)
+std::string Engine::parse(std::string &content)
 {
-    this->content = content;
-
     Tokenizer *t = new Tokenizer();
 
     std::string title = "Unknown - Void";
 
     // HTML Character Entities
-    String::replaceAll(content, "&nbsp;", " "); // non-breaking space
-    String::replaceAll(content, "&lt;", "<"); // less than
-    String::replaceAll(content, "&gt;", ">"); // greater than
-    String::replaceAll(content, "&quot;", "\""); // double quotation mark
-    String::replaceAll(content, "&apos;", "'"); // single quotation mark
-    String::replaceAll(content, "&cent;", "¢"); // cent
-    String::replaceAll(content, "&pound;", "£"); // pound
-    String::replaceAll(content, "&yen;", "¥"); // yen
-    String::replaceAll(content, "&euro;", "€"); // EURO SIGN
-    String::replaceAll(content, "&copy;", "©"); // COPYRIGHT
-    String::replaceAll(content, "&reg;", "®"); // REGISTERED TRADEMARK
-    String::replaceAll(content, "&trade;", "™"); // trademark
+    content = String::replaceAll(content, "&nbsp;", " "); // non-breaking space
+    content = String::replaceAll(content, "&lt;", "<"); // less than
+    content = String::replaceAll(content, "&gt;", ">"); // greater than
+    content = String::replaceAll(content, "&quot;", "\""); // double quotation mark
+    content = String::replaceAll(content, "&apos;", "'"); // single quotation mark
+    content = String::replaceAll(content, "&cent;", "¢"); // cent
+    content = String::replaceAll(content, "&pound;", "£"); // pound
+    content = String::replaceAll(content, "&yen;", "¥"); // yen
+    content = String::replaceAll(content, "&euro;", "€"); // EURO SIGN
+    content = String::replaceAll(content, "&copy;", "©"); // COPYRIGHT
+    content = String::replaceAll(content, "&reg;", "®"); // REGISTERED TRADEMARK
+    content = String::replaceAll(content, "&trade;", "™"); // trademark
 
-    String::replaceAll(content, "&amp;", "&"); // ampersand
+    content = String::replaceAll(content, "&amp;", "&"); // ampersand
 
     // Combining Diacritical Marks
-    String::replaceAll(content, "üa&#768;", "à"); // a
-    String::replaceAll(content, "a&#769;", "á"); // a
-    String::replaceAll(content, "a&#770;", "â"); // a
-    String::replaceAll(content, "a&#771;", "ã"); // a
-    String::replaceAll(content, "O&#768;", "Ò"); // O
-    String::replaceAll(content, "O&#769;", "Ó"); // O
-    String::replaceAll(content, "O&#770;", "Ô"); // O
-    String::replaceAll(content, "O&#771;", "Õ"); // O
+    content = String::replaceAll(content, "üa&#768;", "à"); // a
+    content = String::replaceAll(content, "a&#769;", "á"); // a
+    content = String::replaceAll(content, "a&#770;", "â"); // a
+    content = String::replaceAll(content, "a&#771;", "ã"); // a
+    content = String::replaceAll(content, "O&#768;", "Ò"); // O
+    content = String::replaceAll(content, "O&#769;", "Ó"); // O
+    content = String::replaceAll(content, "O&#770;", "Ô"); // O
+    content = String::replaceAll(content, "O&#771;", "Õ"); // O
 
     // HTML Symbol Entities
-    String::replaceAll(content, "&#8592;", "←"); // LEFT ARROW
-    String::replaceAll(content, "&#8593;", "↑"); // UP ARROW
-    String::replaceAll(content, "&#8594;", "→"); // RIGHT ARROW
-    String::replaceAll(content, "&#8595;", "↓"); // DOWN ARROW
+    content = String::replaceAll(content, "&#8592;", "←"); // LEFT ARROW
+    content = String::replaceAll(content, "&#8593;", "↑"); // UP ARROW
+    content = String::replaceAll(content, "&#8594;", "→"); // RIGHT ARROW
+    content = String::replaceAll(content, "&#8595;", "↓"); // DOWN ARROW
 
-    String::replaceAll(content, "&#9824;", "♠"); // SPADE
-    String::replaceAll(content, "&#9827;", "♣"); // CLUB
-    String::replaceAll(content, "&#9829;", "♥"); // HEART
-    String::replaceAll(content, "&#9830;", "♦"); // DIAMOND
+    content = String::replaceAll(content, "&#9824;", "♠"); // SPADE
+    content = String::replaceAll(content, "&#9827;", "♣"); // CLUB
+    content = String::replaceAll(content, "&#9829;", "♥"); // HEART
+    content = String::replaceAll(content, "&#9830;", "♦"); // DIAMOND
 
+    this->content = content;
+    
     // HTML Mathematical Entities
 
     tokens = t->tokenize(content);

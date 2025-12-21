@@ -13,7 +13,7 @@ class Engine : public SkiaRenderer
 public:
     Engine();
 
-    std::string parse(const std::string &content);
+    std::string parse(std::string &content);
 
     SkiaRenderer *getSkiaView();
 
