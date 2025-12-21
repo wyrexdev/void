@@ -34,8 +34,10 @@ private:
         std::string name;
         std::string content;
         float width = 0;
+        float height = 0;
         float x = 0;
         float y = 0;
+        bool isBlock = false;
     };
 
     float cursorX = 0, cursorY = 0;

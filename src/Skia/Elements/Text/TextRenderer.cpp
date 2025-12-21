@@ -149,6 +149,11 @@ namespace Skia
         return bounds.width();
     }
 
+    float TextRenderer::getHeight()
+    {
+        return bounds.height();
+    }
+
     Math::Color TextRenderer::getTextColor() {
         return textColor;
     }

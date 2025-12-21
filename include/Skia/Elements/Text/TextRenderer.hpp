@@ -21,6 +21,7 @@ namespace Skia
         void setSize(float size);
 
         float getWidth();
+        float getHeight();
 
         Math::Color getTextColor();
         void setTextColor(float a, float r, float g, float b);
