@@ -6,6 +6,7 @@
 #include "QT/Widget/Layouts/Nav.hpp"
 #include "QT/Widget/Layouts/LeftSideBar.hpp"
 #include "QT/Widget/Layouts/RightSideBar.hpp"
+#include "QT/Widget/URLPreview/URLPreview.hpp"
 
 #include "Utils/QT/History.hpp"
 #include "Utils/QT/Font.hpp"
@@ -37,6 +38,15 @@ int main(int argc, char *argv[])
     QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
     mainLayout->setContentsMargins(10, 0, 10, 0);
     mainLayout->setSpacing(0);
+
+    URLPreview *urlPreview = new URLPreview(centralWidget);
+    urlPreview->adjustSize();
+
+    int upX = 10;
+    int upY = centralWidget->height() - urlPreview->height() - 10;
+
+    urlPreview->move(upX, upY);
+    urlPreview->show();
 
     QWidget *contentContainer = new QWidget();
     contentContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
