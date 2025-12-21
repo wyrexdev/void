@@ -6,6 +6,8 @@
 
 #include "Engine/Parser/Html/Tokenizer/Tokenizer.hpp"
 
+#include "Utils/String/String.hpp"
+
 class Engine : public SkiaRenderer
 {
 public:

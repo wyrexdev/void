@@ -20,6 +20,7 @@ namespace Skia
         Math::Vec3 rotation;
         Math::Vec3 scale;
 
+        Widget *parentWidget;
         SkCanvas *canvas;
     };
 } // namespace Skia

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "QT/Widget/Widget.hpp"
+
 #include "Skia/Elements/SkiaWidget.hpp"
 
 #include "Skia/Math/Color/Color.hpp"
@@ -9,7 +11,7 @@ namespace Skia
     class TextRenderer : public SkiaWidget
     {
     public:
-        TextRenderer(SkCanvas *c);
+        TextRenderer(SkCanvas *c, Widget *parentWidget);
 
         void onInit() override;
         void onRender() override;
