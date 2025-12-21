@@ -28,14 +28,16 @@ namespace Skia
         font.setEdging(SkFont::Edging::kSubpixelAntiAlias);
 
         textPaint.setAntiAlias(true);
-        textPaint.setColor(SK_ColorWHITE);
+        textPaint.setColor(SkColorSetARGB(textColor.a, textColor.r, textColor.g, textColor.b));
+
+        textPaint.setStyle(SkPaint::kStrokeAndFill_Style);
+        textPaint.setStrokeWidth(weight / 500);
     }
 
     void TextRenderer::onRender()
     {
         if (!typeface)
         {
-            qWarning() << "Font cannot load!";
             return;
         }
 
@@ -145,5 +147,16 @@ namespace Skia
     float TextRenderer::getWidth()
     {
         return bounds.width();
+    }
+
+    Math::Color TextRenderer::getTextColor() {
+        return textColor;
+    }
+
+    void TextRenderer::setTextColor(float a, float r, float g, float b) {
+        textColor.a = a;
+        textColor.r = r;
+        textColor.g = g;
+        textColor.b = b;
     }
 } // namespace Skia

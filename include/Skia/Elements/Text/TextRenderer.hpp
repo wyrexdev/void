@@ -2,6 +2,8 @@
 
 #include "Skia/Elements/SkiaWidget.hpp"
 
+#include "Skia/Math/Color/Color.hpp"
+
 namespace Skia
 {
     class TextRenderer : public SkiaWidget
@@ -20,8 +22,10 @@ namespace Skia
 
         float getWidth();
 
-        std::vector<std::string> wrapText(float maxWidth);
+        Math::Color getTextColor();
+        void setTextColor(float a, float r, float g, float b);
 
+        std::vector<std::string> wrapText(float maxWidth);
     private:
         std::unique_ptr<SkFontScanner> scanner;
         sk_sp<SkFontMgr> fontMgr;
@@ -34,6 +38,9 @@ namespace Skia
         std::string text;
         std::string fontFile;
 
+        Math::Color textColor;
+
+        float weight = 0.0f;
         float size;
     };
 } // namespace Skia
