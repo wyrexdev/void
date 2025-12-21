@@ -27,6 +27,7 @@ namespace Skia
         sk_sp<SkFontMgr> fontMgr;
         sk_sp<SkTypeface> typeface;
         SkRect bounds;
+
         SkFont font;
         SkPaint textPaint;
 

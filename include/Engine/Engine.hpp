@@ -19,10 +19,26 @@ public:
     void onRender() override;
     void onResize(int w, int h) override;
 
+    void calculateLayout();
+
 private:
     std::string content;
 
     SkiaRenderer *skiaView;
 
     std::vector<Token> tokens;
+
+    struct Element
+    {
+        std::unique_ptr<Skia::TextRenderer> renderer;
+        std::string name;
+        std::string content;
+        float width = 0;
+        float x = 0;
+        float y = 0;
+    };
+
+    float cursorX = 0, cursorY = 0;
+
+    std::vector<Element> elements;
 };
