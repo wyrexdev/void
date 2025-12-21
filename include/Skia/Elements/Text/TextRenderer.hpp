@@ -25,6 +25,9 @@ namespace Skia
         Math::Color getTextColor();
         void setTextColor(float a, float r, float g, float b);
 
+        float getWeight();
+        void setWeight(float w);
+
         std::vector<std::string> wrapText(float maxWidth);
     private:
         std::unique_ptr<SkFontScanner> scanner;

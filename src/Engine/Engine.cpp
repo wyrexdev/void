@@ -34,11 +34,8 @@ std::string Engine::parse(const std::string &content)
 
             element.renderer = std::make_unique<Skia::TextRenderer>(canvas);
             element.renderer->setText(t.content);
-
-            element.renderer->textColor.a = 255;
-            element.renderer->textColor.r = 0;
-            element.renderer->textColor.g = 150;
-            element.renderer->textColor.b = 255;
+            element.renderer->setTextColor(255, 0, 150, 255);
+            element.renderer->setWeight(200);
 
             element.width = element.renderer->getWidth();
 

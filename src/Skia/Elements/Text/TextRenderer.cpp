@@ -159,4 +159,12 @@ namespace Skia
         textColor.g = g;
         textColor.b = b;
     }
+
+    float TextRenderer::getWeight() {
+        return weight;
+    }
+
+    void TextRenderer::setWeight(float w) {
+        weight = w;
+    }
 } // namespace Skia
