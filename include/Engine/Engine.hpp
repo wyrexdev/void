@@ -23,6 +23,9 @@ public:
 
     void calculateLayout();
 
+    void pollInput();
+    void updateState();
+
 private:
     QScreen *screen;
     qreal hz;
@@ -30,7 +33,7 @@ private:
     int intervalMs;
 
     QTimer *timer;
-    
+
     std::string content;
 
     SkiaRenderer *skiaView;
@@ -52,4 +55,6 @@ private:
     float cursorX = 0, cursorY = 0;
 
     std::vector<Element> elements;
+
+    QPoint mousePos;
 };

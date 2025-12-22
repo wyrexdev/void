@@ -119,12 +119,49 @@ SkiaRenderer *Engine::getSkiaView()
     return this;
 }
 
+void Engine::pollInput()
+{
+    mousePos = mapFromGlobal(QCursor::pos());
+}
+
+void Engine::updateState()
+{
+    bool anyHover = false;
+
+    for (Element &e : elements)
+    {
+        if (!e.renderer)
+            continue;
+
+        float startX = e.x;
+        float endX   = e.x + e.width;
+        float startY = e.y;
+        float endY   = e.y + e.height;
+
+        if (
+            mousePos.x() >= startX &&
+            mousePos.x() <= endX &&
+            mousePos.y() >= startY &&
+            mousePos.y() <= endY)
+        {
+            anyHover = true;
+            break;
+        }
+    }
+
+    if (anyHover)
+        setCursor(Qt::PointingHandCursor);
+    else
+        setCursor(Qt::ArrowCursor);
+}
+
+
 void Engine::onInit()
 {
-    QObject::connect(timer, &QTimer::timeout, []()
+    QObject::connect(timer, &QTimer::timeout, this, [this]()
                      {
-    QPoint p = QCursor::pos();
-    qDebug() << p; });
+    pollInput();
+    updateState(); });
 
     timer->start(intervalMs);
 }
@@ -198,6 +235,9 @@ void Engine::calculateLayout()
 
                 e.x = cursorX;
                 e.y = cursorY;
+
+                e.width = e.renderer->getWidth();
+                e.height = e.renderer->getHeight();
 
                 cursorX += e.renderer->getWidth() + 5;
 
