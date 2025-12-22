@@ -23,6 +23,7 @@ public:
         setupUI();
     }
 
+    QLabel *url;
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override
     {
@@ -48,7 +49,7 @@ private:
 
         static QString fontFamily = Font::getNunito();
 
-        QLabel *url = new QLabel("url preview");
+        url = new QLabel("url preview");
         url->setContentsMargins(4, 4, 0, 4);
         url->setFont(QFont(fontFamily, 8));
         url->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");

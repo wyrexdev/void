@@ -5,6 +5,7 @@
 #include "Skia/QT/SkiaRenderer.hpp"
 
 #include "Engine/Parser/Html/Tokenizer/Tokenizer.hpp"
+#include "Engine/Signals/URLPreviewSignal.hpp"
 
 #include "Utils/String/String.hpp"
 
@@ -29,7 +30,7 @@ public:
 private:
     QScreen *screen;
     qreal hz;
-    
+
     int intervalMs;
 
     QTimer *timer;
@@ -45,6 +46,7 @@ private:
         std::unique_ptr<Skia::TextRenderer> renderer;
         std::string name;
         std::string content;
+        std::unordered_map<std::string, std::string> attributes;
         float width = 0;
         float height = 0;
         float x = 0;

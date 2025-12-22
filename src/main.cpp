@@ -13,6 +13,8 @@
 #include "Utils/Math/UUID.hpp"
 #include "Utils/Ram/Ram.hpp"
 
+#include "Engine/Signals/URLPreviewSignal.hpp"
+
 int main(int argc, char *argv[])
 {
     QSurfaceFormat format;
@@ -45,8 +47,15 @@ int main(int argc, char *argv[])
     int upX = 10;
     int upY = centralWidget->height() - urlPreview->height() - 10;
 
+    urlPreview->setMinimumWidth(200);
     urlPreview->move(upX, upY);
-    urlPreview->show();
+
+    QObject::connect(Signals::URLPReview::instance(), &Signals::URLPReview::showPreview, [=](std::string url)
+                     { urlPreview->url->setText(QString(url.c_str()));
+                        urlPreview->show(); });
+
+    QObject::connect(Signals::URLPReview::instance(), &Signals::URLPReview::closePreview, [=]
+                     { urlPreview->close(); });
 
     QWidget *contentContainer = new QWidget();
     contentContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

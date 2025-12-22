@@ -76,6 +76,7 @@ std::string Engine::parse(std::string &content)
 
             element.name = t.name;
             element.content = t.content;
+            element.attributes = t.attributes;
 
             if (t.name == "div" || t.name == "p" || t.name == "h1" || t.name == "h2" ||
                 t.name == "h3" || t.name == "h4" || t.name == "h5" || t.name == "h6" ||
@@ -127,6 +128,7 @@ void Engine::pollInput()
 void Engine::updateState()
 {
     bool anyHover = false;
+    std::string url = "";
 
     for (Element &e : elements)
     {
@@ -134,9 +136,9 @@ void Engine::updateState()
             continue;
 
         float startX = e.x;
-        float endX   = e.x + e.width;
+        float endX = e.x + e.width;
         float startY = e.y;
-        float endY   = e.y + e.height;
+        float endY = e.y + e.height;
 
         if (
             mousePos.x() >= startX &&
@@ -144,17 +146,23 @@ void Engine::updateState()
             mousePos.y() >= startY &&
             mousePos.y() <= endY)
         {
+            url = e.attributes["href"];
             anyHover = true;
             break;
         }
     }
 
     if (anyHover)
+    {
         setCursor(Qt::PointingHandCursor);
+        Signals::URLPReview::show(url);
+    }
     else
+    {
         setCursor(Qt::ArrowCursor);
+        Signals::URLPReview::close();
+    }
 }
-
 
 void Engine::onInit()
 {
