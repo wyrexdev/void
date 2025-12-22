@@ -26,22 +26,6 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-
-    QScreen *screen = QGuiApplication::primaryScreen();
-    qreal hz = screen->refreshRate();
-    
-    int intervalMs = qRound(1000.0 / hz);
-
-    QTimer *timer = new QTimer();
-    QObject::connect(timer, &QTimer::timeout, []()
-                     {
-    QPoint p = QCursor::pos();
-    qDebug() << p; });
-
-    timer->start(intervalMs);
-
-    
-
     Engine *engine = new Engine();
 
     QMainWindow window;

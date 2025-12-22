@@ -24,6 +24,13 @@ public:
     void calculateLayout();
 
 private:
+    QScreen *screen;
+    qreal hz;
+    
+    int intervalMs;
+
+    QTimer *timer;
+    
     std::string content;
 
     SkiaRenderer *skiaView;

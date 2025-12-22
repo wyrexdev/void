@@ -24,5 +24,7 @@ namespace Skia
 
         SkiaRenderer *parentWidget;
         SkCanvas *canvas;
+
+        bool isHover();
     };
 } // namespace Skia

@@ -20,4 +20,9 @@ namespace Skia
     {
         render();
     }
+
+    bool SkiaWidget::isHover()
+    {
+
+    }
 } // namespace Skia
