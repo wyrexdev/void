@@ -125,6 +125,32 @@ void Engine::pollInput()
     mousePos = mapFromGlobal(QCursor::pos());
 }
 
+void Engine::onMouseDown(float x, float y)
+{
+    // istersen state tut
+}
+
+void Engine::onMouseUp(float x, float y)
+{
+    for (Element &e : elements)
+    {
+        if (!e.renderer)
+            continue;
+
+        if(e.name != "a")
+            continue;
+
+        if (
+            x >= e.x &&
+            x <= e.x + e.width &&
+            y >= e.y &&
+            y <= e.y + e.height)
+        {
+            redirect(e.attributes["href"]);
+        }
+    }
+}
+
 void Engine::updateState()
 {
     bool anyHover = false;

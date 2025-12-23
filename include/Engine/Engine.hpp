@@ -24,6 +24,9 @@ public:
     void onRender() override;
     void onResize(int w, int h) override;
 
+    void onMouseDown(float x, float y) override;
+    void onMouseUp(float x, float y) override;
+
     void calculateLayout();
 
     void pollInput();
@@ -63,8 +66,4 @@ private:
     std::vector<Element> elements;
 
     QPoint mousePos;
-
-protected:
-    virtual void onMouseDown(float x, float y) {}
-    virtual void onMouseUp(float x, float y) {}
 };

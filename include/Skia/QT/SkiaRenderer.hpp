@@ -11,20 +11,20 @@ public:
     explicit SkiaRenderer(QWidget *parent = nullptr);
 
 protected:
+    SkCanvas *canvas;
+    
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void onMouseDown(float x, float y) override;
-    void onMouseUp(float x, float y) override;
 
     virtual void onInit() = 0;
     virtual void onRender() = 0;
     virtual void onResize(int w, int h) = 0;
 
-    SkCanvas *canvas;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void onMouseDown(float x, float y) {}
+    virtual void onMouseUp(float x, float y) {}
 
 private:
     int width;
