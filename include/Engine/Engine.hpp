@@ -9,6 +9,8 @@
 
 #include "Utils/String/String.hpp"
 
+#include "Engine/Request/Fetcher.hpp"
+
 class Engine : public SkiaRenderer
 {
 public:
@@ -26,6 +28,8 @@ public:
 
     void pollInput();
     void updateState();
+
+    void redirect(std::string url);
 
 private:
     QScreen *screen;
@@ -59,4 +63,8 @@ private:
     std::vector<Element> elements;
 
     QPoint mousePos;
+
+protected:
+    virtual void onMouseDown(float x, float y) {}
+    virtual void onMouseUp(float x, float y) {}
 };

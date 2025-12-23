@@ -90,3 +90,21 @@ void SkiaRenderer::paintGL()
 
     grContext->flush();
 }
+
+void SkiaRenderer::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        QPointF pos = event->position();
+        onMouseDown(pos.x(), pos.y());
+    }
+}
+
+void SkiaRenderer::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        QPointF pos = event->position();
+        onMouseUp(pos.x(), pos.y());
+    }
+}

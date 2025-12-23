@@ -257,3 +257,11 @@ void Engine::calculateLayout()
         }
     }
 }
+
+void Engine::redirect(std::string url)
+{
+    Fetcher *fetcher = new Fetcher();
+    std::string content = fetcher->get(url);
+
+    parse(content);
+}
