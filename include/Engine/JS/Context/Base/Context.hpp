@@ -10,7 +10,10 @@ namespace JIT
         {
         public:
             Context(VM &vm);
-            
+
+            virtual void init() = 0;
+
+            VM &getVM();
         private:
             VM &vm;
         };

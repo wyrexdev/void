@@ -10,6 +10,8 @@ namespace JIT
         {
         public:
             BrowserContext(VM &vm) : Context(vm) {}
+
+            void init() override;
         private:
         };
     } // namespace Bindings
