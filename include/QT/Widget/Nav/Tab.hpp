@@ -7,6 +7,8 @@
 #include "QT/Widget/Image/Image.hpp"
 #include "QT/Widget/Svg/SvgWidget.hpp"
 
+#include "Engine/Signals/NavSignal.hpp"
+
 #include "Utils/QT/History.hpp"
 #include "Utils/QT/Theme.hpp"
 #include "Utils/QT/Font.hpp"
@@ -17,7 +19,7 @@ class Tab : public Widget
 public:
     Preview *previewWidget;
     Widget *contentWidget;
-    
+
     Image *logo;
     QLabel *label;
     QLabel *tDomain;
@@ -34,9 +36,17 @@ public:
     Tab(std::string uuid, std::string logoUrl, std::string name, std::string url, std::string mu) : Widget()
     {
         memoryUsage = mu;
-        
+
+        connect(Signals::Nav::instance(), &Signals::Nav::whenUpdateCurrentTabHeap, this, [=](std::string heap)
+                {
+            if(uuid == History::currenTab) {
+                memoryUsage = heap;
+
+                tMemoryUsage->setText(("Memory Usage: " + memoryUsage).c_str());
+            } });
+
         setupUi(logoUrl, name, url);
-        setupPreview(name, memoryUsage);
+        setupPreview(name);
         setupLayout();
         setupAnimations();
 
@@ -173,9 +183,8 @@ private:
             hidePreview();
             History::remove(uuid); });
 
-        setOnClick([=] {
-            History::setCurrentTab(uuid);
-        });
+        setOnClick([=]
+                   { History::setCurrentTab(uuid); });
     }
 
     QVBoxLayout *createTextLayout(const std::string &name, const std::string &url)
@@ -203,7 +212,7 @@ private:
         return contentLayout;
     }
 
-    void setupPreview(const std::string &name, std::string &mu)
+    void setupPreview(const std::string &name)
     {
         previewWidget = new Preview(nullptr);
         previewWidget->setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
@@ -252,7 +261,7 @@ private:
 
         previewLayout->addWidget(sitePreviewWidget);
 
-        tMemoryUsage = new QLabel(("Memory Usage: " + mu).c_str());
+        tMemoryUsage = new QLabel(("Memory Usage: " + memoryUsage).c_str());
         tMemoryUsage->setContentsMargins(4, 4, 0, 4);
         tMemoryUsage->setFont(QFont(fontFamily, 8));
         tMemoryUsage->setStyleSheet("color:" + QString::fromStdString(Theme::style.textHover) + "; font-weight: 600;");
