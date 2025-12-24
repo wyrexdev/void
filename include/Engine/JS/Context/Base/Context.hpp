@@ -1,16 +1,18 @@
 #pragma once
 
-#include "Engine/JS/Context/Base/Context.hpp"
+#include "Engine/JS/VM.hpp"
 
 namespace JIT
 {
     namespace Contexts
     {
-        class BrowserContext : public Context
+        class Context
         {
         public:
-            BrowserContext(VM &vm) : Context(vm) {}
+            Context(VM &vm);
+            
         private:
+            VM &vm;
         };
     } // namespace Bindings
 } // namespace JIT

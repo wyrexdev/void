@@ -1,8 +1,8 @@
-#include "Engine/JS/Bindings/GlobalBindings.hpp"
+#include "Engine/JS/Context/Base/Context.hpp"
 
 namespace JIT
 {
-    namespace Bindings
+    namespace Contexts
     {
         
     } // namespace Bindings
