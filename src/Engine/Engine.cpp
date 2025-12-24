@@ -12,47 +12,14 @@ Engine::Engine()
 
 std::string Engine::parse(std::string &content)
 {
-    Tokenizer *t = new Tokenizer();
+    elements.clear();
+
+    std::unique_ptr<Tokenizer> t = std::make_unique<Tokenizer>();
 
     std::string title = "Unknown - Void";
 
-    // HTML Character Entities
-    content = String::replaceAll(content, "&nbsp;", " ");  // non-breaking space
-    content = String::replaceAll(content, "&lt;", "<");    // less than
-    content = String::replaceAll(content, "&gt;", ">");    // greater than
-    content = String::replaceAll(content, "&quot;", "\""); // double quotation mark
-    content = String::replaceAll(content, "&apos;", "'");  // single quotation mark
-    content = String::replaceAll(content, "&cent;", "¢");  // cent
-    content = String::replaceAll(content, "&pound;", "£"); // pound
-    content = String::replaceAll(content, "&yen;", "¥");   // yen
-    content = String::replaceAll(content, "&euro;", "€");  // EURO SIGN
-    content = String::replaceAll(content, "&copy;", "©");  // COPYRIGHT
-    content = String::replaceAll(content, "&reg;", "®");   // REGISTERED TRADEMARK
-    content = String::replaceAll(content, "&trade;", "™"); // trademark
-
-    content = String::replaceAll(content, "&amp;", "&"); // ampersand
-
-    // Combining Diacritical Marks
-    content = String::replaceAll(content, "üa&#768;", "à"); // a
-    content = String::replaceAll(content, "a&#769;", "á");  // a
-    content = String::replaceAll(content, "a&#770;", "â");  // a
-    content = String::replaceAll(content, "a&#771;", "ã");  // a
-    content = String::replaceAll(content, "O&#768;", "Ò");  // O
-    content = String::replaceAll(content, "O&#769;", "Ó");  // O
-    content = String::replaceAll(content, "O&#770;", "Ô");  // O
-    content = String::replaceAll(content, "O&#771;", "Õ");  // O
-
-    // HTML Symbol Entities
-    content = String::replaceAll(content, "&#8592;", "←"); // LEFT ARROW
-    content = String::replaceAll(content, "&#8593;", "↑"); // UP ARROW
-    content = String::replaceAll(content, "&#8594;", "→"); // RIGHT ARROW
-    content = String::replaceAll(content, "&#8595;", "↓"); // DOWN ARROW
-
-    content = String::replaceAll(content, "&#9824;", "♠"); // SPADE
-    content = String::replaceAll(content, "&#9827;", "♣"); // CLUB
-    content = String::replaceAll(content, "&#9829;", "♥"); // HEART
-    content = String::replaceAll(content, "&#9830;", "♦"); // DIAMOND
-
+    content = decodeEntities(content);
+    
     this->content = content;
 
     // HTML Mathematical Entities
@@ -137,7 +104,7 @@ void Engine::onMouseUp(float x, float y)
         if (!e.renderer)
             continue;
 
-        if(e.name != "a")
+        if (e.name != "a")
             continue;
 
         if (
@@ -290,4 +257,31 @@ void Engine::redirect(std::string url)
     std::string content = fetcher->get(url);
 
     parse(content);
+}
+
+std::string Engine::decodeEntities(const std::string &in)
+{
+    std::string out;
+    out.reserve(in.size());
+
+    for (size_t i = 0; i < in.size(); ++i)
+    {
+        if (in[i] == '&')
+        {
+            auto end = in.find(';', i);
+            if (end != std::string::npos)
+            {
+                auto key = in.substr(i, end - i + 1);
+                auto it = htmlEntities.find(key);
+                if (it != htmlEntities.end())
+                {
+                    out += it->second;
+                    i = end;
+                    continue;
+                }
+            }
+        }
+        out += in[i];
+    }
+    return out;
 }

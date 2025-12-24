@@ -7,8 +7,6 @@
 #include "Engine/Parser/Html/Tokenizer/Tokenizer.hpp"
 #include "Engine/Signals/URLPreviewSignal.hpp"
 
-#include "Utils/String/String.hpp"
-
 #include "Engine/Request/Fetcher.hpp"
 
 class Engine : public SkiaRenderer
@@ -34,6 +32,7 @@ public:
 
     void redirect(std::string url);
 
+    std::string decodeEntities(const std::string& in);
 private:
     QScreen *screen;
     qreal hz;
@@ -66,4 +65,16 @@ private:
     std::vector<Element> elements;
 
     QPoint mousePos;
+
+    std::unordered_map<std::string, std::string> htmlEntities = {
+        {"&nbsp;", " "},
+        {"&lt;", "<"},
+        {"&gt;", ">"},
+        {"&quot;", "\""},
+        {"&apos;", "'"},
+        {"&amp;", "&"},
+        {"&copy;", "©"},
+        {"&reg;", "®"},
+        {"&trade;", "™"},
+    };
 };
