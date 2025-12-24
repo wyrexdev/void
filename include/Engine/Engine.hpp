@@ -9,6 +9,10 @@
 
 #include "Engine/Request/Fetcher.hpp"
 
+#include "Engine/Signals/NavSignal.hpp"
+
+#include "Utils/Ram/Ram.hpp"
+
 class Engine : public SkiaRenderer
 {
 public:
@@ -38,6 +42,7 @@ private:
     qreal hz;
 
     int intervalMs;
+    bool needsRecalculateLayout = false;
 
     QTimer *timer;
 

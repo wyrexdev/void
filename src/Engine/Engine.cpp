@@ -17,13 +17,8 @@ std::string Engine::parse(std::string &content)
     std::unique_ptr<Tokenizer> t = std::make_unique<Tokenizer>();
 
     std::string title = "Unknown - Void";
-
     content = decodeEntities(content);
-    
     this->content = content;
-
-    // HTML Mathematical Entities
-
     tokens = t->tokenize(content);
 
     for (Token token : tokens)
@@ -79,6 +74,9 @@ std::string Engine::parse(std::string &content)
         }
     }
 
+    size_t heap = malloc_usable_size((void *)content.data());
+    Signals::Nav::updateCurrentTabHeap(Ram::format_bytes(heap));
+
     return title;
 }
 
@@ -94,7 +92,6 @@ void Engine::pollInput()
 
 void Engine::onMouseDown(float x, float y)
 {
-    // istersen state tut
 }
 
 void Engine::onMouseUp(float x, float y)
@@ -155,6 +152,8 @@ void Engine::updateState()
         setCursor(Qt::ArrowCursor);
         Signals::URLPReview::close();
     }
+
+    needsRecalculateLayout = true;
 }
 
 void Engine::onInit()
@@ -187,13 +186,19 @@ void Engine::onRender()
         }
     }
 
-    calculateLayout();
+    if (needsRecalculateLayout)
+    {
+        calculateLayout();
+        needsRecalculateLayout = false;
+    }
 }
 
 void Engine::onResize(int w, int h)
 {
     Screen::width = w;
     Screen::height = h;
+
+    needsRecalculateLayout = true;
 }
 
 void Engine::calculateLayout()
