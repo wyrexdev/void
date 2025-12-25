@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <cstdlib>
 #include <pwd.h>
 
 namespace System
@@ -10,6 +11,6 @@ namespace System
     {
     public:
         static bool isExistUser(std::string user);
-        static bool createUser();
+        static bool createUser(std::string user);
     };
 } // namespace User
