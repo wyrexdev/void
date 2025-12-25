@@ -8,20 +8,25 @@ namespace QT
 {
     namespace Screens
     {
-        class Welcome
+        class Welcome : public QWidget
         {
+            Q_OBJECT
         public:
+            explicit Welcome(QWidget *parent = nullptr);
+
             void init(QVBoxLayout *mainLayout);
 
         private:
-            // Labels
-            QLabel *welcomeText = new QLabel();
-            QLabel *welcomeDescText = new QLabel();
+            void resizeEvent(QResizeEvent *);
 
-            // Fonts
-            QString nano = Font::getNano();
-            QString nunito = Font::getNunito();
+            QWidget *contentWidget;
+            QLabel *welcomeText;
+            QLabel *welcomeDescText;
+
+            QString nano;
+            QString nunito;
         };
+
     } // namespace Screens
 
 } // namespace QT

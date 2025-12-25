@@ -45,10 +45,13 @@ int main(int argc, char *argv[])
     mainLayout->setContentsMargins(10, 0, 10, 0);
     mainLayout->setSpacing(0);
 
+    Screen::width = window.width();
+    Screen::height = window.height();
+
     System::Setup *setup = new System::Setup();
 
     QT::Screens::Welcome *welcomeScreen = new QT::Screens::Welcome();
-    
+
     if (setup->isSetupNeeded())
     {
         welcomeScreen->init(mainLayout);
@@ -266,6 +269,6 @@ int main(int argc, char *argv[])
 
     window.setWindowTitle("Void Browser");
     window.showMaximized();
-
+    
     return app.exec();
 }
