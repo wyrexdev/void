@@ -4,6 +4,10 @@
 #include <iostream>
 #include <fstream>
 
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+
 namespace FS
 {
     class FileSystem
@@ -13,5 +17,7 @@ namespace FS
         static void createFile(std::string path, std::string content);
         static std::string readFile(std::string path);
         static bool deleteFile(std::string path);
+
+        static void createFileWithPerms(std::string path);
     };
 } // namespace FS
