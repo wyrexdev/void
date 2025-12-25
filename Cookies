@@ -1,0 +1,6 @@
+For Linux
+~/.local/share/void-browser/cookies.bin
+
+
+We will saving cookies as encrypted binary store file
+In this situation, even cookies file tracked or etc. the oppoiste side is can't access the cookies
