@@ -12,7 +12,7 @@ namespace System
 
     bool Setup::setup() {
         if(isSetupNeeded()) {
-            if(System::User::createUser("void")) {
+            if(System::User::createUser()) {
                 return true;
             } else {
                 return false;

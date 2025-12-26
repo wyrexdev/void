@@ -21,6 +21,6 @@ int main(int argc, char *argv[])
         "background-color: " + QString::fromStdString(Theme::style.background) + ";");
     window->setWindowTitle("Void Browser");
     window->showMaximized();
-    
+
     return app.exec();
 }

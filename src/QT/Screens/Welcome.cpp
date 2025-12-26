@@ -13,6 +13,8 @@ namespace QT
 
         void Welcome::init(QVBoxLayout *mainLayout)
         {
+            System::Setup *setup = new System::Setup();
+
             this->mainLayout = mainLayout;
 
             contentWidget = new QWidget();
@@ -83,9 +85,13 @@ namespace QT
 
                         std::string dots(dotCount, '.');
 
-                        welcomeDescText->setText(
-                           ("Setting up your browser for optimal performance and security" + dots).c_str()
-                        );
+                        if(setup->isSetupNeeded()) {
+                            welcomeDescText->setText(
+                                ("Setting up your browser for optimal performance and security" + dots).c_str()
+                            );
+                        } else {
+                            animateString(welcomeDescText, "Done", 15);
+                        }
 
                         counter++; });
 
@@ -93,6 +99,8 @@ namespace QT
 
             QTimer::singleShot(1500, this, [=]()
                                { timer->start(); });
+
+            setup->setup();
         }
 
         void Welcome::setupBottomArea()

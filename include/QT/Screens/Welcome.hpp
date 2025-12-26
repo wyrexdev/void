@@ -2,6 +2,8 @@
 
 #include "Headers/Global.hpp"
 
+#include "System/Setup/Setup.hpp"
+
 #include "Utils/QT/Font.hpp"
 
 namespace QT

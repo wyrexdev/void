@@ -231,7 +231,6 @@ namespace QT
             rightSideBar->addItem(x);
 
             contentLayout->addWidget(rightSideBar);
-
             mainLayout->addWidget(contentContainer);
         }
     }

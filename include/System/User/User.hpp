@@ -1,9 +1,12 @@
 #pragma once
 
-#include <string>
-
-#include <cstdlib>
+#include <unistd.h>
+#include <sys/wait.h>
 #include <pwd.h>
+#include <cstdlib>
+
+#include <vector>
+#include <string>
 
 namespace System
 {
@@ -11,6 +14,6 @@ namespace System
     {
     public:
         static bool isExistUser(std::string user);
-        static bool createUser(std::string user);
+        static bool createUser();
     };
 } // namespace User
