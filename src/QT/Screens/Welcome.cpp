@@ -10,8 +10,6 @@ namespace QT
 
         void Welcome::init(QVBoxLayout *mainLayout)
         {
-            this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
             contentWidget = new QWidget();
             contentWidget->setStyleSheet(
                 "background-color: #1e1b1b;"
@@ -38,11 +36,6 @@ namespace QT
             mainLayout->addStretch();
             mainLayout->addWidget(contentWidget, 0, Qt::AlignCenter);
             mainLayout->addStretch();
-        }
-
-        void Welcome::resizeEvent(QResizeEvent *)
-        {
-            std::cout << "Work here" << std::endl;
         }
 
     } // namespace Screens

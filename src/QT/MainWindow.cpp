@@ -1,23 +1,5 @@
 #include "QT/MainWindow.hpp"
 
-#include "Engine/Request/Fetcher.hpp"
-#include "Engine/Engine.hpp"
-
-#include "QT/Widget/Layouts/Nav.hpp"
-#include "QT/Widget/Layouts/LeftSideBar.hpp"
-#include "QT/Widget/Layouts/RightSideBar.hpp"
-#include "QT/Widget/URLPreview/URLPreview.hpp"
-#include "QT/Screens/Welcome.hpp"
-
-#include "Utils/QT/History.hpp"
-#include "Utils/QT/Font.hpp"
-#include "Utils/Math/UUID.hpp"
-#include "Utils/Ram/Ram.hpp"
-
-#include "Engine/Signals/URLPreviewSignal.hpp"
-
-#include "System/Setup/Setup.hpp"
-
 namespace QT
 {
     MainWindow::MainWindow()
@@ -36,7 +18,7 @@ namespace QT
 
         System::Setup *setup = new System::Setup();
 
-        QT::Screens::Welcome *welcomeScreen = new QT::Screens::Welcome();
+        welcomeScreen = new Screens::Welcome();
 
         if (setup->isSetupNeeded())
         {
@@ -258,9 +240,15 @@ namespace QT
     {
         QMainWindow::resizeEvent(event);
 
+        if (!welcomeScreen || !welcomeScreen->contentWidget)
+            return;
+
         int w = event->size().width();
         int h = event->size().height();
 
-        std::cout << "Resize -> W: " << w << " H: " << h << std::endl;
+        int cw = w - 100;
+        int ch = h - 100;
+
+        welcomeScreen->contentWidget->setFixedSize(cw, ch);
     }
 } // namespace QT

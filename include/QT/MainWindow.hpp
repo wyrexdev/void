@@ -4,12 +4,34 @@
 #include <QResizeEvent>
 #include <iostream>
 
+#include "Engine/Request/Fetcher.hpp"
+#include "Engine/Engine.hpp"
+
+#include "QT/Widget/Layouts/Nav.hpp"
+#include "QT/Widget/Layouts/LeftSideBar.hpp"
+#include "QT/Widget/Layouts/RightSideBar.hpp"
+#include "QT/Widget/URLPreview/URLPreview.hpp"
+#include "QT/Screens/Welcome.hpp"
+
+#include "Utils/QT/History.hpp"
+#include "Utils/QT/Font.hpp"
+#include "Utils/Math/UUID.hpp"
+#include "Utils/Ram/Ram.hpp"
+
+#include "Engine/Signals/URLPreviewSignal.hpp"
+
+#include "System/Setup/Setup.hpp"
+
 namespace QT
 {
     class MainWindow : public QMainWindow
     {
     public:
         MainWindow();
+
+    private:
+        Screens::Welcome *welcomeScreen;
+
     protected:
         void resizeEvent(QResizeEvent *event) override;
     };

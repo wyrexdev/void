@@ -16,10 +16,8 @@ namespace QT
 
             void init(QVBoxLayout *mainLayout);
 
-        private:
-            void resizeEvent(QResizeEvent *);
-
             QWidget *contentWidget;
+        private:
             QLabel *welcomeText;
             QLabel *welcomeDescText;
 
