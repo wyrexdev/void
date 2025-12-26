@@ -21,12 +21,25 @@ namespace System
 
     bool User::createUser()
     {
-        int ret = system("pkexec sudo useradd -r -s /usr/sbin/nologin void");
-        if (ret != 0)
+        pid_t pid = fork();
+        if (pid == 0)
         {
-            return false;
+            execlp(
+                "pkexec",
+                "pkexec",
+                "/usr/sbin/useradd",
+                "-r",
+                "-s",
+                "/usr/sbin/nologin",
+                "void",
+                nullptr);
+            _exit(1);
         }
 
-        return true;
+        int status = 0;
+        waitpid(pid, &status, 0);
+
+        return WIFEXITED(status) && WEXITSTATUS(status) == 0;
     }
+
 } // namespace System
