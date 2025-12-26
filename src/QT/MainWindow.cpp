@@ -240,7 +240,7 @@ namespace QT
     {
         QMainWindow::resizeEvent(event);
 
-        if (!welcomeScreen || !welcomeScreen->contentWidget)
+        if (!welcomeScreen || !welcomeScreen->getContentWidget())
             return;
 
         int w = event->size().width();
@@ -249,6 +249,6 @@ namespace QT
         int cw = w - 100;
         int ch = h - 100;
 
-        welcomeScreen->contentWidget->setFixedSize(cw, ch);
+        welcomeScreen->getContentWidget()->setFixedSize(cw, ch);
     }
 } // namespace QT

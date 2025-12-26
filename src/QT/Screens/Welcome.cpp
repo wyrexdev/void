@@ -38,5 +38,9 @@ namespace QT
             mainLayout->addStretch();
         }
 
+        QWidget *Welcome::getContentWidget() {
+            return contentWidget;
+        }
+        
     } // namespace Screens
 } // namespace QT

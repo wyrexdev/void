@@ -16,8 +16,10 @@ namespace QT
 
             void init(QVBoxLayout *mainLayout);
 
-            QWidget *contentWidget;
+            QWidget *getContentWidget();
+            
         private:
+            QWidget *contentWidget;
             QLabel *welcomeText;
             QLabel *welcomeDescText;
 
