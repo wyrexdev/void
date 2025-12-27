@@ -8,7 +8,7 @@ namespace System
             return true;
 
         if (!(FS::FileSystem::isExistFolder("~/.local/share/void-browser")))
-            return true;
+            return false;
 
         return false;
     }

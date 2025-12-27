@@ -30,6 +30,28 @@ namespace FS
         }
     }
 
+    bool FileSystem::createFileWithPerms(std::string path)
+    {
+        int fd = open(
+            path.c_str(),
+            O_CREAT | O_WRONLY | O_TRUNC | O_NOFOLLOW,
+            0600);
+
+        if (fd == -1)
+        {
+            perror("open");
+            return false;
+        }
+
+        close(fd);
+
+        return true;
+    }
+
+    bool FileSystem::createFileWithPerms(std::string path, std::string content)
+    {
+    }
+
     std::string FileSystem::readFile(std::string path)
     {
         try

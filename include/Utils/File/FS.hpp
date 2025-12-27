@@ -18,7 +18,8 @@ namespace FS
         static std::string readFile(std::string path);
         static bool deleteFile(std::string path);
 
-        static void createFileWithPerms(std::string path);
+        static bool createFileWithPerms(std::string path);
+        static bool createFileWithPerms(std::string path, std::string content);
         
         static bool isExistFolder(std::string path);
         static bool isExistFile(std::string path);
