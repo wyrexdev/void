@@ -19,5 +19,8 @@ namespace FS
         static bool deleteFile(std::string path);
 
         static void createFileWithPerms(std::string path);
+        
+        static bool isExistFolder(std::string path);
+        static bool isExistFile(std::string path);
     };
 } // namespace FS

@@ -2,6 +2,8 @@
 
 #include "System/User/User.hpp"
 
+#include "Utils/File/FS.hpp"
+
 namespace System
 {
     class Setup

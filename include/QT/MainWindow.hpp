@@ -32,7 +32,7 @@ namespace QT
     private:
         Screens::Welcome *welcomeScreen;
         
-        bool isSetupNeeded = false;
+        bool isSetupNeeded = true;
 
     protected:
         void resizeEvent(QResizeEvent *event) override;
