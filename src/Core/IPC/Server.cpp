@@ -24,6 +24,8 @@ namespace IPC
             return;
         }
 
+        chmod("/tmp/void.sock", 0666);
+
         if (listen(server, 5) < 0)
         {
             perror("listen");
