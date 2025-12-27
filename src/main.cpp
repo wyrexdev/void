@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
             prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
             setsid();
 
-            sm->sandboxMain();
+            sm->sandbox();
             _exit(0);
         }
     }

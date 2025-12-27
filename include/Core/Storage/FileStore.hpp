@@ -23,5 +23,10 @@ namespace IPC
             const char *rel_path,
             uint8_t *out_data,
             uint32_t *out_len);
+
+        int writeFile(
+            const char *rel_path,
+            const uint8_t *data,
+            uint32_t len);
     };
 } // namespace IPC
