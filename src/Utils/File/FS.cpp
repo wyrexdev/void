@@ -77,6 +77,7 @@ namespace FS
         }
         catch (const std::exception &e)
         {
+            std::cout << "hata" << std::endl;
             return false;
         }
     }

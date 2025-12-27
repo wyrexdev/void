@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/IPC/Server.hpp"
+#include "Utils/File/FS.hpp"
 
 #include <grp.h>
 #include <unistd.h>
