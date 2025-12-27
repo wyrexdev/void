@@ -18,7 +18,8 @@ namespace IPC
 
     class FileStore
     {
-        int readFile(
+    public:
+        static int readFile(
             const char *rel_path,
             uint8_t *out_data,
             uint32_t *out_len)

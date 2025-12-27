@@ -25,7 +25,7 @@ namespace IPC
 
     class Protocol
     {
-
+    public:
         struct Request
         {
             uint32_t magic;
@@ -42,5 +42,5 @@ namespace IPC
             uint8_t data[MAX_DATA_LEN];
         };
     };
-    
+
 } // namespace IPC

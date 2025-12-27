@@ -12,16 +12,6 @@
 #include <stdexcept>
 #include <sys/prctl.h>
 
-
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
-#include <cstring>
-#include <cerrno>
-#include <cstdio>
-#include <cstdlib>
-
-
 int main(int argc, char *argv[])
 {
     umask(0077);
@@ -65,34 +55,4 @@ int main(int argc, char *argv[])
     window.showMaximized();
 
     return app.exec();
-}
-
-void sandboxMain()
-{
-    int server = socket(AF_UNIX, SOCK_STREAM, 0);
-
-    sockaddr_un addr{};
-    addr.sun_family = AF_UNIX;
-    strcpy(addr.sun_path, "/var/run/void.sock");
-
-    unlink(addr.sun_path);
-    bind(server, (sockaddr *)&addr, sizeof(addr));
-    listen(server, 5);
-
-    while (true)
-    {
-        int client = accept(server, nullptr, nullptr);
-
-        Request req;
-        read(client, &req, sizeof(req));
-
-        Response res{};
-        if (req.cmd == Command::READ_FILE)
-        {
-            res.status = readFile(req.path, res.data, &res.data_len);
-        }
-
-        write(client, &res, sizeof(res));
-        close(client);
-    }
 }
