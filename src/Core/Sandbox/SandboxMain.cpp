@@ -27,6 +27,16 @@ namespace IPC
                 res.status = FileStore::readFile(req.path, res.data, &res.data_len);
             }
 
+            if (req.cmd == Command::WRITE_FILE)
+            {
+                res.status = FileStore::writeFile(
+                    req.path,
+                    req.data,
+                    req.data_len);
+
+                res.data_len = 0;
+            }
+
             write(client, &res, sizeof(res));
             close(client);
         }

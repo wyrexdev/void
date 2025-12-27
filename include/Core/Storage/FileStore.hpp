@@ -24,7 +24,7 @@ namespace IPC
             uint8_t *out_data,
             uint32_t *out_len);
 
-        int writeFile(
+        static int writeFile(
             const char *rel_path,
             const uint8_t *data,
             uint32_t len);
