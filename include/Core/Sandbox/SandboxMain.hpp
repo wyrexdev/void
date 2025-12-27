@@ -15,6 +15,7 @@ namespace IPC
 {
     class SandboxMain
     {
+    public:
         void sandboxMain()
         {
             int server = socket(AF_UNIX, SOCK_STREAM, 0);

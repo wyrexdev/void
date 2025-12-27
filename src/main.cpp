@@ -1,16 +1,14 @@
 #include "Headers/Global.hpp"
 
+#include <sys/prctl.h>
+
 #include "QT/MainWindow.hpp"
 #include "QT/Widget/Layouts/Nav.hpp"
 
 #include "System/Setup/Setup.hpp"
 #include "System/User/User.hpp"
 
-#include <pwd.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdexcept>
-#include <sys/prctl.h>
+#include "Core/Sandbox/SandboxMain.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -27,10 +25,11 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-    System::Setup setup;
-    QT::MainWindow window;
+    System::Setup *setup = new System::Setup();
+    QT::MainWindow *window = new QT::MainWindow();
+    IPC::SandboxMain *sm = new IPC::SandboxMain();
 
-    if (setup.isSetupNeeded())
+    if (setup->isSetupNeeded())
     {
     }
     else
@@ -44,15 +43,18 @@ int main(int argc, char *argv[])
 
             prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
             setsid();
+
+            sm->sandboxMain();
+            _exit(0);
         }
     }
 
     std::cout << System::User::getCurrentUser() << std::endl;
 
-    window.setStyleSheet(
+    window->setStyleSheet(
         "background-color: " + QString::fromStdString(Theme::style.background) + ";");
-    window.setWindowTitle("Void Browser");
-    window.showMaximized();
+    window->setWindowTitle("Void Browser");
+    window->showMaximized();
 
     return app.exec();
 }
