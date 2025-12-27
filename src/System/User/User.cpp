@@ -4,19 +4,7 @@ namespace System
 {
     bool User::isExistUser(std::string user)
     {
-        struct passwd pwd;
-        struct passwd *result = nullptr;
-
-        std::vector<char> buffer(16384);
-
-        int ret = getpwnam_r(
-            user.c_str(),
-            &pwd,
-            buffer.data(),
-            buffer.size(),
-            &result);
-
-        return (ret == 0 && result != nullptr);
+        return getpwnam(user.c_str()) != nullptr;
     }
 
     bool User::createUser()

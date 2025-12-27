@@ -5,6 +5,8 @@
 #include <pwd.h>
 #include <cstdlib>
 
+#include <iostream>
+
 #include <vector>
 #include <string>
 

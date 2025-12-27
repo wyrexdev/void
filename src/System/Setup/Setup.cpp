@@ -4,7 +4,7 @@ namespace System
 {
     bool Setup::isSetupNeeded()
     {
-        if (!(System::User::isExistUser("void")))
+        if (System::User::isExistUser("void") != 1)
             return true;
 
         return false;

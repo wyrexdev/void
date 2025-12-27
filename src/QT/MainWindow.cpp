@@ -22,10 +22,13 @@ namespace QT
 
         if (setup->isSetupNeeded())
         {
+            isSetupNeeded == true;
             welcomeScreen->init(mainLayout);
         }
         else
         {
+            isSetupNeeded == false;
+
             URLPreview *urlPreview = new URLPreview(centralWidget);
             urlPreview->adjustSize();
 
@@ -245,9 +248,12 @@ namespace QT
         int w = event->size().width();
         int h = event->size().height();
 
-        int cw = w - 100;
-        int ch = h - 100;
+        if (isSetupNeeded)
+        {
+            int cw = w - 100;
+            int ch = h - 100;
 
-        welcomeScreen->getContentWidget()->setFixedSize(cw, ch);
+            welcomeScreen->getContentWidget()->setFixedSize(cw, ch);
+        }
     }
 } // namespace QT

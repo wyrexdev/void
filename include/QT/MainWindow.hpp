@@ -31,6 +31,8 @@ namespace QT
 
     private:
         Screens::Welcome *welcomeScreen;
+        
+        bool isSetupNeeded = false;
 
     protected:
         void resizeEvent(QResizeEvent *event) override;
