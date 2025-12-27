@@ -253,7 +253,7 @@ namespace QT
             int cw = w - 100;
             int ch = h - 100;
 
-            welcomeScreen->getContentWidget()->setFixedSize(cw, ch);
+            // welcomeScreen->getContentWidget()->setFixedSize(cw, ch);
         }
     }
 } // namespace QT

@@ -4,23 +4,26 @@ namespace IPC
 {
     void Client::initClient()
     {
-        int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+        sock = socket(AF_UNIX, SOCK_STREAM, 0);
         if (sock < 0)
         {
             perror("socket");
+            return;
         }
 
         sockaddr_un addr{};
         addr.sun_family = AF_UNIX;
-        strcpy(addr.sun_path, "/var/run/void.sock");
+        strcpy(addr.sun_path, "/tmp/void.sock");
 
         if (connect(sock, (sockaddr *)&addr, sizeof(addr)) < 0)
         {
             perror("connect");
+            close(sock);
+            sock = -1;
         }
     }
 
-    Protocol::Response Client::sendRequest(Protocol::Request req)
+    Protocol::Response Client::sendRequest()
     {
         Protocol::Request req{};
         req.magic = 0xDEADBEEF;

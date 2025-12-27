@@ -14,7 +14,7 @@ namespace IPC
     {
     public:
         void initClient();
-        Protocol::Response sendRequest(Protocol::Request req);
+        Protocol::Response sendRequest();
 
     private:
         int sock;

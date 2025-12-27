@@ -10,9 +10,35 @@
 
 #include "Core/Sandbox/SandboxMain.hpp"
 
+#include "Core/IPC/Client.hpp"
+
 int main(int argc, char *argv[])
 {
     umask(0077);
+
+    if (argc > 1 && strcmp(argv[1], "--sandbox") == 0)
+    {
+        auto ids = System::User::getUserIds();
+
+        initgroups("void", ids.gid);
+        setgid(ids.gid);
+        setuid(ids.uid);
+
+        prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+
+        setsid();
+
+        IPC::Server *server = new IPC::Server();
+        server->initServer();
+
+        IPC::Client *client = new IPC::Client();
+        client->initClient();
+        client->sendRequest();
+        
+        _exit(0);
+
+        return 0;
+    }
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
@@ -28,28 +54,6 @@ int main(int argc, char *argv[])
     System::Setup *setup = new System::Setup();
     QT::MainWindow *window = new QT::MainWindow();
     IPC::SandboxMain *sm = new IPC::SandboxMain();
-
-    if (setup->isSetupNeeded())
-    {
-    }
-    else
-    {
-        pid_t pid = fork();
-        if (pid == 0)
-        {
-            auto ids = System::User::getUserIds();
-            setgid(ids.gid);
-            setuid(ids.uid);
-
-            prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-            setsid();
-
-            sm->sandbox();
-            _exit(0);
-        }
-    }
-
-    std::cout << System::User::getCurrentUser() << std::endl;
 
     window->setStyleSheet(
         "background-color: " + QString::fromStdString(Theme::style.background) + ";");

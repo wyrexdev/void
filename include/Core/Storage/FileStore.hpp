@@ -14,7 +14,7 @@
 
 namespace IPC
 {
-    constexpr const char *SANDBOX_ROOT = "~/.local/share/void-browser";
+    constexpr const char *SANDBOX_ROOT = "/home/void/";
 
     class FileStore
     {
