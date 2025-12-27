@@ -2,7 +2,7 @@
 
 namespace IPC
 {
-    class Server {
+    class SandboxMain {
 
     };
 } // namespace IPC

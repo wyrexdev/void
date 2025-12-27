@@ -67,39 +67,6 @@ int main(int argc, char *argv[])
     return app.exec();
 }
 
-enum class Command : uint32_t {
-    INVALID     = 0,
-
-    READ_FILE   = 1,
-    WRITE_FILE  = 2,
-    DELETE_FILE = 3,
-
-    READ_COOKIE = 10,
-    WRITE_COOKIE = 11,
-
-    PING        = 100,
-    SHUTDOWN    = 200
-};
-
-constexpr size_t MAX_PATH_LEN  = 256;
-constexpr size_t MAX_DATA_LEN  = 4096;
-
-struct Request {
-    uint32_t magic;
-    Command  cmd;
-    uint32_t data_len;
-    char     path[MAX_PATH_LEN];
-    uint8_t  data[MAX_DATA_LEN];
-};
-
-#define VOID_MAGIC 0x564F4944
-
-struct Response {
-    int32_t  status;
-    uint32_t data_len;
-    uint8_t  data[MAX_DATA_LEN];
-};
-
 void sandboxMain()
 {
     int server = socket(AF_UNIX, SOCK_STREAM, 0);
