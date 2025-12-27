@@ -3,6 +3,6 @@
 namespace IPC
 {
     class Client {
-
+        
     };
 } // namespace IPC

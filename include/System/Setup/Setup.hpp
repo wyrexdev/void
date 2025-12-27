@@ -4,6 +4,8 @@
 
 #include "Utils/File/FS.hpp"
 
+#include "Core/Storage/FileStore.hpp"
+
 namespace System
 {
     class Setup

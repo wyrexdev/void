@@ -17,10 +17,10 @@ namespace System
                 "pkexec",
                 "/bin/sh",
                 "-c",
-                "useradd -r -s /usr/sbin/nologin void || exit 1; "
-                "mkdir -p /home/void && "
-                "chown void:void /home/void && "
-                "chmod 700 /home/void",
+                "useradd -r -s /usr/sbin/nologin " + username + "|| exit 1; "
+                "mkdir -p /home/" + username + " && "
+                "chown " + username + ":" + username + " /home/" + username + " && "
+                "chmod 700 /home/" + username,
                 nullptr);
             _exit(1);
         }
@@ -42,7 +42,7 @@ namespace System
         struct passwd *pw = getpwnam(username.c_str());
         if (!pw)
         {
-            throw std::runtime_error("void user not found");
+            throw std::runtime_error(username + " user not found");
         }
 
         return {
