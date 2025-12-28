@@ -1,6 +1,6 @@
 #include "Core/Storage/Cookie.hpp"
 
-namespace IPC
+namespace Storage
 {
     Cookie::Cookie()
     {

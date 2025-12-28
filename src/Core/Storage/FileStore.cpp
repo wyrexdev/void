@@ -1,6 +1,6 @@
 #include "Core/Storage/FileStore.hpp"
 
-namespace IPC
+namespace Storage
 {
     int FileStore::readFile(
         const char *rel_path,
@@ -35,7 +35,7 @@ namespace IPC
             return -EACCES;
         }
 
-        if (st.st_size > MAX_DATA_LEN)
+        if (st.st_size > IPC::MAX_DATA_LEN)
         {
             close(fd);
             return -EFBIG;
@@ -62,7 +62,7 @@ namespace IPC
         if (!rel_path || !data)
             return -EINVAL;
 
-        if (len > MAX_DATA_LEN)
+        if (len > IPC::MAX_DATA_LEN)
             return -EFBIG;
 
         if (strstr(rel_path, "..") || rel_path[0] == '/')

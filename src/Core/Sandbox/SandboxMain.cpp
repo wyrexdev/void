@@ -1,6 +1,6 @@
 #include "Core/Sandbox/SandboxMain.hpp"
 
-namespace IPC
+namespace Sandbox
 {
     void SandboxMain::sandbox()
     {

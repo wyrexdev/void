@@ -12,7 +12,7 @@
 
 #include "Core/IPC/Protocol.hpp"
 
-namespace IPC
+namespace Storage
 {
     constexpr const char *SANDBOX_ROOT = "/home/void/";
 

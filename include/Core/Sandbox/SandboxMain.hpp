@@ -12,7 +12,7 @@
 #include <iostream>
 #include <signal.h>
 
-namespace IPC
+namespace Sandbox
 {
     class SandboxMain
     {
