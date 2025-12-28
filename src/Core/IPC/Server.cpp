@@ -26,6 +26,8 @@ namespace IPC
 
         chmod("/tmp/void.sock", 0666);
 
+        IPC::Cookie *cookie = new IPC::Cookie();
+
         if (listen(server, 5) < 0)
         {
             perror("listen");
@@ -58,10 +60,12 @@ namespace IPC
             {
                 res.status = FileStore::writeFile(req.path, req.data, req.data_len);
                 res.data_len = 0;
-            } else if (req.cmd == Command::READ_COOKIE) {
-
-            } else if (req.cmd == Command::WRITE_COOKIE) {
-                
+            }
+            else if (req.cmd == Command::READ_COOKIE)
+            {
+            }
+            else if (req.cmd == Command::WRITE_COOKIE)
+            {
             }
 
             write(client, &res, sizeof(res));

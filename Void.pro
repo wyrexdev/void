@@ -52,4 +52,5 @@ LIBS += \
     -lGLESv2 \
     -lpthread \
     -ldl \
-    -lrt
+    -lrt \
+    -lsqlite3

@@ -10,6 +10,9 @@
 
 #include "Core/IPC/Protocol.hpp"
 #include "Core/Storage/FileStore.hpp"
+#include "Core/Storage/Cookie.hpp"
+
+#include "Utils/File/FS.hpp"
 
 namespace IPC
 {

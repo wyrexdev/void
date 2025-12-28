@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Storage/FileStore.hpp"
+
 #include <sqlite3.h>
 
 namespace IPC
