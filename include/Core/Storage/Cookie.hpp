@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Core/Storage/FileStore.hpp"
-
-#include <sqlite3.h>
+#include "Core/SQLite/SQLite.hpp"
 
 namespace Storage
 {
@@ -12,10 +10,5 @@ namespace Storage
         Cookie();
         void writeCookie();
         void readCookie();
-
-    private:
-        int exit = 0;
-
-        sqlite3 *db;
     };
 } // namespace IPC
