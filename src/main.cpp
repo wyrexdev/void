@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     pid_t pid = fork();
     if (pid == 0)
     {
-        IPC::SandboxMain *sm = new IPC::SandboxMain();
+        Sandbox::SandboxMain *sm = new Sandbox::SandboxMain();
         sm->sandbox();
         _exit(0);
     }
