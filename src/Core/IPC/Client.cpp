@@ -39,8 +39,6 @@ namespace IPC
         Protocol::Response res{};
         read(sock, &res, sizeof(res));
 
-        std::cout << "Server status: " << res.status << std::endl;
-
         close(sock);
 
         return res;

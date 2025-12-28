@@ -5,8 +5,7 @@ namespace IPC
     void SandboxMain::sandbox()
     {
         execlp(
-            "pkexec",
-            "pkexec",
+            "ls"
             "./Void",
             "--ipc-server-sandbox",
             nullptr);
