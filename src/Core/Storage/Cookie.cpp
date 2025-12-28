@@ -4,7 +4,9 @@ namespace IPC
 {
     Cookie::Cookie()
     {
-        std::string path = std::string(SANDBOX_ROOT) + "/Cookies.db";
+        FileStore::mkdirRecursive(FileStore::BASE_PATH + "/db/");
+
+        std::string path = FileStore::BASE_PATH + "/db/cookies.db";
         exit = sqlite3_open(path.c_str(), &db);
 
         if (exit)

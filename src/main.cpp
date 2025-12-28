@@ -15,11 +15,11 @@ int main(int argc, char *argv[])
 {
     umask(0077);
 
-    unlink("/tmp/void.sock");
-    FS::FileSystem::deleteFile("/tmp/void.sock");
-
     if (argc > 1 && strcmp(argv[1], "--ipc-server-sandbox") == 0)
     {
+        unlink("/tmp/void.sock");
+        FS::FileSystem::deleteFile("/tmp/void.sock");
+
         auto ids = System::User::getUserIds();
 
         initgroups("void", ids.gid);

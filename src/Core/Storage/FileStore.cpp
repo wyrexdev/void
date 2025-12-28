@@ -109,4 +109,16 @@ namespace IPC
         return 0;
     }
 
+    void FileStore::mkdirRecursive(const std::string &path)
+    {
+        std::string cur;
+        for (char c : path)
+        {
+            cur += c;
+            if (c == '/')
+                mkdir(cur.c_str(), 0700);
+        }
+        mkdir(cur.c_str(), 0700);
+    }
+
 } // namespace IPC

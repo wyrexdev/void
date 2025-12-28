@@ -19,6 +19,8 @@ namespace IPC
     class FileStore
     {
     public:
+        inline static std::string BASE_PATH = std::string(SANDBOX_ROOT) + "/.local/share/void-browser/";
+
         static int readFile(
             const char *rel_path,
             uint8_t *out_data,
@@ -28,5 +30,7 @@ namespace IPC
             const char *rel_path,
             const uint8_t *data,
             uint32_t len);
+
+        static void mkdirRecursive(const std::string &path);
     };
 } // namespace IPC
