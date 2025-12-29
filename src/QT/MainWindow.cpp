@@ -124,7 +124,9 @@ namespace QT
             browserLayout->addWidget(searchBar);
 
             QString query = searchBar->text();
-            QString url = "https://www.google.com/search?q=" + QString(QUrl::toPercentEncoding(query));
+            // QString url = "https://www.google.com/search?q=" + QString(QUrl::toPercentEncoding(query));
+
+            QString url = QString(QUrl::toPercentEncoding(query));
 
             Nav::NItem i = {
                 UUID::Random(),
@@ -165,8 +167,10 @@ namespace QT
 
         QString query = searchBar->text();
         QString encoded = QUrl::toPercentEncoding(query);
-        std::string url = "https://www.google.com/search?q=" + encoded.toStdString();
+        // std::string url = "https://www.google.com/search?q=" + encoded.toStdString();
 
+        std::string url = encoded.toStdString();
+        
         Fetcher *fetcher = new Fetcher();
         std::string content = fetcher->get(url);
 
