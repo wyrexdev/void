@@ -4,7 +4,7 @@
 
 #include "Skia/QT/SkiaRenderer.hpp"
 
-#include "Engine/Parser/Html/Tokenizer/Tokenizer.hpp"
+#include "Engine/Parser/Html/Tokenizer.hpp"
 #include "Engine/Signals/URLPreviewSignal.hpp"
 
 #include "Engine/Request/Fetcher.hpp"

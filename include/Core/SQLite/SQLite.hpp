@@ -18,7 +18,7 @@ namespace SQLite
 
         void checkAndCreateTables();
 
-        void SQLite::insert(
+        void insert(
             const std::string &table,
             const std::vector<std::string> &columns,
             const std::vector<std::string> &values);

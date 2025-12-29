@@ -14,7 +14,7 @@ std::string Engine::parse(std::string &content)
 {
     elements.clear();
 
-    std::unique_ptr<Tokenizer> t = std::make_unique<Tokenizer>();
+    std::unique_ptr<HTML::Tokenizer> t = std::make_unique<HTML::Tokenizer>();
 
     std::string title = "Unknown - Void";
     content = decodeEntities(content);
