@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Engine/Request/Fetcher.hpp"
+
+#include "Utils/String/String.hpp"
+
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -22,12 +26,12 @@ namespace Core
 
             std::string url;
             std::string mimeType;
-            std::vector<uint8_t> body;
+            std::string body;
 
             int statusCode;
             std::unordered_map<std::string, std::string> headers;
         };
         
-        Resource loadResource();
+        Resource loadResource(std::string path);
     };
 } // namespace name

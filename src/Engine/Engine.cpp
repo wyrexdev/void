@@ -21,7 +21,7 @@ std::string Engine::parse(std::string &content)
     this->content = content;
     tokens = t->tokenize(content);
 
-    for (Token token : tokens)
+    for (HTML::Tokenizer::Token token : tokens)
     {
         if (token.name == "title")
         {
@@ -30,7 +30,7 @@ std::string Engine::parse(std::string &content)
         }
     }
 
-    for (Token t : tokens)
+    for (HTML::Tokenizer::Token t : tokens)
     {
         if (t.name != "script" && t.name != "style" && t.name != "title")
         {

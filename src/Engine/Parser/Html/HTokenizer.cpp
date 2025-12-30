@@ -1,8 +1,8 @@
-#include "Engine/Parser/Html/Tokenizer.hpp"
+#include "Engine/Parser/Html/HTokenizer.hpp"
 
 namespace HTML
 {
-    std::vector<Token> Tokenizer::tokenize(const std::string &html)
+    std::vector<Tokenizer::Token> Tokenizer::tokenize(const std::string &html)
     {
         std::vector<Token> tokens;
 

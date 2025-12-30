@@ -4,7 +4,7 @@
 
 #include "Skia/QT/SkiaRenderer.hpp"
 
-#include "Engine/Parser/Html/Tokenizer.hpp"
+#include "Engine/Parser/Html/HTokenizer.hpp"
 #include "Engine/Signals/URLPreviewSignal.hpp"
 
 #include "Engine/Request/Fetcher.hpp"
@@ -50,7 +50,7 @@ private:
 
     SkiaRenderer *skiaView;
 
-    std::vector<Token> tokens;
+    std::vector<HTML::Tokenizer::Token> tokens;
 
     struct Element
     {

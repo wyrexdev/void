@@ -114,7 +114,7 @@ std::string Fetcher::get(const std::string &addr)
     curl_easy_setopt(curl, CURLOPT_URL, addr.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, Fetcher::writeCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (compatible; Void/1.0)");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "Void/Pre-0.1 (compatible; Void/Pre-0.1)");
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
