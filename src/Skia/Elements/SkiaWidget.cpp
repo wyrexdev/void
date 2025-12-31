@@ -25,4 +25,20 @@ namespace Skia
     {
 
     }
+
+    void SkiaWidget::setWidth(float w) {
+        width = w;
+    }
+
+    void SkiaWidget::setHeight(float h) {
+        height = h;
+    }
+
+    float SkiaWidget::getWidth() {
+        return width;
+    }
+
+    float SkiaWidget::getHeight() {
+        return height;
+    }
 } // namespace Skia

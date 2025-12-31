@@ -13,6 +13,7 @@ namespace Core
         if (origin == "file")
         {
             res.origin = ResourceOrigin::FILE;
+            
         }
         else if (origin == "http" || origin == "https")
         {

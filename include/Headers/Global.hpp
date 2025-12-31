@@ -56,6 +56,11 @@
 #include "include/gpu/ganesh/gl/GrGLBackendSurface.h"
 #include "include/gpu/ganesh/gl/GrGLInterface.h"
 #include "include/gpu/ganesh/gl/GrGLTypes.h"
+
+#include "include/core/SkImage.h"
+#include "include/core/SkData.h"
+#include "include/codec/SkCodec.h"
+#include "include/core/SkBitmap.h"
 // ----- Skia Headers End ----- //
 
 // ----- Math Headers ----- //

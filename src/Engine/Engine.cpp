@@ -58,17 +58,19 @@ std::string Engine::parse(std::string &content)
                 element.isBlock = false;
             }
 
-            element.renderer = std::make_unique<Skia::TextRenderer>(canvas, this);
-            element.renderer->setText(t.content);
+            std::unique_ptr<Skia::TextRenderer> textRenderer = std::make_unique<Skia::TextRenderer>(canvas, this);
+            textRenderer.get()->setText(t.content);
 
-            element.renderer->setTextColor(255, 255, 255, 255);
+            textRenderer.get()->setTextColor(255, 255, 255, 255);
             if (t.name == "a")
-                element.renderer->setTextColor(255, 0, 150, 255);
+                textRenderer.get()->setTextColor(255, 0, 150, 255);
 
-            element.renderer->setWeight(200);
+            textRenderer.get()->setWeight(200);
 
-            element.width = element.renderer->getWidth();
-            element.height = element.renderer->getHeight();
+            element.width = textRenderer.get()->getWidth();
+            element.height = textRenderer.get()->getHeight();
+
+            element.renderer = std::move(textRenderer);
 
             elements.push_back(std::move(element));
         }

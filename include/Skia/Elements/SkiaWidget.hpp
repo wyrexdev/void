@@ -26,5 +26,14 @@ namespace Skia
         SkCanvas *canvas;
 
         bool isHover();
+
+        float getWidth();
+        float getHeight();
+
+        void setWidth(float w);
+        void setHeight(float h);
+    private:
+        float width;
+        float height;
     };
 } // namespace Skia

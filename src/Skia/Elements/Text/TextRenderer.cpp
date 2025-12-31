@@ -33,6 +33,9 @@ namespace Skia
 
         textPaint.setStyle(SkPaint::kStrokeAndFill_Style);
         textPaint.setStrokeWidth(weight / 500);
+
+        setWidth(bounds.width());
+        setHeight(bounds.height());
     }
 
     void TextRenderer::onRender()
@@ -56,6 +59,9 @@ namespace Skia
             text.size(),
             SkTextEncoding::kUTF8,
             &bounds);
+
+        setWidth(bounds.width());
+        setHeight(bounds.height());
     }
 
     void TextRenderer::initFontFile()
@@ -145,32 +151,26 @@ namespace Skia
         return lines;
     }
 
-    float TextRenderer::getWidth()
+    Math::Color TextRenderer::getTextColor()
     {
-        return bounds.width();
-    }
-
-    float TextRenderer::getHeight()
-    {
-        return bounds.height();
-    }
-
-    Math::Color TextRenderer::getTextColor() {
         return textColor;
     }
 
-    void TextRenderer::setTextColor(float a, float r, float g, float b) {
+    void TextRenderer::setTextColor(float a, float r, float g, float b)
+    {
         textColor.a = a;
         textColor.r = r;
         textColor.g = g;
         textColor.b = b;
     }
 
-    float TextRenderer::getWeight() {
+    float TextRenderer::getWeight()
+    {
         return weight;
     }
 
-    void TextRenderer::setWeight(float w) {
+    void TextRenderer::setWeight(float w)
+    {
         weight = w;
     }
 } // namespace Skia

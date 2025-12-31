@@ -54,7 +54,7 @@ private:
 
     struct Element
     {
-        std::unique_ptr<Skia::TextRenderer> renderer;
+        std::unique_ptr<Skia::SkiaWidget> renderer;
         std::string name;
         std::string content;
         std::unordered_map<std::string, std::string> attributes;
