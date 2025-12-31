@@ -37,7 +37,7 @@ namespace Skia
 
     void ImgRenderer::onRender()
     {
-        SkRect dst = SkRect::MakeXYWH(0, 0, width, height);
+        SkRect dst = SkRect::MakeXYWH(getX(), getY(), getWidth(), getHeight());
 
         canvas->drawImageRect(
             image.get(),

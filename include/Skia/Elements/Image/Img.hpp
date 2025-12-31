@@ -30,8 +30,5 @@ namespace Skia
         sk_sp<SkData> data;
         std::vector<uint8_t> bodyData;
         std::unique_ptr<SkCodec> codec;
-
-        int width = 5;
-        int height = 5;
     };
 } // namespace Skia

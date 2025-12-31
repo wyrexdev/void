@@ -18,10 +18,6 @@ namespace Skia
         virtual void onInit() = 0;
         virtual void onRender() = 0;
 
-        Math::Vec3 position;
-        Math::Vec3 rotation;
-        Math::Vec3 scale;
-
         SkiaRenderer *parentWidget;
         SkCanvas *canvas;
 
@@ -30,10 +26,18 @@ namespace Skia
         float getWidth();
         float getHeight();
 
+        float getX();
+        float getY();
+
         void setWidth(float w);
         void setHeight(float h);
+
+        void setX(float x);
+        void setY(float y);
+
     private:
-        float width;
-        float height;
+        Math::Vec3 position;
+        Math::Vec3 rotation;
+        Math::Vec3 scale;
     };
 } // namespace Skia

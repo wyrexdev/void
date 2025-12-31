@@ -26,19 +26,37 @@ namespace Skia
 
     }
 
+
     void SkiaWidget::setWidth(float w) {
-        width = w;
+        scale.x = w;
     }
 
     void SkiaWidget::setHeight(float h) {
-        height = h;
+        scale.y = h;
     }
 
+    void SkiaWidget::setX(float pX) {
+        position.x = pX;
+    }
+
+    void SkiaWidget::setY(float pY) {
+        position.y = pY;
+    }
+
+
     float SkiaWidget::getWidth() {
-        return width;
+        return scale.x;
     }
 
     float SkiaWidget::getHeight() {
-        return height;
+        return scale.y;
+    }
+
+    float SkiaWidget::getX() {
+        return position.x;
+    }
+
+    float SkiaWidget::getY() {
+        return position.y;
     }
 } // namespace Skia

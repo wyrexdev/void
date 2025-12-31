@@ -58,10 +58,6 @@ private:
         std::string name;
         std::string content;
         std::unordered_map<std::string, std::string> attributes;
-        float width = 0;
-        float height = 0;
-        float x = 0;
-        float y = 0;
         bool isBlock = false;
     };
 

@@ -45,14 +45,7 @@ namespace Skia
             return;
         }
 
-        // float y = position.y + 20;
-        // for (const auto &line : wrapText(Screen::width))
-        // {
-        //     canvas->drawString(line.c_str(), position.x, y, font, textPaint);
-        //     y += font.getSize() * 1.2f;
-        // }
-
-        canvas->drawString(text.c_str(), position.x, position.y + 20, font, textPaint);
+        canvas->drawString(text.c_str(), getX(), getY() + 20, font, textPaint);
 
         SkScalar width = font.measureText(
             text.c_str(),

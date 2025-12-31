@@ -21,17 +21,13 @@ std::string Engine::parse(std::string &content)
     this->content = content;
     tokens = t->tokenize(content);
 
-    for (HTML::Tokenizer::Token token : tokens)
-    {
-        if (token.name == "title")
-        {
-            title = token.content;
-            continue;
-        }
-    }
-
     for (HTML::Tokenizer::Token t : tokens)
     {
+        if (t.name == "title")
+        {
+            title = t.content;
+        }
+
         if (t.name != "script" && t.name != "style" && t.name != "title")
         {
             Element element;
@@ -58,19 +54,27 @@ std::string Engine::parse(std::string &content)
                 element.isBlock = false;
             }
 
-            std::unique_ptr<Skia::TextRenderer> textRenderer = std::make_unique<Skia::TextRenderer>(canvas, this);
-            textRenderer.get()->setText(t.content);
+            if (t.name == "img")
+            {
+                std::unique_ptr<Skia::ImgRenderer> imgRenderer = std::make_unique<Skia::ImgRenderer>(canvas, this);
+                imgRenderer.get()->setHeight(100);
+                imgRenderer.get()->setWidth(100);
+                
+                element.renderer = std::move(imgRenderer);
+            }
+            else
+            {
+                std::unique_ptr<Skia::TextRenderer> textRenderer = std::make_unique<Skia::TextRenderer>(canvas, this);
+                textRenderer.get()->setText(t.content);
 
-            textRenderer.get()->setTextColor(255, 255, 255, 255);
-            if (t.name == "a")
-                textRenderer.get()->setTextColor(255, 0, 150, 255);
+                textRenderer.get()->setTextColor(255, 255, 255, 255);
+                if (t.name == "a")
+                    textRenderer.get()->setTextColor(255, 0, 150, 255);
 
-            textRenderer.get()->setWeight(200);
+                textRenderer.get()->setWeight(200);
 
-            element.width = textRenderer.get()->getWidth();
-            element.height = textRenderer.get()->getHeight();
-
-            element.renderer = std::move(textRenderer);
+                element.renderer = std::move(textRenderer);
+            }
 
             elements.push_back(std::move(element));
         }
@@ -107,10 +111,10 @@ void Engine::onMouseUp(float x, float y)
             continue;
 
         if (
-            x >= e.x &&
-            x <= e.x + e.width &&
-            y >= e.y &&
-            y <= e.y + e.height)
+            x >= e.renderer->getX() &&
+            x <= e.renderer->getX() + e.renderer->getWidth() &&
+            y >= e.renderer->getY() &&
+            y <= e.renderer->getY() + e.renderer->getHeight())
         {
             redirect(e.attributes["href"]);
         }
@@ -127,10 +131,10 @@ void Engine::updateState()
         if (!e.renderer)
             continue;
 
-        float startX = e.x;
-        float endX = e.x + e.width;
-        float startY = e.y;
-        float endY = e.y + e.height;
+        float startX = e.renderer->getX();
+        float endX = e.renderer->getX() + e.renderer->getWidth();
+        float startY = e.renderer->getY();
+        float endY = e.renderer->getY() + e.renderer->getHeight();
 
         if (
             mousePos.x() >= startX &&
@@ -180,8 +184,8 @@ void Engine::onRender()
         {
             e.renderer->canvas = canvas;
 
-            e.renderer->position.x = e.x;
-            e.renderer->position.y = e.y + cursorY;
+            e.renderer->setX(e.renderer->getX());
+            e.renderer->setY(e.renderer->getY() + cursorY);
 
             e.renderer->init();
             e.renderer->render();
@@ -226,8 +230,8 @@ void Engine::calculateLayout()
                 cursorX = 0;
                 maxLineHeight = 0;
 
-                e.x = cursorX;
-                e.y = cursorY;
+                e.renderer->setX(cursorX);
+                e.renderer->setY(cursorY);
 
                 cursorX = 0;
                 cursorY += e.renderer->getHeight() + 10;
@@ -241,11 +245,8 @@ void Engine::calculateLayout()
                     maxLineHeight = 0;
                 }
 
-                e.x = cursorX;
-                e.y = cursorY;
-
-                e.width = e.renderer->getWidth();
-                e.height = e.renderer->getHeight();
+                e.renderer->setX(cursorX);
+                e.renderer->setY(cursorY);
 
                 cursorX += e.renderer->getWidth() + 5;
 
