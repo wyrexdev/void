@@ -59,7 +59,11 @@ std::string Engine::parse(std::string &content)
                 std::unique_ptr<Skia::ImgRenderer> imgRenderer = std::make_unique<Skia::ImgRenderer>(canvas, this);
                 imgRenderer.get()->setHeight(100);
                 imgRenderer.get()->setWidth(100);
-                
+
+                std::cout << "URL: " << t.attributes["src"] << std::endl;
+
+                imgRenderer.get()->loadImage(imgRenderer.get()->loadFromUrl("google.com" + t.attributes["src"]));
+
                 element.renderer = std::move(imgRenderer);
             }
             else

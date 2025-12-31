@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <vector>
+#include <cstdint>
+#include <curl/curl.h>
 
 #include "QT/Widget/Widget.hpp"
 
@@ -21,7 +23,10 @@ namespace Skia
         void onInit() override;
         void onRender() override;
 
+        void loadImage(std::vector<uint8_t> data);
+
         std::vector<uint8_t> loadFile(const std::string &path);
+        std::vector<uint8_t> loadFromUrl(const std::string &url);
 
     private:
         sk_sp<SkImage> image;
