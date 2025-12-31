@@ -108,3 +108,11 @@ void SkiaRenderer::mouseReleaseEvent(QMouseEvent *event)
         onMouseUp(pos.x(), pos.y());
     }
 }
+
+void SkiaRenderer::setURL(std::string u) {
+    url = u;
+}
+
+std::string SkiaRenderer::getURL() {
+    return url;
+}

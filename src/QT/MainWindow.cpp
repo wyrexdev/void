@@ -173,7 +173,8 @@ namespace QT
         
         Fetcher *fetcher = new Fetcher();
         std::string content = fetcher->get(url);
-
+        engine->setURL(url);
+        
         size_t heap = malloc_usable_size((void*)content.data());
         i.memoryUsage = Ram::format_bytes(heap);
 

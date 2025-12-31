@@ -32,7 +32,7 @@ public:
         return out;
     }
 
-    static std::vector<std::string> split(const std::string &s, char seperator)
+    static std::vector<std::string> split(const std::string &s, std::string seperator)
     {
         std::vector<std::string> output;
 

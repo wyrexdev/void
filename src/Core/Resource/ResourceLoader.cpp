@@ -6,7 +6,7 @@ namespace Core
     {
         ResourceLoader::Resource res;
 
-        std::string origin = String::split(path, '://')[0];
+        std::string origin = String::split(path, "://")[0];
 
         res.url = path;
 

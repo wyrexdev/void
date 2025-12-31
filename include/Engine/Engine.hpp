@@ -12,6 +12,7 @@
 #include "Engine/Signals/NavSignal.hpp"
 
 #include "Utils/Ram/Ram.hpp"
+#include "Utils/String/String.hpp"
 
 class Engine : public SkiaRenderer
 {

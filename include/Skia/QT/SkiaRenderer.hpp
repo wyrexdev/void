@@ -10,6 +10,9 @@ class SkiaRenderer : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     explicit SkiaRenderer(QWidget *parent = nullptr);
 
+    void setURL(std::string url);
+    std::string getURL();
+    
 protected:
     SkCanvas *canvas;
     
@@ -25,7 +28,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void onMouseDown(float x, float y) {}
     virtual void onMouseUp(float x, float y) {}
-
 private:
     int width;
     int height;
@@ -34,4 +36,6 @@ private:
 
     sk_sp<GrDirectContext> grContext;
     sk_sp<SkSurface> surface;
+
+    std::string url;
 };

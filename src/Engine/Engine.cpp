@@ -60,9 +60,8 @@ std::string Engine::parse(std::string &content)
                 imgRenderer.get()->setHeight(100);
                 imgRenderer.get()->setWidth(100);
 
-                std::cout << "URL: " << t.attributes["src"] << std::endl;
-
-                imgRenderer.get()->loadImage(imgRenderer.get()->loadFromUrl("google.com" + t.attributes["src"]));
+                std::string imgUrl = String::split(t.attributes["src"], getURL()).size() > 1 ? t.attributes["src"] : getURL() + t.attributes["src"] ; 
+                imgRenderer.get()->loadImage(imgRenderer.get()->loadFromUrl(imgUrl));
 
                 element.renderer = std::move(imgRenderer);
             }
