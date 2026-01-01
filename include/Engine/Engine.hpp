@@ -19,7 +19,12 @@ class Engine : public SkiaRenderer
 public:
     Engine();
 
-    std::string parse(std::string &content);
+    struct DocumentMetada {
+        std::string title;
+        std::string logo;
+    };
+
+    DocumentMetada parse(std::string &content);
 
     SkiaRenderer *getSkiaView();
 

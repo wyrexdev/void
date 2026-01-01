@@ -160,7 +160,6 @@ namespace QT
                              {
         Nav::NItem i;
         i.name = "Google";
-        i.logo = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png";
         i.url = searchBar->text().toStdString();
 
         nav->updateItem(History::currenTab, i);
@@ -178,9 +177,11 @@ namespace QT
         size_t heap = malloc_usable_size((void*)content.data());
         i.memoryUsage = Ram::format_bytes(heap);
 
-        std::string title = engine->parse(content);
+        Engine::DocumentMetada result = engine->parse(content);
 
-        i.name = title;
+        i.name = result.title;
+        i.logo = result.logo;
+
         nav->updateItem(History::currenTab, i);
 
         browserWidget->hide();

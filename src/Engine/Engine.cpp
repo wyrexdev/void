@@ -10,13 +10,15 @@ Engine::Engine()
     timer = new QTimer();
 }
 
-std::string Engine::parse(std::string &content)
+Engine::DocumentMetada Engine::parse(std::string &content)
 {
     elements.clear();
 
     std::unique_ptr<HTML::Tokenizer> t = std::make_unique<HTML::Tokenizer>();
 
     std::string title = "Unknown - Void";
+    std::string logoUrl = "https://cdn.vobrow.com/logo.png";
+
     content = decodeEntities(content);
     this->content = content;
     tokens = t->tokenize(content);
@@ -26,6 +28,18 @@ std::string Engine::parse(std::string &content)
         if (t.name == "title")
         {
             title = t.content;
+        }
+
+        if(t.name == "link") {
+            auto relR = t.attributes.find("rel");
+            if(relR != t.attributes.end()) {
+                if(relR->second == "icon") {
+                    auto hrefR = t.attributes.find("href");
+                    if(hrefR != t.attributes.end()) {
+                        logoUrl = hrefR->second;
+                    }
+                }
+            }
         }
 
         if (t.name != "script" && t.name != "style" && t.name != "title")
@@ -60,8 +74,24 @@ std::string Engine::parse(std::string &content)
                 imgRenderer.get()->setHeight(100);
                 imgRenderer.get()->setWidth(100);
 
-                std::string imgUrl = String::split(t.attributes["src"], getURL()).size() > 1 ? t.attributes["src"] : getURL() + t.attributes["src"] ; 
-                imgRenderer.get()->loadImage(imgRenderer.get()->loadFromUrl(imgUrl));
+                auto srcR = t.attributes.find("src");
+                if (srcR != t.attributes.end())
+                {
+                    std::string imgUrl = String::split(srcR->second, getURL()).size() > 1 ? srcR->second : getURL() + srcR->second;
+                    imgRenderer.get()->loadImage(imgRenderer.get()->loadFromUrl(imgUrl));
+                }
+
+                auto wR = t.attributes.find("width");
+                if (wR != t.attributes.end())
+                {
+                    imgRenderer.get()->setWidth(std::stof(wR->second));
+                }
+
+                auto hR = t.attributes.find("height");
+                if (hR != t.attributes.end())
+                {
+                    imgRenderer.get()->setHeight(std::stof(hR->second));
+                }
 
                 element.renderer = std::move(imgRenderer);
             }
@@ -86,7 +116,10 @@ std::string Engine::parse(std::string &content)
     size_t heap = malloc_usable_size((void *)content.data());
     Signals::Nav::updateCurrentTabHeap(Ram::format_bytes(heap));
 
-    return title;
+    return {
+        title,
+        logoUrl
+    };
 }
 
 SkiaRenderer *Engine::getSkiaView()
