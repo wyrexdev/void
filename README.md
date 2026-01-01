@@ -1,7 +1,7 @@
 <div align = center>
 
 <div style='margin-bottom: 30px; margin-top: 20px;'>
-<img src='https://raw.githubusercontent.com/wyrexdev/void/refs/heads/Pre-0.1/images/VB.png' style="width: 750px;">
+<img src='https://cdn.vobrow.com/VB.png' style="width: 750px;">
 </div>
 
 <img src='https://img.shields.io/badge/Workflow-Void-blue?style=for-the-badge&logo=git'>
