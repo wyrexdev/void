@@ -8,7 +8,10 @@ namespace Skia
 
     void SkiaWidget::init()
     {
-        onInit();
+        if(!isInitialized) {
+            onInit();
+            isInitialized = true;
+        }
     }
 
     void SkiaWidget::render()

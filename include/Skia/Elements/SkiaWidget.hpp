@@ -39,5 +39,7 @@ namespace Skia
         Math::Vec3 position;
         Math::Vec3 rotation;
         Math::Vec3 scale;
+
+        bool isInitialized = false;
     };
 } // namespace Skia
