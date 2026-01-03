@@ -97,7 +97,7 @@ ninja -C out/Release
 
 ---
 
-<h3 style="font-family: 'Trebuchet MS', sans-serif;">1.2 - Git Clone</h3>
+<h3 style="font-family: 'Trebuchet MS', sans-serif;">1.3 - Git Clone</h3>
 
 ```
 git clone https://github.com/wyrexdev/void.git
