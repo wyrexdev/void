@@ -170,14 +170,13 @@ namespace QT
 
         std::string url = encoded.toStdString();
         
-        Fetcher *fetcher = new Fetcher();
-        std::string content = fetcher->get(url);
-        engine->setURL(url);
+        Core::Resource r = NetworkLoader::get(url);
+        engine->setURL(r.body);
         
-        size_t heap = malloc_usable_size((void*)content.data());
+        size_t heap = malloc_usable_size((void*)r.body.data());
         i.memoryUsage = Ram::format_bytes(heap);
 
-        Engine::DocumentMetada result = engine->parse(content);
+        Engine::DocumentMetada result = engine->parse(r.body);
 
         i.name = result.title;
         i.logo = result.logo;

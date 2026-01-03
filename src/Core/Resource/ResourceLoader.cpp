@@ -2,9 +2,9 @@
 
 namespace Core
 {
-    ResourceLoader::Resource ResourceLoader::loadResource(std::string path)
+    Core::Resource ResourceLoader::loadResource(std::string path)
     {
-        ResourceLoader::Resource res = NetworkLoader::get(path);;
+        Core::Resource res = NetworkLoader::get(path);;
 
         return res;
     }

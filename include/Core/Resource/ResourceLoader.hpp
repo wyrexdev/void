@@ -4,6 +4,8 @@
 
 #include "Utils/String/String.hpp"
 
+#include "Core/Resource/Resource.hpp"
+
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -11,27 +13,9 @@
 
 namespace Core
 {
-    enum class ResourceOrigin {
-        FILE,
-        HTTP,
-        HTTPS
-    };
-
     class ResourceLoader
     {
     public:
-        struct Resource
-        {
-            ResourceOrigin origin;
-
-            std::string url;
-            std::string mimeType;
-            std::string body;
-
-            int statusCode;
-            std::unordered_map<std::string, std::string> headers;
-        };
-        
         Resource loadResource(std::string path);
     };
 } // namespace name

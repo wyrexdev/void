@@ -4,7 +4,7 @@
 #include <QResizeEvent>
 #include <iostream>
 
-#include "Engine/Request/Fetcher.hpp"
+#include "Engine/Request/NetworkLoader.hpp"
 #include "Engine/Engine.hpp"
 
 #include "QT/Widget/Layouts/Nav.hpp"
