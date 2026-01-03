@@ -222,7 +222,7 @@ void Engine::onRender()
 
             e.renderer->setX(e.renderer->getX());
             e.renderer->setY(e.renderer->getY() + cursorY);
-
+            
             e.renderer->init();
             e.renderer->render();
         }

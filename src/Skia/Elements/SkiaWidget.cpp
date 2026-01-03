@@ -29,7 +29,6 @@ namespace Skia
 
     }
 
-
     void SkiaWidget::setWidth(float w) {
         scale.x = w;
     }
