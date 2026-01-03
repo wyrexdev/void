@@ -15,6 +15,7 @@ class NetworkLoader
 {
 public:
     static Core::Resource get(const std::string &addr);
+    static std::string urlDecode(const std::string &input);
 
 private:
     static size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp);

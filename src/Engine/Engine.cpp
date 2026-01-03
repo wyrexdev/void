@@ -297,10 +297,8 @@ void Engine::calculateLayout()
 
 void Engine::redirect(std::string url)
 {
-    /*Fetcher *fetcher = new Fetcher();
-    std::string content = fetcher->get(url);
-
-    parse(content);*/
+    Core::Resource res = NetworkLoader::get(url);
+    parse(res.body);
 }
 
 std::string Engine::decodeEntities(const std::string &in)

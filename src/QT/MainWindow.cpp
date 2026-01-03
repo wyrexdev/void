@@ -170,8 +170,12 @@ namespace QT
 
         std::string url = encoded.toStdString();
         
-        Core::Resource r = NetworkLoader::get(url);
-        engine->setURL(r.body);
+        Core::ResourceLoader *loader = new Core::ResourceLoader();
+
+        Core::Resource r = loader->loadResource(url);
+        engine->setURL(url);
+
+        std::cout << "DATA: " << r.body << std::endl;
         
         size_t heap = malloc_usable_size((void*)r.body.data());
         i.memoryUsage = Ram::format_bytes(heap);

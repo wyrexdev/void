@@ -124,7 +124,8 @@ std::string NetworkLoader::convertToUTF8(const std::string &input, const std::st
     return result;
 }
 
-void NetworkLoader::parseContentType(const char *ct, std::string &mime, std::string &charset) {
+void NetworkLoader::parseContentType(const char *ct, std::string &mime, std::string &charset)
+{
     if (!ct)
         return;
 
@@ -153,12 +154,22 @@ void NetworkLoader::parseContentType(const char *ct, std::string &mime, std::str
 Core::Resource NetworkLoader::get(const std::string &addr)
 {
     Core::Resource resource{};
-    resource.url = addr;
     resource.body = "";
 
-    std::string origin = String::split(addr, "://")[0];
-    resource.origin =
-        origin == "http" ? Core::ResourceOrigin::HTTP : Core::ResourceOrigin::HTTPS;
+    std::string decoded = urlDecode(addr);
+
+    decoded.erase(0, decoded.find_first_not_of(" \n\r\t"));
+    decoded.erase(decoded.find_last_not_of(" \n\r\t") + 1);
+
+    if (decoded.find("://") == std::string::npos)
+        decoded = "https://" + decoded;
+
+    if (decoded.rfind("https://", 0) == 0)
+        resource.origin = Core::ResourceOrigin::HTTPS;
+    else if (decoded.rfind("http://", 0) == 0)
+        resource.origin = Core::ResourceOrigin::HTTP;
+
+    resource.url = decoded;
 
     CURL *curl = curl_easy_init();
     if (!curl)
@@ -169,7 +180,7 @@ Core::Resource NetworkLoader::get(const std::string &addr)
 
     std::string readBuffer;
 
-    curl_easy_setopt(curl, CURLOPT_URL, addr.c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, decoded.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NetworkLoader::writeCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
@@ -185,17 +196,12 @@ Core::Resource NetworkLoader::get(const std::string &addr)
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
 
-    struct curl_slist *reqHeaders = nullptr;
-    reqHeaders = curl_slist_append(reqHeaders, "Accept-Charset: utf-8");
-    reqHeaders = curl_slist_append(reqHeaders, "*/*");
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, reqHeaders);
-
     CURLcode res = curl_easy_perform(curl);
-    curl_slist_free_all(reqHeaders);
 
     if (res != CURLE_OK)
     {
-        std::cerr << "curl error: " << curl_easy_strerror(res) << std::endl;
+        std::cerr << "curl error: " << curl_easy_strerror(res)
+                  << " - URL: [" << decoded << "]" << std::endl;
         curl_easy_cleanup(curl);
         return resource;
     }
@@ -206,15 +212,42 @@ Core::Resource NetworkLoader::get(const std::string &addr)
 
     char *contentType = nullptr;
     curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &contentType);
-
     parseContentType(contentType, resource.mimeType, resource.charset);
 
     curl_easy_cleanup(curl);
 
     if (resource.statusCode >= 200 && resource.statusCode < 300)
-    {
         resource.body = ensureUTF8(readBuffer, contentType);
-    }
 
     return resource;
+}
+
+std::string NetworkLoader::urlDecode(const std::string &input)
+{
+    if (input.empty())
+        return input;
+
+    CURL *curl = curl_easy_init();
+    if (!curl)
+        return input;
+
+    int outlen = 0;
+    char *decoded = curl_easy_unescape(
+        curl,
+        input.c_str(),
+        static_cast<int>(input.size()),
+        &outlen
+    );
+
+    std::string result;
+    if (decoded && outlen > 0)
+        result.assign(decoded, outlen);
+    else
+        result = input;
+
+    if (decoded)
+        curl_free(decoded);
+
+    curl_easy_cleanup(curl);
+    return result;
 }

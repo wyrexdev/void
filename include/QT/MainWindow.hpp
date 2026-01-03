@@ -20,6 +20,8 @@
 
 #include "Engine/Signals/URLPreviewSignal.hpp"
 
+#include "Core/Resource/ResourceLoader.hpp"
+
 #include "System/Setup/Setup.hpp"
 
 namespace QT
