@@ -16,6 +16,9 @@ class NetworkLoader
 public:
     static Core::Resource get(const std::string &addr);
     static std::string urlDecode(const std::string &input);
+    static bool isAbsoluteURL(const std::string &url);
+    static std::string getOrigin(const std::string &url);
+    static std::string getBaseDir(const std::string &url);
 
 private:
     static size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp);

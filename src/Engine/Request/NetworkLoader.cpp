@@ -251,3 +251,34 @@ std::string NetworkLoader::urlDecode(const std::string &input)
     curl_easy_cleanup(curl);
     return result;
 }
+
+bool NetworkLoader::isAbsoluteURL(const std::string &url)
+{
+    return url.rfind("http://", 0) == 0 ||
+           url.rfind("https://", 0) == 0 ||
+           url.rfind("data:", 0) == 0 ||
+           url.rfind("blob:", 0) == 0;
+}
+
+std::string NetworkLoader::getOrigin(const std::string &url)
+{
+    size_t schemeEnd = url.find("://");
+    if (schemeEnd == std::string::npos)
+        return "";
+
+    schemeEnd += 3;
+    size_t slash = url.find('/', schemeEnd);
+    if (slash == std::string::npos)
+        return url;
+
+    return url.substr(0, slash);
+}
+
+std::string NetworkLoader::getBaseDir(const std::string &url)
+{
+    size_t lastSlash = url.find_last_of('/');
+    if (lastSlash == std::string::npos)
+        return url + "/";
+
+    return url.substr(0, lastSlash + 1);
+}

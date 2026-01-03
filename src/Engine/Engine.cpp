@@ -30,12 +30,16 @@ Engine::DocumentMetada Engine::parse(std::string &content)
             title = t.content;
         }
 
-        if(t.name == "link") {
+        if (t.name == "link")
+        {
             auto relR = t.attributes.find("rel");
-            if(relR != t.attributes.end()) {
-                if(relR->second == "icon") {
+            if (relR != t.attributes.end())
+            {
+                if (relR->second == "icon")
+                {
                     auto hrefR = t.attributes.find("href");
-                    if(hrefR != t.attributes.end()) {
+                    if (hrefR != t.attributes.end())
+                    {
                         logoUrl = hrefR->second;
                     }
                 }
@@ -71,14 +75,30 @@ Engine::DocumentMetada Engine::parse(std::string &content)
             if (t.name == "img")
             {
                 std::unique_ptr<Skia::ImgRenderer> imgRenderer = std::make_unique<Skia::ImgRenderer>(canvas, this);
-                imgRenderer.get()->setHeight(100);
-                imgRenderer.get()->setWidth(100);
+                imgRenderer.get()->setHeight(600);
+                imgRenderer.get()->setWidth(600);
 
                 auto srcR = t.attributes.find("src");
                 if (srcR != t.attributes.end())
                 {
-                    std::string imgUrl = String::split(srcR->second, getURL()).size() > 1 ? srcR->second : getURL() + srcR->second;
-                    imgRenderer.get()->loadImage(imgRenderer.get()->loadFromUrl(imgUrl));
+                    std::string src = NetworkLoader::urlDecode(srcR->second);
+                    std::string finalUrl;
+
+                    if (NetworkLoader::isAbsoluteURL(src))
+                    {
+                        finalUrl = src;
+                    }
+                    else if (!src.empty() && src[0] == '/')
+                    {
+                        finalUrl = NetworkLoader::getOrigin(getURL()) + src;
+                    }
+                    else
+                    {
+                        finalUrl = NetworkLoader::getBaseDir(getURL()) + src;
+                    }
+
+                    imgRenderer->loadImage(
+                        imgRenderer->loadFromUrl(finalUrl));
                 }
 
                 auto wR = t.attributes.find("width");
@@ -93,9 +113,10 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                     imgRenderer.get()->setHeight(std::stof(hR->second));
                 }
 
+                // imgRenderer.get()->loadImage(imgRenderer.get()->loadFromUrl("https://cdn.vobrow.com/logo.png"));
                 element.renderer = std::move(imgRenderer);
             }
-            else
+            else if (t.name == "h1" || t.name == "h2" || t.name == "h3" || t.name == "h4" || t.name == "h5" || t.name == "h6" || t.name == "a" || t.name == "p")
             {
                 std::unique_ptr<Skia::TextRenderer> textRenderer = std::make_unique<Skia::TextRenderer>(canvas, this);
                 textRenderer.get()->setText(t.content);
@@ -118,8 +139,7 @@ Engine::DocumentMetada Engine::parse(std::string &content)
 
     return {
         title,
-        logoUrl
-    };
+        logoUrl};
 }
 
 SkiaRenderer *Engine::getSkiaView()
@@ -222,7 +242,7 @@ void Engine::onRender()
 
             e.renderer->setX(e.renderer->getX());
             e.renderer->setY(e.renderer->getY() + cursorY);
-            
+
             e.renderer->init();
             e.renderer->render();
         }
