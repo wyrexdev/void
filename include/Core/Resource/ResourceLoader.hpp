@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Request/Fetcher.hpp"
+#include "Engine/Request/NetworkLoader.hpp"
 
 #include "Utils/String/String.hpp"
 

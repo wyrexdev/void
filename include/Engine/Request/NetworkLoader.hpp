@@ -7,10 +7,12 @@
 #include <vector>
 #include <cstring>
 
-class Fetcher
+#include "Core/Resource/ResourceLoader.hpp"
+
+class NetworkLoader
 {
 public:
-    static std::string get(const std::string &addr);
+    static Core::ResourceLoader::Resource get(const std::string &addr);
 
     bool isValidUTF8(const std::string &str);
     std::string ensureUTF8(const std::string &content, const char *content_type);

@@ -1,12 +1,12 @@
-#include "Engine/Request/Fetcher.hpp"
+#include "Engine/Request/NetworkLoader.hpp"
 
-size_t Fetcher::writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
+size_t NetworkLoader::writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     ((std::string *)userp)->append((char *)contents, size * nmemb);
     return size * nmemb;
 }
 
-std::string Fetcher::ensureUTF8(const std::string &content, const char *content_type)
+std::string NetworkLoader::ensureUTF8(const std::string &content, const char *content_type)
 {
     if (isValidUTF8(content))
     {
@@ -49,7 +49,7 @@ std::string Fetcher::ensureUTF8(const std::string &content, const char *content_
     return content;
 }
 
-bool Fetcher::isValidUTF8(const std::string &str)
+bool NetworkLoader::isValidUTF8(const std::string &str)
 {
     int follow_bytes = 0;
     for (unsigned char c : str)
@@ -77,7 +77,7 @@ bool Fetcher::isValidUTF8(const std::string &str)
     return follow_bytes == 0;
 }
 
-std::string Fetcher::convertToUTF8(const std::string &input, const std::string &fromCharset)
+std::string NetworkLoader::convertToUTF8(const std::string &input, const std::string &fromCharset)
 {
     iconv_t cd = iconv_open("UTF-8", fromCharset.c_str());
     if (cd == (iconv_t)-1)
@@ -101,57 +101,68 @@ std::string Fetcher::convertToUTF8(const std::string &input, const std::string &
     return result;
 }
 
-std::string Fetcher::get(const std::string &addr)
+Core::ResourceLoader::Resource NetworkLoader::get(const std::string &addr)
 {
+    std::string origin = String::split(addr, "://")[0];
+
+    Core::ResourceLoader::Resource resource;
+    resource.body = "";
+
+    resource.origin = origin == "http" ? Core::ResourceOrigin::HTTP : Core::ResourceOrigin::HTTPS;
+
     CURL *curl = curl_easy_init();
     std::string readBuffer;
 
-    if (!curl) {
+    if (!curl)
+    {
         std::cerr << "Failed to initialize CURL" << std::endl;
-        return "";
+        return resource;
     }
 
     curl_easy_setopt(curl, CURLOPT_URL, addr.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, Fetcher::writeCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NetworkLoader::writeCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "Void/Pre-0.1 (compatible; Void/Pre-0.1)");
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    
+
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
-    
+
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
-    
+
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Accept-Charset: utf-8");
     headers = curl_slist_append(headers, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
     CURLcode res = curl_easy_perform(curl);
-    
+
     curl_slist_free_all(headers);
-    
-    if (res != CURLE_OK) {
+
+    if (res != CURLE_OK)
+    {
         std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
         curl_easy_cleanup(curl);
-        return "";
+        return resource;
     }
-    
+
     char *content_type = nullptr;
     curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &content_type);
-    
+
     long response_code = 0;
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-    
+
     curl_easy_cleanup(curl);
 
-    if (response_code != 200) {
+    if (response_code != 200)
+    {
         std::cerr << "HTTP error: " << response_code << std::endl;
-        return "";
+        return resource;
     }
 
-    Fetcher f;
+    NetworkLoader f;
+    resource.body = f.ensureUTF8(readBuffer, content_type);
 
-    return f.ensureUTF8(readBuffer, content_type);
+    return resource;
 }
