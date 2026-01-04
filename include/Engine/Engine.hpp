@@ -3,6 +3,7 @@
 #include "QT/Widget/Widget.hpp"
 
 #include "Skia/QT/SkiaRenderer.hpp"
+#include "Skia/Canvas/Viewport.hpp"
 
 #include "Engine/Parser/Html/HTokenizer.hpp"
 #include "Engine/Signals/URLPreviewSignal.hpp"

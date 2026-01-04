@@ -2,6 +2,6 @@
 
 namespace Screen
 {
-    inline int width = 0;
-    inline int height = 0;
+    inline float width = 0;
+    inline float height = 0;
 }

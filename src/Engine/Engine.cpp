@@ -234,6 +234,9 @@ void Engine::onRender()
     cursorY = 0;
     int maxLineHeight = 0;
 
+    canvas->save();
+    canvas->translate(0, scrollY);
+
     for (Element &e : elements)
     {
         if (e.renderer)
@@ -253,12 +256,14 @@ void Engine::onRender()
         calculateLayout();
         needsRecalculateLayout = false;
     }
+
+    canvas->restore();
 }
 
 void Engine::onResize(int w, int h)
 {
-    Screen::width = w;
-    Screen::height = h;
+    Skia::Viewport::width = w;
+    Skia::Viewport::height = h;
 
     needsRecalculateLayout = true;
 }
@@ -266,7 +271,10 @@ void Engine::onResize(int w, int h)
 void Engine::calculateLayout()
 {
     if (elements.empty())
+    {
+        totalHeight = 0;
         return;
+    }
 
     cursorX = 0;
     cursorY = 0;
@@ -274,45 +282,41 @@ void Engine::calculateLayout()
 
     for (Element &e : elements)
     {
-        if (e.renderer)
-        {
-            if (e.isBlock)
-            {
-                if (cursorX > 0 || cursorY > 0)
-                {
-                    cursorY += maxLineHeight + 10;
-                }
+        if (!e.renderer)
+            continue;
 
+        if (e.isBlock)
+        {
+            if (cursorX > 0)
+            {
+                cursorY += maxLineHeight + 10;
                 cursorX = 0;
                 maxLineHeight = 0;
-
-                e.renderer->setX(cursorX);
-                e.renderer->setY(cursorY);
-
-                cursorX = 0;
-                cursorY += e.renderer->getHeight() + 10;
             }
-            else
+
+            e.renderer->setX(0);
+            e.renderer->setY(cursorY);
+
+            cursorY += e.renderer->getHeight() + 10;
+        }
+        else
+        {
+            if (cursorX + e.renderer->getWidth() > Skia::Viewport::width - 20)
             {
-                if (cursorX + e.renderer->getWidth() > Screen::width - 20)
-                {
-                    cursorY += maxLineHeight + 5;
-                    cursorX = 0;
-                    maxLineHeight = 0;
-                }
-
-                e.renderer->setX(cursorX);
-                e.renderer->setY(cursorY);
-
-                cursorX += e.renderer->getWidth() + 5;
-
-                if (e.renderer->getHeight() > maxLineHeight)
-                {
-                    maxLineHeight = e.renderer->getHeight();
-                }
+                cursorY += maxLineHeight + 5;
+                cursorX = 0;
+                maxLineHeight = 0;
             }
+
+            e.renderer->setX(cursorX);
+            e.renderer->setY(cursorY);
+
+            cursorX += e.renderer->getWidth() + 5;
+            maxLineHeight = std::max(maxLineHeight, (int)e.renderer->getHeight());
         }
     }
+
+    totalHeight = cursorY + maxLineHeight;
 }
 
 void Engine::redirect(std::string url)

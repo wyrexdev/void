@@ -30,7 +30,7 @@ void SkiaRenderer::resizeGL(int w, int h)
 
     width = w;
     height = h;
-    
+
     const int dpr = devicePixelRatioF();
     const int fbW = w * dpr;
     const int fbH = h * dpr;
@@ -110,10 +110,47 @@ void SkiaRenderer::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-void SkiaRenderer::setURL(std::string u) {
+void SkiaRenderer::setURL(std::string u)
+{
     url = u;
 }
 
-std::string SkiaRenderer::getURL() {
+std::string SkiaRenderer::getURL()
+{
     return url;
+}
+
+void SkiaRenderer::wheelEvent(QWheelEvent *event)
+{
+    int delta = event->angleDelta().y();
+
+    scrollY -= delta * 0.5f;
+    clampScroll();
+
+    std::cout
+        << "viewport=" << Skia::Viewport::height
+        << " content=" << totalHeight
+        << " min=" << (Skia::Viewport::height - totalHeight)
+        << std::endl;
+
+    update();
+}
+
+void SkiaRenderer::clampScroll()
+{
+    float viewportHeight = Skia::Viewport::height;
+
+    if (totalHeight <= viewportHeight)
+    {
+        scrollY = 0;
+        return;
+    }
+
+    float maxScroll = 0;
+    float minScroll = viewportHeight - totalHeight;
+
+    if (scrollY > maxScroll)
+        scrollY = maxScroll;
+    if (scrollY < minScroll)
+        scrollY = minScroll;
 }

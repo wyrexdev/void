@@ -90,7 +90,7 @@ namespace QT
             voLayout->addWidget(vLabel);
             voLayout->addWidget(oLabel);
 
-            Widget *siteContentWidget = new Widget();
+            siteContentWidget = new Widget();
             siteContentWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             QVBoxLayout *siteContentLayout = new QVBoxLayout(siteContentWidget);
 
@@ -250,6 +250,9 @@ namespace QT
     void MainWindow::resizeEvent(QResizeEvent *event)
     {
         QMainWindow::resizeEvent(event);
+
+        Screen::width = event->size().width();
+        Screen::height = event->size().height();
 
         if (!welcomeScreen || !welcomeScreen->getContentWidget())
             return;

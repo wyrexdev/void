@@ -3,6 +3,8 @@
 #include "Headers/Global.hpp"
 #include "Headers/SkiaWidgets.hpp"
 
+#include "Skia/Canvas/Viewport.hpp"
+
 class SkiaRenderer : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -12,10 +14,12 @@ public:
 
     void setURL(std::string url);
     std::string getURL();
-    
+
+    float scrollY;
+
 protected:
     SkCanvas *canvas;
-    
+
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
@@ -28,6 +32,11 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void onMouseDown(float x, float y) {}
     virtual void onMouseUp(float x, float y) {}
+
+    void wheelEvent(QWheelEvent *event) override;
+
+    float totalWidth;
+    float totalHeight;
 private:
     int width;
     int height;
@@ -38,4 +47,6 @@ private:
     sk_sp<SkSurface> surface;
 
     std::string url;
+
+    void clampScroll();
 };

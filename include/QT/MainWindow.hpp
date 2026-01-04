@@ -7,6 +7,8 @@
 #include "Engine/Request/NetworkLoader.hpp"
 #include "Engine/Engine.hpp"
 
+#include "Skia/Canvas/Viewport.hpp"
+
 #include "QT/Widget/Layouts/Nav.hpp"
 #include "QT/Widget/Layouts/LeftSideBar.hpp"
 #include "QT/Widget/Layouts/RightSideBar.hpp"
@@ -32,8 +34,9 @@ namespace QT
         MainWindow();
 
     private:
+        Widget *siteContentWidget;
         Screens::Welcome *welcomeScreen;
-        
+
         bool isSetupNeeded = true;
 
     protected:
