@@ -103,6 +103,8 @@ ninja -C out/Release
 git clone https://github.com/wyrexdev/void.git
 ```
 
+---
+
 <h3 style="font-family: 'Trebuchet MS', sans-serif;">1.4 - Run Project</h3>
 
 ```
