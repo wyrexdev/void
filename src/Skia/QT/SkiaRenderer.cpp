@@ -127,12 +127,6 @@ void SkiaRenderer::wheelEvent(QWheelEvent *event)
     scrollY -= delta * 0.5f;
     clampScroll();
 
-    std::cout
-        << "viewport=" << Skia::Viewport::height
-        << " content=" << totalHeight
-        << " min=" << (Skia::Viewport::height - totalHeight)
-        << std::endl;
-
     update();
 }
 
