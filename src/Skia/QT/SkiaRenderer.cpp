@@ -23,13 +23,13 @@ void SkiaRenderer::initializeGL()
 
 void SkiaRenderer::resizeGL(int w, int h)
 {
+    Skia::Viewport::width = w;
+    Skia::Viewport::height = h;
+    
     if (!grContext)
         return;
 
     makeCurrent();
-
-    width = w;
-    height = h;
 
     const int dpr = devicePixelRatioF();
     const int fbW = w * dpr;
@@ -81,7 +81,7 @@ void SkiaRenderer::paintGL()
     rectPaint.setColor(SkColorSetRGB(17, 17, 17));
 
     canvas->drawRoundRect(
-        SkRect::MakeXYWH(0, 0, width, height),
+        SkRect::MakeXYWH(0, 0, Skia::Viewport::width, Skia::Viewport::height),
         20, 20,
         rectPaint);
 
@@ -124,7 +124,7 @@ void SkiaRenderer::wheelEvent(QWheelEvent *event)
 {
     int delta = event->angleDelta().y();
 
-    scrollY -= delta * 0.5f;
+    scrollY += delta * 0.5f;
     clampScroll();
 
     update();

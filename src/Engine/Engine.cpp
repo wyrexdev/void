@@ -262,9 +262,6 @@ void Engine::onRender()
 
 void Engine::onResize(int w, int h)
 {
-    Skia::Viewport::width = w;
-    Skia::Viewport::height = h;
-
     needsRecalculateLayout = true;
 }
 

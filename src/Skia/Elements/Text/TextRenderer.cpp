@@ -45,7 +45,13 @@ namespace Skia
             return;
         }
 
-        canvas->drawString(text.c_str(), getX(), getY() + 20, font, textPaint);
+        auto blob = SkTextBlob::MakeFromString(
+            text.c_str(),
+            font);
+
+        canvas->drawTextBlob(blob, getX(), getY() + 20, textPaint);
+
+        // canvas->drawString(text.c_str(), getX(), getY() + 20, font, textPaint);
 
         SkScalar width = font.measureText(
             text.c_str(),

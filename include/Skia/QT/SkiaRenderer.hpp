@@ -15,7 +15,7 @@ public:
     void setURL(std::string url);
     std::string getURL();
 
-    float scrollY;
+    float scrollY = 0;
 
 protected:
     SkCanvas *canvas;
@@ -38,9 +38,6 @@ protected:
     float totalWidth;
     float totalHeight;
 private:
-    int width;
-    int height;
-
     bool isInit = true;
 
     sk_sp<GrDirectContext> grContext;

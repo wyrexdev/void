@@ -6,6 +6,8 @@
 
 #include "Skia/Math/Color/Color.hpp"
 
+#include "include/core/SkTextBlob.h"
+
 class SkiaRenderer;
 
 namespace Skia
