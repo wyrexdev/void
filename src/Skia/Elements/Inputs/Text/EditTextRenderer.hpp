@@ -8,10 +8,11 @@ namespace Skia
     }
 
     void EditTextRenderer::onInit() {
-
+        hint = new TextRenderer(canvas, parentWidget);
+        hint->init();
     }
 
     void EditTextRenderer::onRender() {
-        
+        hint->render();
     }
 } // namespace Skia

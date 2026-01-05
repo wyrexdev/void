@@ -45,22 +45,35 @@ namespace Skia
             return;
         }
 
-        auto blob = SkTextBlob::MakeFromString(
-            text.c_str(),
-            font);
+        if (isReUpdateRequired)
+        {
+            blob = SkTextBlob::MakeFromString(
+                text.c_str(),
+                font);
 
-        canvas->drawTextBlob(blob, getX(), getY() + 20, textPaint);
+            // canvas->drawString(text.c_str(), getX(), getY() + 20, font, textPaint);
 
-        // canvas->drawString(text.c_str(), getX(), getY() + 20, font, textPaint);
+            SkScalar width = font.measureText(
+                text.c_str(),
+                text.size(),
+                SkTextEncoding::kUTF8,
+                &bounds);
 
-        SkScalar width = font.measureText(
-            text.c_str(),
-            text.size(),
-            SkTextEncoding::kUTF8,
-            &bounds);
+            setWidth(bounds.width());
+            setHeight(bounds.height());
 
-        setWidth(bounds.width());
-        setHeight(bounds.height());
+            isReUpdateRequired = false;
+        }
+
+        if (blob)
+        {
+            SkFontMetrics metrics;
+            font.getMetrics(&metrics);
+
+            baselineY = getY() - metrics.fAscent;
+
+            canvas->drawTextBlob(blob, getX(), baselineY, textPaint);
+        }
     }
 
     void TextRenderer::initFontFile()
@@ -74,18 +87,24 @@ namespace Skia
 
         initFontFile();
         refresh();
+
+        isReUpdateRequired = true;
     }
 
     void TextRenderer::setText(std::string t)
     {
         text = t;
         refresh();
+
+        isReUpdateRequired = true;
     }
 
     void TextRenderer::setSize(float s)
     {
         size = s;
         refresh();
+
+        isReUpdateRequired = true;
     }
 
     std::vector<std::string> TextRenderer::wrapText(float maxWidth)
@@ -147,6 +166,8 @@ namespace Skia
         if (!line.empty())
             lines.push_back(line);
 
+        isReUpdateRequired = true;
+
         return lines;
     }
 
@@ -161,6 +182,8 @@ namespace Skia
         textColor.r = r;
         textColor.g = g;
         textColor.b = b;
+
+        isReUpdateRequired = true;
     }
 
     float TextRenderer::getWeight()
@@ -171,5 +194,7 @@ namespace Skia
     void TextRenderer::setWeight(float w)
     {
         weight = w;
+
+        isReUpdateRequired = true;
     }
 } // namespace Skia

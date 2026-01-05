@@ -57,6 +57,8 @@
 #include "include/gpu/ganesh/gl/GrGLInterface.h"
 #include "include/gpu/ganesh/gl/GrGLTypes.h"
 
+#include "include/core/SkTextBlob.h"
+#include "include/core/SkFontMetrics.h"
 #include "include/core/SkImage.h"
 #include "include/core/SkData.h"
 #include "include/codec/SkCodec.h"

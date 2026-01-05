@@ -6,8 +6,6 @@
 
 #include "Skia/Math/Color/Color.hpp"
 
-#include "include/core/SkTextBlob.h"
-
 class SkiaRenderer;
 
 namespace Skia
@@ -49,5 +47,11 @@ namespace Skia
 
         float weight = 0.0f;
         float size;
+
+        float baselineY = 0;
+
+        bool isReUpdateRequired = true;
+
+        sk_sp<SkTextBlob> blob;
     };
 } // namespace Skia
