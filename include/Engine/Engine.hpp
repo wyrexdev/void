@@ -45,6 +45,9 @@ public:
 
     std::string decodeEntities(const std::string& in);
 private:
+    // Test
+    Skia::EditTextRenderer *editText;
+
     QScreen *screen;
     qreal hz;
 

@@ -19,6 +19,9 @@ namespace Skia
         void onInit() override;
         void onRender() override;
 
+    protected:
+        void keyPressEvent(QKeyEvent *event);
+
     private:
         TextRenderer *hint;
     };

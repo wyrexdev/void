@@ -10,6 +10,8 @@ void SkiaRenderer::initializeGL()
 {
     initializeOpenGLFunctions();
 
+    setFocusPolicy(Qt::StrongFocus);
+
     auto interface = GrGLMakeNativeInterface();
     grContext = GrDirectContexts::MakeGL(interface);
 
@@ -25,7 +27,7 @@ void SkiaRenderer::resizeGL(int w, int h)
 {
     Skia::Viewport::width = w;
     Skia::Viewport::height = h;
-    
+
     if (!grContext)
         return;
 

@@ -226,6 +226,8 @@ void Engine::onInit()
     updateState(); });
 
     timer->start(intervalMs);
+
+    editText = new Skia::EditTextRenderer(canvas, this);
 }
 
 void Engine::onRender()
@@ -256,6 +258,9 @@ void Engine::onRender()
         calculateLayout();
         needsRecalculateLayout = false;
     }
+
+    editText->init();
+    editText->render();
 
     canvas->restore();
 }
