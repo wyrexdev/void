@@ -10,13 +10,24 @@ namespace Skia
 
     void EditTextRenderer::onInit()
     {
-        hint = new TextRenderer(canvas, parentWidget);
-        hint->init();
+        text = new TextRenderer(canvas, parentWidget);
+        text->setTextColor(255, 255, 0, 0);
     }
 
     void EditTextRenderer::onRender()
     {
-        hint->render();
+        text->setX(getX());
+        text->setY(getY());
+
+        text->init();
+        text->render();
     }
 
+    void EditTextRenderer::setText(std::string t) {
+        text->setText(t);
+    }
+
+    std::string EditTextRenderer::getText() {
+        return text->getText();
+    }
 } // namespace Skia

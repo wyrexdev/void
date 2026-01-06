@@ -259,6 +259,11 @@ void Engine::onRender()
         needsRecalculateLayout = false;
     }
 
+    editText->canvas = canvas;
+
+    editText->setX(100);
+    editText->setY(200);
+
     editText->init();
     editText->render();
 
@@ -357,4 +362,9 @@ std::string Engine::decodeEntities(const std::string &in)
 void Engine::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << "Key Pressed:" << event->key();
+
+    editText->setText(
+        editText->getText() + event->text().toStdString());
+
+    update();
 }

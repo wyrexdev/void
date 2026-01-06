@@ -19,7 +19,10 @@ namespace Skia
         void onInit() override;
         void onRender() override;
 
+        void setText(std::string t);
+        std::string getText();
+
     private:
-        TextRenderer *hint;
+        TextRenderer *text;
     };
 }

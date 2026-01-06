@@ -99,6 +99,10 @@ namespace Skia
         isReUpdateRequired = true;
     }
 
+    std::string TextRenderer::getText() {
+        return text;
+    }
+
     void TextRenderer::setSize(float s)
     {
         size = s;

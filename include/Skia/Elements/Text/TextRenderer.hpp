@@ -21,6 +21,8 @@ namespace Skia
         void initFontFile();
 
         void setText(std::string text);
+        std::string getText();
+
         void setFont(std::string path);
         void setSize(float size);
 
