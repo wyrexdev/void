@@ -20,7 +20,8 @@ class Engine : public SkiaRenderer
 public:
     Engine();
 
-    struct DocumentMetada {
+    struct DocumentMetada
+    {
         std::string title;
         std::string logo;
     };
@@ -43,7 +44,8 @@ public:
 
     void redirect(std::string url);
 
-    std::string decodeEntities(const std::string& in);
+    std::string decodeEntities(const std::string &in);
+
 private:
     // Test
     Skia::EditTextRenderer *editText;
@@ -88,4 +90,7 @@ private:
         {"&reg;", "®"},
         {"&trade;", "™"},
     };
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
 };

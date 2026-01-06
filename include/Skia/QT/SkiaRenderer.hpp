@@ -17,6 +17,8 @@ public:
 
     float scrollY = 0;
 
+    float totalWidth;
+    float totalHeight;
 protected:
     SkCanvas *canvas;
 
@@ -35,8 +37,6 @@ protected:
 
     void wheelEvent(QWheelEvent *event) override;
 
-    float totalWidth;
-    float totalHeight;
 private:
     bool isInit = true;
 

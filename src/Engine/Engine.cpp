@@ -353,3 +353,8 @@ std::string Engine::decodeEntities(const std::string &in)
     }
     return out;
 }
+
+void Engine::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << "Key Pressed:" << event->key();
+}

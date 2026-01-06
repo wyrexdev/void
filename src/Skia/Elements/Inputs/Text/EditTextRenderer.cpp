@@ -19,9 +19,4 @@ namespace Skia
         hint->render();
     }
 
-    void EditTextRenderer::keyPressEvent(QKeyEvent *event)
-    {
-        qDebug() << "Basılan tuş:" << event->key();
-    }
-
 } // namespace Skia
