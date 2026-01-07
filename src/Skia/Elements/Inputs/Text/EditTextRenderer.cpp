@@ -12,6 +12,7 @@ namespace Skia
     {
         text = new TextRenderer(canvas, parentWidget);
         text->setTextColor(255, 255, 0, 0);
+        text->setWeight(200);
     }
 
     void EditTextRenderer::onRender()
@@ -20,14 +21,25 @@ namespace Skia
         text->setY(getY());
 
         text->init();
+
+        SkPaint rectPaint;
+        rectPaint.setAntiAlias(true);
+        rectPaint.setColor(SkColorSetRGB(17, 255, 17));
+
+        canvas->drawRoundRect(
+            SkRect::MakeXYWH(getX(), getY(), text->getWidth(), text->getHeight() * 2),
+            20, 20,
+            rectPaint);
         text->render();
     }
 
-    void EditTextRenderer::setText(std::string t) {
+    void EditTextRenderer::setText(std::string t)
+    {
         text->setText(t);
     }
 
-    std::string EditTextRenderer::getText() {
+    std::string EditTextRenderer::getText()
+    {
         return text->getText();
     }
 } // namespace Skia
