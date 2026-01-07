@@ -13,33 +13,55 @@ namespace Skia
         text = new TextRenderer(canvas, parentWidget);
         text->setTextColor(255, 255, 255, 255);
         text->setWeight(200);
+
+        last = clock::now();
+
+        pointerPaint.setAntiAlias(true);
+        pointerPaint.setColor(SkColorSetRGB(120, 120, 120));
+
+        borderPaint.setAntiAlias(true);
+        borderPaint.setStyle(SkPaint::kStroke_Style);
+        borderPaint.setStrokeWidth(2.0f);
+        borderPaint.setColor(SkColorSetRGB(200, 200, 200));
     }
 
     void EditTextRenderer::onRender()
     {
-        text->setX(getX() + 10);
-        text->setY(getY() + 10);
+        text->setX(getX() + 5);
+        text->setY(getY() + 5);
 
         text->init();
 
-        SkPaint pointerPaint;
-        pointerPaint.setAntiAlias(true);
-        pointerPaint.setColor(SkColorSetRGB(200, 200, 200));
+        auto now = clock::now();
 
-        SkPaint rectPaint;
-        rectPaint.setAntiAlias(true);
-        rectPaint.setStyle(SkPaint::kStroke_Style);
-        rectPaint.setStrokeWidth(2.0f);
-        rectPaint.setColor(SkColorSetRGB(200, 200, 200));
+        if (now - last >= std::chrono::seconds(1))
+        {
+            last = now;
+            isIndic = !isIndic;
 
+            if (isIndic)
+            {
+                pointerPaint.setColor(SkColorSetRGB(120, 120, 120));
+            }
+            else
+            {
+                pointerPaint.setColor(SkColorSetARGB(0, 120, 120, 120));
+            }
+        }
+
+        // Border
         canvas->drawRoundRect(
-            SkRect::MakeXYWH(getX(), getY(), text->getWidth() + 30, (text->getHeight() * 2) + 20),
-            0, 0,
-            rectPaint);
+            SkRect::MakeXYWH(getX(), getY(), 200, (text->getHeight() * 2) + 10),
+            5, 5,
+            borderPaint);
+
+        // Indicator
         canvas->drawRoundRect(
-            SkRect::MakeXYWH(getX() + text->getWidth() + 25, getY() + 10, 2, (text->getHeight() * 2)),
-            0, 0,
+            SkRect::MakeXYWH(getX() + text->getWidth() + 15, getY() + 5, 2, (text->getHeight() * 2)),
+            5, 5,
             pointerPaint);
+
+        // Test Rendering
         text->render();
     }
 
