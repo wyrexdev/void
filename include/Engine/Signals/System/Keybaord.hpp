@@ -12,9 +12,14 @@ namespace Signals
         public:
             explicit Keyboard(QObject *parent = nullptr) : QObject(parent) {}
 
-            static void send(char c, std::string k)
+            static void sendKeyDown(int key, std::string s, Qt::KeyboardModifiers mods)
             {
-                emit instance()->onKeyPress(c, k);
+                emit instance() -> keyDown(key, s, mods);
+            }
+
+            static void sendTextInput(const std::string &utf8)
+            {
+                emit instance() -> textInput(utf8);
             }
 
             static Keyboard *instance()
@@ -23,7 +28,8 @@ namespace Signals
                 return &inst;
             }
         signals:
-            void onKeyPress(char c, std::string k);
+            void keyDown(int key, std::string s, Qt::KeyboardModifiers mods);
+            void textInput(const std::string &utf8);
         };
     } // namespace System
 

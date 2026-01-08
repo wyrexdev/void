@@ -362,8 +362,23 @@ std::string Engine::decodeEntities(const std::string &in)
     return out;
 }
 
-void Engine::keyPressEvent(QKeyEvent *event)
+void Engine::keyPressEvent(QKeyEvent* event)
 {
-    emit Signals::System::Keyboard::send(event->key(), event->text().toStdString());
+    update();
+
+    emit Signals::System::Keyboard::sendKeyDown(
+        event->key(),
+        event->text().toStdString(),
+        event->modifiers()
+    );
+
+    update();
+    
+    if (!event->text().isEmpty()) {
+        emit Signals::System::Keyboard::sendTextInput(
+            event->text().toStdString()
+        );
+    }
+
     update();
 }

@@ -94,5 +94,5 @@ private:
     };
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent* event);
 };
