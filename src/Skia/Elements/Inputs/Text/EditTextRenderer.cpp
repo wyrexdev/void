@@ -37,6 +37,12 @@ namespace Skia
                 Qt::QueuedConnection
             );
         } });
+
+        QObject::connect(Signals::System::Keyboard::instance(), &Signals::System::Keyboard::onKeyPress, [=](char c, std::string k)
+                         {
+                             setText(
+                                 getText() + k);
+                         });
     }
 
     void EditTextRenderer::onRender()

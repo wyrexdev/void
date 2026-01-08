@@ -364,8 +364,6 @@ std::string Engine::decodeEntities(const std::string &in)
 
 void Engine::keyPressEvent(QKeyEvent *event)
 {
-    editText->setText(
-        editText->getText() + event->text().toStdString());
-
+    emit Signals::System::Keyboard::send(event->key(), event->text().toStdString());
     update();
 }

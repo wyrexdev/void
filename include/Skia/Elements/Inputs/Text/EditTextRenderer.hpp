@@ -10,6 +10,7 @@
 #include "Headers/SkiaWidgets.hpp"
 
 #include "Engine/Signals/Skia.hpp"
+#include "Engine/Signals/System/Keybaord.hpp"
 
 class SkiaRenderer;
 
