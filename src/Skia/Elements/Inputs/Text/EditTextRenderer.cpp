@@ -14,8 +14,6 @@ namespace Skia
         text->setTextColor(255, 255, 255, 255);
         text->setWeight(200);
 
-        last = clock::now();
-
         pointerPaint.setAntiAlias(true);
         pointerPaint.setColor(SkColorSetRGB(120, 120, 120));
 
@@ -23,6 +21,22 @@ namespace Skia
         borderPaint.setStyle(SkPaint::kStroke_Style);
         borderPaint.setStrokeWidth(2.0f);
         borderPaint.setColor(SkColorSetRGB(200, 200, 200));
+
+        blinkThread = std::thread([this]
+                                  {
+        while (running.load()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+            bool next = !isIndic.load();
+            isIndic.store(next);
+            alpha.store(next ? 255 : 0);
+
+            QMetaObject::invokeMethod(
+                Signals::Skia::instance(),
+                "updateSkia",
+                Qt::QueuedConnection
+            );
+        } });
     }
 
     void EditTextRenderer::onRender()
@@ -32,22 +46,7 @@ namespace Skia
 
         text->init();
 
-        auto now = clock::now();
-
-        if (now - last >= std::chrono::seconds(1))
-        {
-            last = now;
-            isIndic = !isIndic;
-
-            if (isIndic)
-            {
-                pointerPaint.setColor(SkColorSetRGB(120, 120, 120));
-            }
-            else
-            {
-                pointerPaint.setColor(SkColorSetARGB(0, 120, 120, 120));
-            }
-        }
+        pointerPaint.setColor(SkColorSetARGB(alpha, 120, 120, 120));
 
         // Border
         canvas->drawRoundRect(

@@ -228,6 +228,9 @@ void Engine::onInit()
     timer->start(intervalMs);
 
     editText = new Skia::EditTextRenderer(canvas, this);
+
+    QObject::connect(Signals::Skia::instance(), &Signals::Skia::updateSkia, [=]()
+                     { update(); });
 }
 
 void Engine::onRender()
@@ -361,8 +364,6 @@ std::string Engine::decodeEntities(const std::string &in)
 
 void Engine::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << "Key Pressed:" << event->key();
-
     editText->setText(
         editText->getText() + event->text().toStdString());
 

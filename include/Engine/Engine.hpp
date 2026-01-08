@@ -11,6 +11,7 @@
 #include "Engine/Request/NetworkLoader.hpp"
 
 #include "Engine/Signals/NavSignal.hpp"
+#include "Engine/Signals/Skia.hpp"
 
 #include "Utils/Ram/Ram.hpp"
 #include "Utils/String/String.hpp"

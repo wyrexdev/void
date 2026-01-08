@@ -9,6 +9,8 @@
 
 #include "Headers/SkiaWidgets.hpp"
 
+#include "Engine/Signals/Skia.hpp"
+
 class SkiaRenderer;
 
 namespace Skia
@@ -32,9 +34,9 @@ namespace Skia
         SkPaint pointerPaint;
         SkPaint borderPaint;
 
-        std::chrono::_V2::steady_clock::time_point last;
-
-        bool isIndic = false;
-        float alpha = 255;
+        std::atomic<bool> running{true};
+        std::atomic<bool> isIndic{true};
+        std::atomic<int> alpha{255};
+        std::thread blinkThread;
     };
 }
