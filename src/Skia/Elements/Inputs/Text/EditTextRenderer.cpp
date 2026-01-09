@@ -10,6 +10,8 @@ namespace Skia
 
     void EditTextRenderer::onInit()
     {
+        setMinHeight(50);
+
         text = new TextRenderer(canvas, parentWidget);
         text->setTextColor(255, 255, 255, 255);
         text->setWeight(200);
@@ -40,15 +42,16 @@ namespace Skia
 
         QObject::connect(Signals::System::Keyboard::instance(), &Signals::System::Keyboard::keyDown, [=](int key, std::string s, Qt::KeyboardModifiers mods)
                          {
-                            std::cout << "Char Code: " << key << std::endl;
+                            // std::cout << "Char Code: " << key << std::endl;
 
                             std::string t = getText();
 
                              switch(key) {
                                 case Qt::Key_Backspace:
                                     if (!t.empty()) {
-                                        t.erase(t.length() - 1);
-                                        setText(t);
+                                        QString qs = QString::fromUtf8(t.c_str());
+                                        qs.chop(1);
+                                        setText(qs.toUtf8().toStdString());
                                     }
                                     break;
 
@@ -56,8 +59,7 @@ namespace Skia
                                     setText(
                                         getText() + s); 
                                     break;
-                             } 
-                            });
+                             } });
     }
 
     void EditTextRenderer::onRender()
@@ -69,15 +71,24 @@ namespace Skia
 
         pointerPaint.setColor(SkColorSetARGB(alpha, 120, 120, 120));
 
+        if (text->getHeight() <= getMinHeight())
+        {
+            setHeight(getMinHeight());
+        }
+        else
+        {
+            setHeight(text->getHeight());
+        }
+
         // Border
         canvas->drawRoundRect(
-            SkRect::MakeXYWH(getX(), getY(), 200, (text->getHeight() * 2) + 10),
+            SkRect::MakeXYWH(getX(), getY(), 200, getHeight()),
             5, 5,
             borderPaint);
 
         // Indicator
         canvas->drawRoundRect(
-            SkRect::MakeXYWH(getX() + text->getWidth() + 5, getY() + 5, 2, (text->getHeight() * 2)),
+            SkRect::MakeXYWH(getX() + text->getWidth() + 5, getY() + 5, 2, getHeight() - 10),
             5, 5,
             pointerPaint);
 

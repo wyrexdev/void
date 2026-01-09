@@ -53,20 +53,20 @@ namespace Skia
 
             // canvas->drawString(text.c_str(), getX(), getY() + 20, font, textPaint);
 
+            isReUpdateRequired = false;
+        }
+
+        if (blob)
+        {
             SkScalar width = font.measureText(
                 text.c_str(),
                 text.size(),
                 SkTextEncoding::kUTF8,
                 &bounds);
 
-            setWidth(bounds.width());
+            setWidth(width);
             setHeight(bounds.height());
 
-            isReUpdateRequired = false;
-        }
-
-        if (blob)
-        {
             SkFontMetrics metrics;
             font.getMetrics(&metrics);
 
@@ -99,7 +99,8 @@ namespace Skia
         isReUpdateRequired = true;
     }
 
-    std::string TextRenderer::getText() {
+    std::string TextRenderer::getText()
+    {
         return text;
     }
 
