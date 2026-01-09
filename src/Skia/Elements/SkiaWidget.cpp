@@ -46,6 +46,24 @@ namespace Skia
     }
 
 
+    void SkiaWidget::setMinHeight(float h) {
+        minHeight = h;
+    }
+
+    void SkiaWidget::setMaxHeight(float h) {
+        maxHeight = h;
+    }
+
+    void SkiaWidget::setMinWidth(float w) {
+        minWidth = w;
+    }
+
+    void SkiaWidget::setMaxWidth(float w) {
+        maxWidth = w;
+    }
+
+
+
     float SkiaWidget::getWidth() {
         return scale.x;
     }
@@ -60,5 +78,22 @@ namespace Skia
 
     float SkiaWidget::getY() {
         return position.y;
+    }
+
+
+    float SkiaWidget::getMinHeight() {
+        return minHeight;
+    }
+
+    float SkiaWidget::getMaxHeight() {
+        return maxHeight;
+    }
+
+    float SkiaWidget::getMinWidth() {
+        return minWidth;
+    }
+
+    float SkiaWidget::getMaxWidth() {
+        return maxWidth;
     }
 } // namespace Skia
