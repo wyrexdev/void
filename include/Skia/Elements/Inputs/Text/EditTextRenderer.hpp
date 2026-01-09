@@ -31,6 +31,7 @@ namespace Skia
 
     private:
         TextRenderer *text;
+        TextRenderer *hint;
 
         SkPaint pointerPaint;
         SkPaint borderPaint;

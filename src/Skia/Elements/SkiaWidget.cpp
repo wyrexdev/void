@@ -8,7 +8,8 @@ namespace Skia
 
     void SkiaWidget::init()
     {
-        if(!isInitialized) {
+        if (!isInitialized)
+        {
             onInit();
             isInitialized = true;
         }
@@ -16,84 +17,116 @@ namespace Skia
 
     void SkiaWidget::render()
     {
-        onRender();
+        if (enabled)
+        {
+            onRender();
+        }
     }
 
     void SkiaWidget::refresh()
     {
-        render();
+        if (enabled)
+        {
+            render();
+        }
     }
 
     bool SkiaWidget::isHover()
     {
-
     }
 
-    void SkiaWidget::setWidth(float w) {
+    void SkiaWidget::setWidth(float w)
+    {
         scale.x = w;
     }
 
-    void SkiaWidget::setHeight(float h) {
+    void SkiaWidget::setHeight(float h)
+    {
         scale.y = h;
     }
 
-    void SkiaWidget::setX(float pX) {
+    void SkiaWidget::setX(float pX)
+    {
         position.x = pX;
     }
 
-    void SkiaWidget::setY(float pY) {
+    void SkiaWidget::setY(float pY)
+    {
         position.y = pY;
     }
 
-
-    void SkiaWidget::setMinHeight(float h) {
+    void SkiaWidget::setMinHeight(float h)
+    {
         minHeight = h;
     }
 
-    void SkiaWidget::setMaxHeight(float h) {
+    void SkiaWidget::setMaxHeight(float h)
+    {
         maxHeight = h;
     }
 
-    void SkiaWidget::setMinWidth(float w) {
+    void SkiaWidget::setMinWidth(float w)
+    {
         minWidth = w;
     }
 
-    void SkiaWidget::setMaxWidth(float w) {
+    void SkiaWidget::setMaxWidth(float w)
+    {
         maxWidth = w;
     }
 
-
-
-    float SkiaWidget::getWidth() {
+    float SkiaWidget::getWidth()
+    {
         return scale.x;
     }
 
-    float SkiaWidget::getHeight() {
+    float SkiaWidget::getHeight()
+    {
         return scale.y;
     }
 
-    float SkiaWidget::getX() {
+    float SkiaWidget::getX()
+    {
         return position.x;
     }
 
-    float SkiaWidget::getY() {
+    float SkiaWidget::getY()
+    {
         return position.y;
     }
 
-
-    float SkiaWidget::getMinHeight() {
+    float SkiaWidget::getMinHeight()
+    {
         return minHeight;
     }
 
-    float SkiaWidget::getMaxHeight() {
+    float SkiaWidget::getMaxHeight()
+    {
         return maxHeight;
     }
 
-    float SkiaWidget::getMinWidth() {
+    float SkiaWidget::getMinWidth()
+    {
         return minWidth;
     }
 
-    float SkiaWidget::getMaxWidth() {
+    float SkiaWidget::getMaxWidth()
+    {
         return maxWidth;
+    }
+
+    bool SkiaWidget::isEnabled()
+    {
+        return enabled;
+    }
+
+    void SkiaWidget::enable()
+    {
+        enabled = true;
+    }
+
+    void SkiaWidget::disable()
+    {
+        enabled = false;
     }
 } // namespace Skia

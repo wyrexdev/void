@@ -10,11 +10,17 @@ namespace Skia
 
     void EditTextRenderer::onInit()
     {
-        setMinHeight(50);
+        setMinHeight(30);
 
         text = new TextRenderer(canvas, parentWidget);
         text->setTextColor(255, 255, 255, 255);
         text->setWeight(200);
+
+        hint = new TextRenderer(canvas, parentWidget);
+        hint->setTextColor(255, 200, 200, 200);
+        hint->setWeight(200);
+
+        hint->setText("Hint");
 
         pointerPaint.setAntiAlias(true);
         pointerPaint.setColor(SkColorSetRGB(120, 120, 120));
@@ -48,16 +54,24 @@ namespace Skia
 
                              switch(key) {
                                 case Qt::Key_Backspace:
-                                    if (!t.empty()) {
-                                        QString qs = QString::fromUtf8(t.c_str());
+                                    if (!getText().empty()) {
+                                        QString qs = QString::fromUtf8(getText().c_str());
                                         qs.chop(1);
                                         setText(qs.toUtf8().toStdString());
+                                    }
+
+                                    if(getText().empty()) {
+                                        hint->enable();
                                     }
                                     break;
 
                                 default:
                                     setText(
                                         getText() + s); 
+                                    
+                                    if(!getText().empty()) {
+                                        hint->disable();
+                                    }
                                     break;
                              } });
     }
@@ -67,7 +81,11 @@ namespace Skia
         text->setX(getX() + 5);
         text->setY(getY() + 5);
 
+        hint->setX(getX() + 5);
+        hint->setY(getY() + 5);
+
         text->init();
+        hint->init();
 
         pointerPaint.setColor(SkColorSetARGB(alpha, 120, 120, 120));
 
@@ -92,7 +110,8 @@ namespace Skia
             5, 5,
             pointerPaint);
 
-        // Test Rendering
+        hint->render();
+        // Text Rendering
         text->render();
     }
 

@@ -66,6 +66,11 @@ namespace Skia
         void setMaxWidth(float y);
         // --- SET | MIN - MAX HEIGHT ---
 
+
+        bool isEnabled();
+        void enable();
+        void disable();
+        
     private:
         Math::Vec3 position;
         Math::Vec3 rotation;
@@ -78,5 +83,7 @@ namespace Skia
         float maxWidth;
 
         bool isInitialized = false;
+
+        bool enabled = true;
     };
 } // namespace Skia
