@@ -20,8 +20,6 @@ namespace Skia
         hint->setTextColor(255, 200, 200, 200);
         hint->setWeight(200);
 
-        hint->setText("Hint");
-
         pointerPaint.setAntiAlias(true);
         pointerPaint.setColor(SkColorSetRGB(120, 120, 120));
 
@@ -110,6 +108,7 @@ namespace Skia
             5, 5,
             pointerPaint);
 
+        // Hint Rendering
         hint->render();
         // Text Rendering
         text->render();
@@ -123,5 +122,14 @@ namespace Skia
     std::string EditTextRenderer::getText()
     {
         return text->getText();
+    }
+
+
+    void EditTextRenderer::setHint(std::string h) {
+        hint->setText(h);
+    }
+
+    std::string EditTextRenderer::getHint() {
+        return hint->getText();
     }
 } // namespace Skia

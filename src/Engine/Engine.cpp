@@ -268,6 +268,7 @@ void Engine::onRender()
     editText->setY(200);
 
     editText->init();
+    editText->setHint("What is ur name?");
     editText->render();
 
     canvas->restore();

@@ -29,6 +29,8 @@ namespace Skia
         void setText(std::string t);
         std::string getText();
 
+        void setHint(std::string h);
+        std::string getHint();
     private:
         TextRenderer *text;
         TextRenderer *hint;
