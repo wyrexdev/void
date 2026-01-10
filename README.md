@@ -61,7 +61,9 @@ sudo pacman -Syu sudo pacman -S --needed base-devel git python clang ninja cmake
 <h4 style="font-family: 'Trebuchet MS', sans-serif;">1.2.2 - Create directory and clone repository</h4>
 
 ```
-mkdir -p ~/opt cd ~/opt git clone https://github.com/google/skia 
+mkdir -p ~/opt
+cd ~/opt
+git clone https://github.com/google/skia 
 cd skia
 ```
 
