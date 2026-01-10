@@ -57,6 +57,10 @@ namespace Skia
                          {
                             setText(
                                 getText() + utf8); 
+
+                            if(getText().length() > currentIndex) {
+                                currentIndex++;
+                            }
                                     
                             if(!getText().empty()) {
                                 hint->disable();
@@ -89,7 +93,12 @@ namespace Skia
                                     } 
                                     break;
 
-                                case Qt::Key_Back:
+                                case Qt::Key_Left:
+                                    backChar();
+                                    break;
+
+                                case Qt::Key_Right:
+                                    nextChar();
                                     break;
 
                                 default:
@@ -147,7 +156,7 @@ namespace Skia
 
         // Indicator
         canvas->drawRoundRect(
-            SkRect::MakeXYWH(getX() + text->getWidth() + 5, getY() + 5, 2, getHeight() - 10),
+            SkRect::MakeXYWH(getX() + (text->getWidth() + 5) - indicVal, getY() + 5, 2, getHeight() - 10),
             5, 5,
             pointerPaint);
 
@@ -175,5 +184,47 @@ namespace Skia
     std::string EditTextRenderer::getHint()
     {
         return hint->getText();
+    }
+
+    void EditTextRenderer::nextChar()
+    {
+        const std::string &t = getText();
+
+        if (currentIndex >= t.size())
+            return;
+
+        char ch = t[currentIndex];
+        std::string c(1, ch);
+
+        SkRect bounds;
+        SkScalar width = text->getFont().measureText(
+            c.c_str(),
+            c.size(),
+            SkTextEncoding::kUTF8,
+            &bounds);
+
+        currentIndex++;
+        indicVal -= width;
+    }
+
+    void EditTextRenderer::backChar()
+    {
+        const std::string &t = getText();
+
+        if (currentIndex <= 0)
+            return;
+
+        char ch = t[currentIndex - 1];
+        std::string c(1, ch);
+
+        SkRect bounds;
+        SkScalar width = text->getFont().measureText(
+            c.c_str(),
+            c.size(),
+            SkTextEncoding::kUTF8,
+            &bounds);
+
+        currentIndex--;
+        indicVal += width;
     }
 } // namespace Skia

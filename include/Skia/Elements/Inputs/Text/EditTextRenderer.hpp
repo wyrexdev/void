@@ -27,6 +27,9 @@ namespace Skia
         void onInit() override;
         void onRender() override;
 
+        void backChar();
+        void nextChar();
+
         void setText(std::string t);
         std::string getText();
 
@@ -43,5 +46,12 @@ namespace Skia
         std::atomic<bool> isIndic{true};
         std::atomic<int> alpha{255};
         std::thread blinkThread;
+
+        float indicVal = 0;
+
+        int currentIndex = 0;
+
+        int beginIndex = 0;
+        int endIndex = 0;
     };
 }

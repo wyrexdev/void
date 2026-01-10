@@ -24,6 +24,8 @@ namespace Skia
         std::string getText();
 
         void setFont(std::string path);
+        SkFont getFont();
+
         void setSize(float size);
 
         Math::Color getTextColor();

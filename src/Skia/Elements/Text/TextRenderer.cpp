@@ -218,4 +218,8 @@ namespace Skia
 
         isReUpdateRequired = true;
     }
+
+    SkFont TextRenderer::getFont() {
+        return font;
+    }
 } // namespace Skia
