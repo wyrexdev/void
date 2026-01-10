@@ -55,13 +55,19 @@ namespace Skia
 
         QObject::connect(Signals::System::Keyboard::instance(), &Signals::System::Keyboard::textInput, [=](const std::string &utf8)
                          {
-                            setText(
-                                getText() + utf8); 
+                            std::string t = getText();
 
-                            if(getText().length() > currentIndex) {
-                                currentIndex++;
-                            }
-                                    
+                            if (currentIndex < 0)
+                                currentIndex = 0;
+
+                            if (currentIndex > t.size())
+                                currentIndex = t.size();
+
+                            t.insert(currentIndex, utf8);
+
+                            setText(t);
+                            currentIndex += utf8.size();
+
                             if(!getText().empty()) {
                                 hint->disable();
                             } });
@@ -76,10 +82,20 @@ namespace Skia
                             
                             switch(key) {
                                 case Qt::Key_Backspace:
-                                    if (!getText().empty()) {
+                                    if (!getText().empty() || currentIndex <= 0) {
                                         QString qs = QString::fromUtf8(getText().c_str());
-                                        qs.chop(1);
+
+                                        int qIndex = QString::fromUtf8(
+                                            getText().substr(0, currentIndex).c_str()
+                                        ).length();
+                                    
+                                        qs.remove(qIndex - 1, 1);
+                                    
                                         setText(qs.toUtf8().toStdString());
+                                    
+                                        currentIndex = QString::fromUtf8(
+                                            qs.left(qIndex - 1).toUtf8()
+                                        ).toUtf8().size();
                                     }
 
                                     if(getText().empty()) {
