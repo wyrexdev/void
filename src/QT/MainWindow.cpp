@@ -175,7 +175,7 @@ namespace QT
         Core::Resource r = loader->loadResource(url);
         engine->setURL(url);
 
-        std::cout << "DATA: " << r.body << std::endl;
+        // std::cout << "DATA: " << r.body << std::endl;
         
         size_t heap = malloc_usable_size((void*)r.body.data());
         i.memoryUsage = Ram::format_bytes(heap);

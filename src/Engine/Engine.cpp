@@ -78,6 +78,8 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                 imgRenderer.get()->setHeight(600);
                 imgRenderer.get()->setWidth(600);
 
+                element.type = ElementTypes::img;
+
                 auto srcR = t.attributes.find("src");
                 if (srcR != t.attributes.end())
                 {
@@ -121,6 +123,11 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                 std::unique_ptr<Skia::TextRenderer> textRenderer = std::make_unique<Skia::TextRenderer>(canvas, this);
                 textRenderer.get()->setText(t.content);
 
+                if (t.name == "a")
+                {
+                    element.type = ElementTypes::a;
+                }
+
                 textRenderer.get()->setTextColor(255, 255, 255, 255);
                 if (t.name == "a")
                     textRenderer.get()->setTextColor(255, 0, 150, 255);
@@ -140,12 +147,16 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                     {
                         std::unique_ptr<Skia::EditTextRenderer> editText = std::make_unique<Skia::EditTextRenderer>(canvas, this);
 
+                        element.type = ElementTypes::inputText;
+
                         element.renderer = std::move(editText);
                     }
                 }
                 else
                 {
                     std::unique_ptr<Skia::EditTextRenderer> editText = std::make_unique<Skia::EditTextRenderer>(canvas, this);
+
+                    element.type = ElementTypes::inputText;
 
                     element.renderer = std::move(editText);
                 }
@@ -201,6 +212,7 @@ void Engine::onMouseUp(float x, float y)
 void Engine::updateState()
 {
     bool anyHover = false;
+    int type;
     std::string url = "";
 
     for (Element &e : elements)
@@ -220,6 +232,7 @@ void Engine::updateState()
             mousePos.y() <= endY)
         {
             url = e.attributes["href"];
+            type = e.type;
             anyHover = true;
             break;
         }
@@ -227,8 +240,22 @@ void Engine::updateState()
 
     if (anyHover)
     {
-        setCursor(Qt::PointingHandCursor);
-        Signals::URLPReview::show(url);
+        switch (type)
+        {
+        case ElementTypes::a:
+            setCursor(Qt::PointingHandCursor);
+            Signals::URLPReview::show(url);
+            break;
+
+        case ElementTypes::inputText:
+            setCursor(Qt::IBeamCursor);
+            break;
+
+        default:
+            setCursor(Qt::ArrowCursor);
+            Signals::URLPReview::close();
+            break;
+        }
     }
     else
     {

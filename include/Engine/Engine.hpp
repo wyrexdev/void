@@ -63,10 +63,20 @@ private:
 
     std::vector<HTML::Tokenizer::Token> tokens;
 
+    enum ElementTypes {
+        a = 1001,
+        p = 1002,
+
+        inputText = 2001,
+
+        img = 3001
+    };
+
     struct Element
     {
         std::unique_ptr<Skia::SkiaWidget> renderer;
         std::string name;
+        int type;
         std::string content;
         std::unordered_map<std::string, std::string> attributes;
         bool isBlock = false;

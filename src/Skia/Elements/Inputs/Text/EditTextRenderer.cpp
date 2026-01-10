@@ -117,8 +117,6 @@ namespace Skia
             setWidth(w);
         }
 
-        std::cout << getWidth() << std::endl;
-
         // Border
         canvas->drawRoundRect(
             SkRect::MakeXYWH(getX(), getY(), 200, getHeight()),
