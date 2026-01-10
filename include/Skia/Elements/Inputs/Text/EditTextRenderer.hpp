@@ -11,6 +11,7 @@
 
 #include "Engine/Signals/Skia.hpp"
 #include "Engine/Signals/System/Keybaord.hpp"
+#include "Engine/Signals/System/Mouse.hpp"
 
 class SkiaRenderer;
 

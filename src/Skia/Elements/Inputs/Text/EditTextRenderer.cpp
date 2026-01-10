@@ -45,13 +45,32 @@ namespace Skia
             );
         } });
 
+        QObject::connect(Signals::System::Mouse::instance(), &Signals::System::Mouse::onClick, [=](float x, float y)
+                         { text->setBackgroundColor(Math::Color{53, 132, 228, 0});
+                                    QMetaObject::invokeMethod(
+                                        Signals::Skia::instance(),
+                                        "updateSkia",
+                                        Qt::QueuedConnection
+                                    ); });
+
+        QObject::connect(Signals::System::Keyboard::instance(), &Signals::System::Keyboard::textInput, [=](const std::string &utf8)
+                         {
+                            setText(
+                                getText() + utf8); 
+                                    
+                            if(!getText().empty()) {
+                                hint->disable();
+                            } });
+
         QObject::connect(Signals::System::Keyboard::instance(), &Signals::System::Keyboard::keyDown, [=](int key, std::string s, Qt::KeyboardModifiers mods)
                          {
                             // std::cout << "Char Code: " << key << std::endl;
 
                             std::string t = getText();
-
-                             switch(key) {
+                            
+                            text->setBackgroundColor(Math::Color{53, 132, 228, 0});
+                            
+                            switch(key) {
                                 case Qt::Key_Backspace:
                                     if (!getText().empty()) {
                                         QString qs = QString::fromUtf8(getText().c_str());
@@ -66,17 +85,14 @@ namespace Skia
 
                                 case Qt::Key_A:
                                     if (mods & Qt::ControlModifier) {
-                                        
-                                    }
+                                        text->setBackgroundColor(Math::Color{53, 132, 228, 255});
+                                    } 
+                                    break;
+
+                                case Qt::Key_Back:
                                     break;
 
                                 default:
-                                    setText(
-                                        getText() + s); 
-                                    
-                                    if(!getText().empty()) {
-                                        hint->disable();
-                                    }
                                     break;
                              } });
     }
@@ -122,8 +138,6 @@ namespace Skia
         {
             setWidth(w);
         }
-
-        text->setBackgroundColor(Math::Color{53, 132, 228, 255});
 
         // Border
         canvas->drawRoundRect(

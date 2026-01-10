@@ -105,9 +105,12 @@ void SkiaRenderer::mousePressEvent(QMouseEvent *event)
 
 void SkiaRenderer::mouseReleaseEvent(QMouseEvent *event)
 {
+    QPointF pos = event->position();
+
+    emit Signals::System::Mouse::click(pos.x(), pos.y());
+
     if (event->button() == Qt::LeftButton)
     {
-        QPointF pos = event->position();
         onMouseUp(pos.x(), pos.y());
     }
 }

@@ -13,6 +13,7 @@
 #include "Engine/Signals/NavSignal.hpp"
 #include "Engine/Signals/Skia.hpp"
 #include "Engine/Signals/System/Keybaord.hpp"
+#include "Engine/Signals/System/Mouse.hpp"
 
 #include "Utils/Ram/Ram.hpp"
 #include "Utils/String/String.hpp"

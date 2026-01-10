@@ -81,7 +81,7 @@ namespace Skia
                 x + bounds.right(),
                 y + bounds.bottom());
 
-            bgRect.outset(0, 4);
+            bgRect.outset(0, 3);
 
             SkPaint bgPaint;
             bgPaint.setAntiAlias(true);

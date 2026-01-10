@@ -181,8 +181,7 @@ Engine::DocumentMetada Engine::parse(std::string &content)
 
     return {
         title,
-        logoUrl
-    };
+        logoUrl};
 }
 
 SkiaRenderer *Engine::getSkiaView()
@@ -197,6 +196,7 @@ void Engine::pollInput()
 
 void Engine::onMouseDown(float x, float y)
 {
+    
 }
 
 void Engine::onMouseUp(float x, float y)
@@ -422,10 +422,14 @@ void Engine::keyPressEvent(QKeyEvent *event)
 
     update();
 
-    if (!event->text().isEmpty())
+    QString txt = event->text();
+
+    if (!txt.isEmpty() &&
+        !(event->modifiers() & (Qt::ControlModifier | Qt::AltModifier)) &&
+        txt.at(0).isPrint())
     {
         emit Signals::System::Keyboard::sendTextInput(
-            event->text().toStdString());
+            txt.toStdString());
     }
 
     update();
