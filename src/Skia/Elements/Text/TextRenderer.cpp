@@ -2,7 +2,7 @@
 
 namespace Skia
 {
-    TextRenderer::TextRenderer(SkCanvas *c, SkiaRenderer *pw)
+    TextRenderer::TextRenderer(SkCanvas *c, SkiaRenderer *pw) : textColor(Math::Color{255, 255, 255, 0})
     {
         parentWidget = pw;
         canvas = c;
@@ -72,6 +72,22 @@ namespace Skia
 
             baselineY = getY() - metrics.fAscent;
 
+            SkScalar x = getX();
+            SkScalar y = baselineY;
+
+            SkRect bgRect = SkRect::MakeLTRB(
+                x + bounds.left(),
+                y + bounds.top(),
+                x + bounds.right(),
+                y + bounds.bottom());
+
+            bgRect.outset(0, 4);
+
+            SkPaint bgPaint;
+            bgPaint.setAntiAlias(true);
+            bgPaint.setColor(SkColorSetARGB(getBackgroundColor().a, getBackgroundColor().r, getBackgroundColor().g, getBackgroundColor().b));
+
+            canvas->drawRect(bgRect, bgPaint);
             canvas->drawTextBlob(blob, getX(), baselineY, textPaint);
         }
     }

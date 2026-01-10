@@ -68,6 +68,7 @@
 // ----- Math Headers ----- //
 #include "Skia/Math/Vec2/Vec2.hpp"
 #include "Skia/Math/Vec3/Vec3.hpp"
+#include "Skia/Math/Color/Color.hpp"
 // ----- Math Headers End ----- //
 
 // ----- Global Headers ----- //

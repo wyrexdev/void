@@ -147,8 +147,13 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                     {
                         std::unique_ptr<Skia::EditTextRenderer> editText = std::make_unique<Skia::EditTextRenderer>(canvas, this);
 
-                        element.type = ElementTypes::inputText;
+                        auto placeholder = t.attributes.find("placeholder");
+                        if (placeholder != t.attributes.end())
+                        {
+                            editText->setHint(placeholder->second);
+                        }
 
+                        element.type = ElementTypes::inputText;
                         element.renderer = std::move(editText);
                     }
                 }
@@ -156,8 +161,13 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                 {
                     std::unique_ptr<Skia::EditTextRenderer> editText = std::make_unique<Skia::EditTextRenderer>(canvas, this);
 
-                    element.type = ElementTypes::inputText;
+                    auto placeholder = t.attributes.find("placeholder");
+                    if (placeholder != t.attributes.end())
+                    {
+                        editText->setHint(placeholder->second);
+                    }
 
+                    element.type = ElementTypes::inputText;
                     element.renderer = std::move(editText);
                 }
             }
@@ -171,7 +181,8 @@ Engine::DocumentMetada Engine::parse(std::string &content)
 
     return {
         title,
-        logoUrl};
+        logoUrl
+    };
 }
 
 SkiaRenderer *Engine::getSkiaView()

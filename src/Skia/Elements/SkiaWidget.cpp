@@ -2,7 +2,7 @@
 
 namespace Skia
 {
-    SkiaWidget::SkiaWidget()
+    SkiaWidget::SkiaWidget() : backgroundColor(Math::Color{255, 255, 255, 0})
     {
     }
 
@@ -128,5 +128,13 @@ namespace Skia
     void SkiaWidget::disable()
     {
         enabled = false;
+    }
+
+    Math::Color SkiaWidget::getBackgroundColor() {
+        return backgroundColor;
+    }
+    
+    void SkiaWidget::setBackgroundColor(Math::Color c) {
+        backgroundColor = c;
     }
 } // namespace Skia

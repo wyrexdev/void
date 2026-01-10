@@ -70,11 +70,16 @@ namespace Skia
         bool isEnabled();
         void enable();
         void disable();
+
+        Math::Color getBackgroundColor();
+        void setBackgroundColor(Math::Color c);
         
     private:
         Math::Vec3 position;
         Math::Vec3 rotation;
         Math::Vec3 scale;
+
+        Math::Color backgroundColor;
 
         float minHeight = 0;
         float maxHeight = 0;

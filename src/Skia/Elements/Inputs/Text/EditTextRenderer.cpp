@@ -64,6 +64,12 @@ namespace Skia
                                     }
                                     break;
 
+                                case Qt::Key_A:
+                                    if (mods & Qt::ControlModifier) {
+                                        
+                                    }
+                                    break;
+
                                 default:
                                     setText(
                                         getText() + s); 
@@ -116,6 +122,8 @@ namespace Skia
         {
             setWidth(w);
         }
+
+        text->setBackgroundColor(Math::Color{53, 132, 228, 255});
 
         // Border
         canvas->drawRoundRect(
