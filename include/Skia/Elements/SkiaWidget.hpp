@@ -76,11 +76,11 @@ namespace Skia
         Math::Vec3 rotation;
         Math::Vec3 scale;
 
-        float minHeight;
-        float maxHeight;
+        float minHeight = 0;
+        float maxHeight = 0;
 
-        float minWidth;
-        float maxWidth;
+        float minWidth = 0;
+        float maxWidth = 0;
 
         bool isInitialized = false;
 

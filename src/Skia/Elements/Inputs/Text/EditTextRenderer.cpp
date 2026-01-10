@@ -11,6 +11,7 @@ namespace Skia
     void EditTextRenderer::onInit()
     {
         setMinHeight(30);
+        setMinWidth(200);
 
         text = new TextRenderer(canvas, parentWidget);
         text->setTextColor(255, 255, 255, 255);
@@ -87,14 +88,36 @@ namespace Skia
 
         pointerPaint.setColor(SkColorSetARGB(alpha, 120, 120, 120));
 
-        if (text->getHeight() <= getMinHeight())
+        float h = text->getHeight();
+        float w = text->getWidth();
+
+        if (h < getMinHeight())
         {
             setHeight(getMinHeight());
         }
+        else if (h > getMaxHeight())
+        {
+            setHeight(getMaxHeight());
+        }
         else
         {
-            setHeight(text->getHeight());
+            setHeight(h);
         }
+
+        if (w < getMinWidth())
+        {
+            setWidth(getMinWidth());
+        }
+        else if (w > getMaxWidth())
+        {
+            setWidth(getMaxWidth());
+        }
+        else
+        {
+            setWidth(w);
+        }
+
+        std::cout << getWidth() << std::endl;
 
         // Border
         canvas->drawRoundRect(
@@ -124,12 +147,13 @@ namespace Skia
         return text->getText();
     }
 
-
-    void EditTextRenderer::setHint(std::string h) {
+    void EditTextRenderer::setHint(std::string h)
+    {
         hint->setText(h);
     }
 
-    std::string EditTextRenderer::getHint() {
+    std::string EditTextRenderer::getHint()
+    {
         return hint->getText();
     }
 } // namespace Skia

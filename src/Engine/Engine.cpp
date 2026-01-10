@@ -129,6 +129,27 @@ Engine::DocumentMetada Engine::parse(std::string &content)
 
                 element.renderer = std::move(textRenderer);
             }
+            else if (t.name == "input")
+            {
+                auto type = t.attributes.find("type");
+                if (type != t.attributes.end())
+                {
+                    // std::cout << type->second << std::endl;
+
+                    if (type->second == "text")
+                    {
+                        std::unique_ptr<Skia::EditTextRenderer> editText = std::make_unique<Skia::EditTextRenderer>(canvas, this);
+
+                        element.renderer = std::move(editText);
+                    }
+                }
+                else
+                {
+                    std::unique_ptr<Skia::EditTextRenderer> editText = std::make_unique<Skia::EditTextRenderer>(canvas, this);
+
+                    element.renderer = std::move(editText);
+                }
+            }
 
             elements.push_back(std::move(element));
         }
@@ -227,8 +248,6 @@ void Engine::onInit()
 
     timer->start(intervalMs);
 
-    editText = new Skia::EditTextRenderer(canvas, this);
-
     QObject::connect(Signals::Skia::instance(), &Signals::Skia::updateSkia, [=]()
                      { update(); });
 }
@@ -261,15 +280,6 @@ void Engine::onRender()
         calculateLayout();
         needsRecalculateLayout = false;
     }
-
-    editText->canvas = canvas;
-
-    editText->setX(100);
-    editText->setY(200);
-
-    editText->init();
-    editText->setHint("What is ur name?");
-    editText->render();
 
     canvas->restore();
 }
@@ -363,22 +373,21 @@ std::string Engine::decodeEntities(const std::string &in)
     return out;
 }
 
-void Engine::keyPressEvent(QKeyEvent* event)
+void Engine::keyPressEvent(QKeyEvent *event)
 {
     update();
 
     emit Signals::System::Keyboard::sendKeyDown(
         event->key(),
         event->text().toStdString(),
-        event->modifiers()
-    );
+        event->modifiers());
 
     update();
-    
-    if (!event->text().isEmpty()) {
+
+    if (!event->text().isEmpty())
+    {
         emit Signals::System::Keyboard::sendTextInput(
-            event->text().toStdString()
-        );
+            event->text().toStdString());
     }
 
     update();
