@@ -82,9 +82,23 @@ namespace Skia
                             
                             switch(key) {
                                 case Qt::Key_Backspace:
+                                    if (isSelected)
+                                    {
+                                        std::string t = getText();
+                                    
+                                        if (beginIndex < endIndex && endIndex <= t.size())
+                                        {
+                                            t.erase(beginIndex, endIndex - beginIndex);
+                                            setText(t);
+                                        
+                                            currentIndex = beginIndex;
+                                        }
+                                    
+                                        isSelected = false;
+                                    }  
+                                    
                                     if (!getText().empty() || currentIndex <= 0) {
                                         QString qs = QString::fromUtf8(getText().c_str());
-
                                         int qIndex = QString::fromUtf8(
                                             getText().substr(0, currentIndex).c_str()
                                         ).length();
@@ -115,6 +129,12 @@ namespace Skia
                                         isSelected = true;
                                     } 
                                     break;
+
+                                case Qt::Key_Shift: 
+                                    if (mods & Qt::ShiftModifier) {
+                                        
+                                    }
+                                break;
 
                                 case Qt::Key_Left:
                                     backChar();

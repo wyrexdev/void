@@ -34,6 +34,9 @@ namespace Skia
         float getWeight();
         void setWeight(float w);
 
+        void selectAll();
+        void selectRange(int begin, int end);
+
         std::vector<std::string> wrapText(float maxWidth);
     private:
         std::unique_ptr<SkFontScanner> scanner;

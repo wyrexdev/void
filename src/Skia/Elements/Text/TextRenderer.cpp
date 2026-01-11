@@ -75,19 +75,19 @@ namespace Skia
             SkScalar x = getX();
             SkScalar y = baselineY;
 
-            SkRect bgRect = SkRect::MakeLTRB(
+            SkRect selectedArea = SkRect::MakeLTRB(
                 x + bounds.left(),
                 y + bounds.top(),
                 x + bounds.right(),
                 y + bounds.bottom());
 
-            bgRect.outset(0, 3);
+            selectedArea.outset(0, 3);
 
             SkPaint bgPaint;
             bgPaint.setAntiAlias(true);
-            bgPaint.setColor(SkColorSetARGB(getBackgroundColor().a, getBackgroundColor().r, getBackgroundColor().g, getBackgroundColor().b));
+            bgPaint.setColor(SkColorSetARGB(255, 53, 132, 228));
 
-            canvas->drawRect(bgRect, bgPaint);
+            canvas->drawRect(selectedArea, bgPaint);
             canvas->drawTextBlob(blob, getX(), baselineY, textPaint);
         }
     }
@@ -221,5 +221,9 @@ namespace Skia
 
     SkFont TextRenderer::getFont() {
         return font;
+    }
+
+    void TextRenderer::selectAll() {
+        
     }
 } // namespace Skia
