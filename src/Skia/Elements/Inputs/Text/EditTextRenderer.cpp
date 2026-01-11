@@ -106,6 +106,13 @@ namespace Skia
                                 case Qt::Key_A:
                                     if (mods & Qt::ControlModifier) {
                                         text->setBackgroundColor(Math::Color{53, 132, 228, 255});
+
+                                        std::string t = text->getText();
+
+                                        beginIndex = 0;
+                                        endIndex = t.size();
+
+                                        isSelected = true;
                                     } 
                                     break;
 
@@ -169,10 +176,12 @@ namespace Skia
             SkRect::MakeXYWH(getX(), getY(), 200, getHeight()),
             5, 5,
             borderPaint);
+            
+        float currentIndicLoc = getX() + (text->getWidth() + 5) - indicVal;
 
         // Indicator
         canvas->drawRoundRect(
-            SkRect::MakeXYWH(getX() + (text->getWidth() + 5) - indicVal, getY() + 5, 2, getHeight() - 10),
+            SkRect::MakeXYWH(currentIndicLoc, getY() + 5, 2, getHeight() - 10),
             5, 5,
             pointerPaint);
 
@@ -206,6 +215,14 @@ namespace Skia
     {
         const std::string &t = getText();
 
+        if (isSelected)
+        {
+            currentIndex = endIndex;
+            indicVal = computeIndicFromIndex(currentIndex);
+            isSelected = false;
+            return;
+        }
+
         if (currentIndex >= t.size())
             return;
 
@@ -227,6 +244,14 @@ namespace Skia
     {
         const std::string &t = getText();
 
+        if (isSelected)
+        {
+            currentIndex = beginIndex;
+            indicVal = computeIndicFromIndex(currentIndex);
+            isSelected = false;
+            return;
+        }
+
         if (currentIndex <= 0)
             return;
 
@@ -242,5 +267,19 @@ namespace Skia
 
         currentIndex--;
         indicVal += width;
+    }
+
+    float EditTextRenderer::computeIndicFromIndex(int index)
+    {
+        std::string t = getText().substr(0, index);
+
+        SkRect bounds;
+        SkScalar width = text->getFont().measureText(
+            t.c_str(),
+            t.size(),
+            SkTextEncoding::kUTF8,
+            &bounds);
+
+        return -width;
     }
 } // namespace Skia

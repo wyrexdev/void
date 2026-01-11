@@ -35,6 +35,8 @@ namespace Skia
 
         void setHint(std::string h);
         std::string getHint();
+
+        float computeIndicFromIndex(int index);
     private:
         TextRenderer *text;
         TextRenderer *hint;
@@ -51,7 +53,9 @@ namespace Skia
 
         int currentIndex = 0;
 
-        int beginIndex = 0;
-        int endIndex = 0;
+        int beginIndex = -1;
+        int endIndex = -1;
+
+        bool isSelected = false;
     };
 }
