@@ -36,7 +36,9 @@ namespace Skia
         void setHint(std::string h);
         std::string getHint();
 
-        float computeIndicFromIndex(int index);
+        float caretX();
+        int nextUtf8Index(const std::string &s, int i);
+        int prevUtf8Index(const std::string &s, int i);
     private:
         TextRenderer *text;
         TextRenderer *hint;

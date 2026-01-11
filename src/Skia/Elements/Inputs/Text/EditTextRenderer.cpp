@@ -176,12 +176,12 @@ namespace Skia
             SkRect::MakeXYWH(getX(), getY(), 200, getHeight()),
             5, 5,
             borderPaint);
-            
-        float currentIndicLoc = getX() + (text->getWidth() + 5) - indicVal;
 
-        // Indicator
+        float x = caretX();
+
+        // Caret / Indicator
         canvas->drawRoundRect(
-            SkRect::MakeXYWH(currentIndicLoc, getY() + 5, 2, getHeight() - 10),
+            SkRect::MakeXYWH(x, getY() + 5, 2, getHeight() - 10),
             5, 5,
             pointerPaint);
 
@@ -218,26 +218,14 @@ namespace Skia
         if (isSelected)
         {
             currentIndex = endIndex;
-            indicVal = computeIndicFromIndex(currentIndex);
             isSelected = false;
             return;
         }
 
-        if (currentIndex >= t.size())
+        if (currentIndex >= (int)t.size())
             return;
 
-        char ch = t[currentIndex];
-        std::string c(1, ch);
-
-        SkRect bounds;
-        SkScalar width = text->getFont().measureText(
-            c.c_str(),
-            c.size(),
-            SkTextEncoding::kUTF8,
-            &bounds);
-
-        currentIndex++;
-        indicVal -= width;
+        currentIndex = nextUtf8Index(t, currentIndex);
     }
 
     void EditTextRenderer::backChar()
@@ -247,7 +235,6 @@ namespace Skia
         if (isSelected)
         {
             currentIndex = beginIndex;
-            indicVal = computeIndicFromIndex(currentIndex);
             isSelected = false;
             return;
         }
@@ -255,31 +242,54 @@ namespace Skia
         if (currentIndex <= 0)
             return;
 
-        char ch = t[currentIndex - 1];
-        std::string c(1, ch);
-
-        SkRect bounds;
-        SkScalar width = text->getFont().measureText(
-            c.c_str(),
-            c.size(),
-            SkTextEncoding::kUTF8,
-            &bounds);
-
-        currentIndex--;
-        indicVal += width;
+        currentIndex = prevUtf8Index(t, currentIndex);
     }
 
-    float EditTextRenderer::computeIndicFromIndex(int index)
+    int EditTextRenderer::nextUtf8Index(const std::string &s, int i)
     {
-        std::string t = getText().substr(0, index);
+        if (i >= (int)s.size())
+            return s.size();
+
+        unsigned char c = s[i];
+        if ((c & 0x80) == 0x00)
+            return i + 1; // 1 byte
+        if ((c & 0xE0) == 0xC0)
+            return i + 2; // 2 byte
+        if ((c & 0xF0) == 0xE0)
+            return i + 3; // 3 byte
+        if ((c & 0xF8) == 0xF0)
+            return i + 4; // 4 byte
+
+        return i + 1;
+    }
+
+    int EditTextRenderer::prevUtf8Index(const std::string &s, int i)
+    {
+        if (i <= 0)
+            return 0;
+
+        i--;
+        while (i > 0 && ((s[i] & 0xC0) == 0x80))
+        {
+            i--;
+        }
+        return i;
+    }
+
+    float EditTextRenderer::caretX()
+    {
+        std::string t = getText();
+
+        std::string left = t.substr(0, currentIndex);
 
         SkRect bounds;
         SkScalar width = text->getFont().measureText(
-            t.c_str(),
-            t.size(),
+            left.c_str(),
+            left.size(),
             SkTextEncoding::kUTF8,
             &bounds);
 
-        return -width;
+        return getX() + 5 + width;
     }
+
 } // namespace Skia
