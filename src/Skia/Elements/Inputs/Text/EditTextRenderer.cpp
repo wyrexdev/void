@@ -46,12 +46,7 @@ namespace Skia
         } });
 
         QObject::connect(Signals::System::Mouse::instance(), &Signals::System::Mouse::onClick, [=](float x, float y)
-                         { text->setBackgroundColor(Math::Color{53, 132, 228, 0});
-                                    QMetaObject::invokeMethod(
-                                        Signals::Skia::instance(),
-                                        "updateSkia",
-                                        Qt::QueuedConnection
-                                    ); });
+                         { text->unselect(); });
 
         QObject::connect(Signals::System::Keyboard::instance(), &Signals::System::Keyboard::textInput, [=](const std::string &utf8)
                          {
@@ -78,7 +73,7 @@ namespace Skia
 
                             std::string t = getText();
                             
-                            text->setBackgroundColor(Math::Color{53, 132, 228, 0});
+                            text->unselect();
                             
                             switch(key) {
                                 case Qt::Key_Backspace:
@@ -119,7 +114,7 @@ namespace Skia
 
                                 case Qt::Key_A:
                                     if (mods & Qt::ControlModifier) {
-                                        text->setBackgroundColor(Math::Color{53, 132, 228, 255});
+                                        text->selectAll();
 
                                         std::string t = text->getText();
 

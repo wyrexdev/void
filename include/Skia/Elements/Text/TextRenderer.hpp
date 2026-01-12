@@ -6,6 +6,10 @@
 
 #include "Skia/Math/Color/Color.hpp"
 
+#include "Engine/Signals/Skia.hpp"
+#include "Engine/Signals/System/Keybaord.hpp"
+#include "Engine/Signals/System/Mouse.hpp"
+
 class SkiaRenderer;
 
 namespace Skia
@@ -37,6 +41,8 @@ namespace Skia
         void selectAll();
         void selectRange(int begin, int end);
 
+        void unselect();
+
         std::vector<std::string> wrapText(float maxWidth);
     private:
         std::unique_ptr<SkFontScanner> scanner;
@@ -56,9 +62,12 @@ namespace Skia
         float size;
 
         float baselineY = 0;
-
-        bool isReUpdateRequired = true;
+        
+        bool isSelected = false;
+        int beginIndex = -1;
+        int endIndex = -1;
 
         sk_sp<SkTextBlob> blob;
     };
+
 } // namespace Skia

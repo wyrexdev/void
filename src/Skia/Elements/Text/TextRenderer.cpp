@@ -45,16 +45,9 @@ namespace Skia
             return;
         }
 
-        if (isReUpdateRequired)
-        {
-            blob = SkTextBlob::MakeFromString(
-                text.c_str(),
-                font);
-
-            // canvas->drawString(text.c_str(), getX(), getY() + 20, font, textPaint);
-
-            isReUpdateRequired = false;
-        }
+        blob = SkTextBlob::MakeFromString(
+            text.c_str(),
+            font);
 
         if (blob)
         {
@@ -85,7 +78,13 @@ namespace Skia
 
             SkPaint bgPaint;
             bgPaint.setAntiAlias(true);
-            bgPaint.setColor(SkColorSetARGB(255, 53, 132, 228));
+
+            if (isSelected)
+            {
+                bgPaint.setColor(SkColorSetARGB(255, 53, 132, 228));
+            } else {
+                bgPaint.setColor(SkColorSetARGB(0, 53, 132, 228));
+            }
 
             canvas->drawRect(selectedArea, bgPaint);
             canvas->drawTextBlob(blob, getX(), baselineY, textPaint);
@@ -103,16 +102,12 @@ namespace Skia
 
         initFontFile();
         refresh();
-
-        isReUpdateRequired = true;
     }
 
     void TextRenderer::setText(std::string t)
     {
         text = t;
         refresh();
-
-        isReUpdateRequired = true;
     }
 
     std::string TextRenderer::getText()
@@ -124,8 +119,6 @@ namespace Skia
     {
         size = s;
         refresh();
-
-        isReUpdateRequired = true;
     }
 
     std::vector<std::string> TextRenderer::wrapText(float maxWidth)
@@ -187,8 +180,6 @@ namespace Skia
         if (!line.empty())
             lines.push_back(line);
 
-        isReUpdateRequired = true;
-
         return lines;
     }
 
@@ -203,8 +194,6 @@ namespace Skia
         textColor.r = r;
         textColor.g = g;
         textColor.b = b;
-
-        isReUpdateRequired = true;
     }
 
     float TextRenderer::getWeight()
@@ -215,15 +204,42 @@ namespace Skia
     void TextRenderer::setWeight(float w)
     {
         weight = w;
-
-        isReUpdateRequired = true;
     }
 
-    SkFont TextRenderer::getFont() {
+    SkFont TextRenderer::getFont()
+    {
         return font;
     }
 
-    void TextRenderer::selectAll() {
-        
+    void TextRenderer::selectAll()
+    {
+        beginIndex = 0;
+        endIndex = text.size();
+
+        isSelected = true;
+
+        QObject::connect(Signals::System::Mouse::instance(), &Signals::System::Mouse::onClick, [=](float x, float y)
+                         { QMetaObject::invokeMethod(
+                               Signals::Skia::instance(),
+                               "updateSkia",
+                               Qt::QueuedConnection); });
+    }
+
+    void TextRenderer::selectRange(int begin, int end)
+    {
+    }
+
+    void TextRenderer::unselect()
+    {
+        isSelected = false;
+
+        beginIndex = -1;
+        endIndex = -1;
+
+        QObject::connect(Signals::System::Mouse::instance(), &Signals::System::Mouse::onClick, [=](float x, float y)
+                         { QMetaObject::invokeMethod(
+                               Signals::Skia::instance(),
+                               "updateSkia",
+                               Qt::QueuedConnection); });
     }
 } // namespace Skia
