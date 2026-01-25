@@ -4,7 +4,7 @@
 
 #include "Utils/String/String.hpp"
 
-#include "Core/Resource/Resource.hpp"
+#include "Core/Net/Resource/Resource.hpp"
 
 #include <string>
 #include <vector>

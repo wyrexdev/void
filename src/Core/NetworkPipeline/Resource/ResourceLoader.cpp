@@ -1,4 +1,4 @@
-#include "Core/Resource/ResourceLoader.hpp"
+#include "Core/Net/Resource/ResourceLoader.hpp"
 
 namespace Core
 {

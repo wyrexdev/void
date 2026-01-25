@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstring>
 
-#include "Core/Resource/Resource.hpp"
+#include "Core/Net/Resource/Resource.hpp"
 
 #include "Utils/String/String.hpp"
 
