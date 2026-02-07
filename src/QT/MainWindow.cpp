@@ -170,9 +170,9 @@ namespace QT
 
         std::string url = encoded.toStdString();
         
-        Core::ResourceLoader *loader = new Core::ResourceLoader();
+        Wire::WireClient *client = new Wire::WireClient();
+        auto r = client->get(url, "https", url, 0);
 
-        Core::Resource r = loader->loadResource(url);
         engine->setURL(url);
 
         // std::cout << "DATA: " << r.body << std::endl;

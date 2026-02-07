@@ -16,6 +16,8 @@
 #include "Utils/Ram/Ram.hpp"
 #include "Utils/String/String.hpp"
 
+#include "Wire/Client/WireClient.hpp"
+
 class Engine : public SkiaRenderer
 {
 public:

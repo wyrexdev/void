@@ -83,7 +83,7 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                 auto srcR = t.attributes.find("src");
                 if (srcR != t.attributes.end())
                 {
-                    std::string src = NetworkLoader::urlDecode(srcR->second);
+                    /*std::string src = NetworkLoader::urlDecode(srcR->second);
                     std::string finalUrl;
 
                     if (NetworkLoader::isAbsoluteURL(src))
@@ -100,7 +100,9 @@ Engine::DocumentMetada Engine::parse(std::string &content)
                     }
 
                     imgRenderer->loadImage(
-                        imgRenderer->loadFromUrl(finalUrl));
+                        imgRenderer->loadFromUrl(finalUrl));*/
+
+                    // I will back to here
                 }
 
                 auto wR = t.attributes.find("width");
@@ -380,7 +382,9 @@ void Engine::calculateLayout()
 
 void Engine::redirect(std::string url)
 {
-    Core::Resource res = NetworkLoader::get(url);
+    Wire::WireClient *client = new Wire::WireClient();
+    auto res = client->get(url, "https", url, 0);
+    
     parse(res.body);
 }
 

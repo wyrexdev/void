@@ -23,6 +23,8 @@
 
 #include "System/Setup/Setup.hpp"
 
+#include "Wire/Client/WireClient.hpp"
+
 namespace QT
 {
     class MainWindow : public QMainWindow
