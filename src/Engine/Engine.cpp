@@ -383,7 +383,7 @@ void Engine::calculateLayout()
 void Engine::redirect(std::string url)
 {
     Wire::WireClient *client = new Wire::WireClient();
-    auto res = client->get(url, "https", url, 0);
+    auto res = client->get(url, "https", Wire::Resolver::resolveEndpoint(url), 0);
     
     parse(res.body);
 }

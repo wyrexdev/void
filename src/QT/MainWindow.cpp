@@ -171,9 +171,16 @@ namespace QT
         std::string url = encoded.toStdString();
         
         Wire::WireClient *client = new Wire::WireClient();
-        auto r = client->get(url, "https", url, 0);
 
-        engine->setURL(url);
+        std::string decoded = QUrl::fromPercentEncoding(
+            QByteArray::fromStdString(url)
+        ).toStdString();
+
+        auto r = client->get(decoded, "https", Wire::Resolver::resolveEndpoint(decoded), 0);
+
+        std::cout << "Body: " << r.body << std::endl;
+
+        engine->setURL(decoded);
 
         // std::cout << "DATA: " << r.body << std::endl;
         
