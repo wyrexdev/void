@@ -29,6 +29,7 @@ INCLUDEPATH += \
     include \
     src \
     /usr/include/freetype2 \
+    /usr/local/include/Wire \
     /home/wyrex/opt/skia \
     /home/wyrex/opt/skia/include
 
@@ -53,4 +54,5 @@ LIBS += \
     -lpthread \
     -ldl \
     -lrt \
-    -lsqlite3
+    -lsqlite3 \
+    -lwire

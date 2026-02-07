@@ -4,7 +4,6 @@
 #include <QResizeEvent>
 #include <iostream>
 
-#include "Engine/Request/NetworkLoader.hpp"
 #include "Engine/Engine.hpp"
 
 #include "Skia/Canvas/Viewport.hpp"
@@ -21,8 +20,6 @@
 #include "Utils/Ram/Ram.hpp"
 
 #include "Engine/Signals/URLPreviewSignal.hpp"
-
-#include "Core/Net/Resource/ResourceLoader.hpp"
 
 #include "System/Setup/Setup.hpp"
 
