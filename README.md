@@ -47,6 +47,7 @@ The system is designed with control and observability as first-class concerns.
 <div style="font-family: 'Trebuchet MS', sans-serif;">• Google Skia </div>
 <div style="font-family: 'Trebuchet MS', sans-serif;">• Freetype2 </div>
 <div style="font-family: 'Trebuchet MS', sans-serif;">• SQLite3 </div>
+<div style="font-family: 'Trebuchet MS', sans-serif;">• Wire </div>
 
 <h3 style="font-family: 'Trebuchet MS', sans-serif;">1.2 - Skia Installation</h3>
 
@@ -79,7 +80,16 @@ python3 tools/git-sync-deps
 sudo pacman -S bazelisk
 ```
 
-<h4 style="font-family: 'Trebuchet MS', sans-serif;">1.2.5 - Configure build with gn</h4>
+<h4 style="font-family: 'Trebuchet MS', sans-serif;">1.2.5 - Install Wire</h4>
+
+```
+git clone https://github.com/wyrexdev/wire
+cd wire
+make
+sudo make install
+```
+
+<h4 style="font-family: 'Trebuchet MS', sans-serif;">1.2.6 - Configure build with gn</h4>
 
 ```
 gn gen out/Release --args='
