@@ -178,11 +178,7 @@ namespace QT
 
         auto r = client->get(decoded, "https", Wire::Resolver::resolveEndpoint(decoded), 0);
 
-        std::cout << "Body: " << r.body << std::endl;
-
         engine->setURL(decoded);
-
-        // std::cout << "DATA: " << r.body << std::endl;
         
         size_t heap = malloc_usable_size((void*)r.body.data());
         i.memoryUsage = Ram::format_bytes(heap);

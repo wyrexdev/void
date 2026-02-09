@@ -22,7 +22,7 @@ namespace Skia
         void onInit() override;
         void onRender() override;
 
-        void initFontFile();
+        void initFonts();
 
         void setText(std::string text);
         std::string getText();
@@ -44,11 +44,13 @@ namespace Skia
         void unselect();
 
         std::vector<std::string> wrapText(float maxWidth);
+
     private:
         std::unique_ptr<SkFontScanner> scanner;
-        sk_sp<SkFontMgr> fontMgr;
-        sk_sp<SkTypeface> typeface;
         SkRect bounds;
+
+        sk_sp<SkFontMgr> g_fontMgr;
+        sk_sp<SkTypeface> g_typeface;
 
         SkFont font;
         SkPaint textPaint;
@@ -62,7 +64,7 @@ namespace Skia
         float size;
 
         float baselineY = 0;
-        
+
         bool isSelected = false;
         int beginIndex = -1;
         int endIndex = -1;

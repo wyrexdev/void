@@ -14,18 +14,15 @@ namespace Skia
 
     void TextRenderer::onInit()
     {
-        scanner = SkFontScanner_Make_FreeType();
-        fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
+        initFonts();
 
-        initFontFile();
-
-        if (!typeface)
+        if (!g_typeface)
         {
             qWarning() << "Font cannot load!";
             return;
         }
 
-        font = SkFont(typeface, size);
+        font = SkFont(g_typeface, size);
         font.setEdging(SkFont::Edging::kSubpixelAntiAlias);
 
         textPaint.setAntiAlias(true);
@@ -40,19 +37,25 @@ namespace Skia
 
     void TextRenderer::onRender()
     {
-        if (!typeface)
+        if (!g_typeface)
         {
             return;
         }
 
-        blob = SkTextBlob::MakeFromString(
-            text.c_str(),
-            font);
+        font = SkFont(g_typeface, size);
+
+        std::cout << "Text: " << text << std::endl;
+
+        blob = SkTextBlob::MakeFromText(
+            text.data(),
+            text.size(),
+            font,
+            SkTextEncoding::kUTF8);
 
         if (blob)
         {
             SkScalar width = font.measureText(
-                text.c_str(),
+                text.data(),
                 text.size(),
                 SkTextEncoding::kUTF8,
                 &bounds);
@@ -82,7 +85,9 @@ namespace Skia
             if (isSelected)
             {
                 bgPaint.setColor(SkColorSetARGB(255, 53, 132, 228));
-            } else {
+            }
+            else
+            {
                 bgPaint.setColor(SkColorSetARGB(0, 53, 132, 228));
             }
 
@@ -91,16 +96,17 @@ namespace Skia
         }
     }
 
-    void TextRenderer::initFontFile()
+    void TextRenderer::initFonts()
     {
-        typeface = fontMgr->makeFromFile(fontFile.c_str());
+        auto scanner = SkFontScanner_Make_FreeType();
+        g_fontMgr = SkFontMgr_New_FontConfig(nullptr, std::move(scanner));
+        g_typeface = g_fontMgr->makeFromFile("./fonts/nunito.ttf");
     }
 
     void TextRenderer::setFont(std::string f)
     {
         fontFile = f;
 
-        initFontFile();
         refresh();
     }
 
